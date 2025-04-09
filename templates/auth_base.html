@@ -95,8 +95,25 @@
     </div>
 
     <!-- JavaScript -->
-    <!-- JavaScript -->
-<script src="{% static 'js/auth.js' %}"></script>
-{% block extra_js %}{% endblock %}
+    <script src="{% static 'js/auth.js' %}"></script>
+    {% if firebase_config %}
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- Firebase konfiqurasyası JSON script formatında -->
+    {{ firebase_config|json_script:"firebase-config-data" }}
+    
+    <script type="text/javascript">
+        // Firebase konfiqurasiyası
+        const firebaseConfig = JSON.parse(document.getElementById('firebase-config-data').textContent);
+        
+        // Firebase-i inisializasiya et
+        if (firebaseConfig && firebaseConfig.apiKey) {
+            firebase.initializeApp(firebaseConfig);
+        }
+    </script>
+    <script src="{% static 'js/firebase-auth.js' %}"></script>
+    {% endif %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
