@@ -777,3 +777,38 @@ main {
         gap: 10px;
     }
 }
+
+/* Password toggle button */
+.password-field {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+}
+
+.toggle-password:hover {
+    color: var(--primary-light);
+}
+
+.toggle-password:focus {
+    outline: none;
+}
+
+.input-with-icon.password-field input {
+    padding-right: 45px;
+}

@@ -9,6 +9,8 @@ class User(AbstractUser):
     name = models.CharField(_("Full name"), max_length=255)
     phone_number = models.CharField(_("Phone number"), max_length=20, unique=True)
     age = models.PositiveIntegerField(_("Age"), null=True, blank=True)
+    # Firebase integration
+    firebase_uid = models.CharField(_("Firebase UID"), max_length=128, null=True, blank=True, unique=True)
     
     GENDER_CHOICES = (
         ('M', _('Male')),

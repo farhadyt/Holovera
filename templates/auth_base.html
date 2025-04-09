@@ -35,7 +35,15 @@
                 <div class="language-dropdown">
                     <button class="lang-btn">
                         <i class="fas fa-globe"></i>
-                        <span class="current-lang">{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE|upper }}</span>
+                        <span class="current-lang">
+                            {% get_current_language as CURRENT_LANGUAGE %}
+                            {% for lang_code, lang_name in LANGUAGES %}
+                                {% if lang_code == CURRENT_LANGUAGE %}
+                                    <span class="lang-flag flag-{{ lang_code }}"></span>
+                                    {{ lang_name }}
+                                {% endif %}
+                            {% endfor %}
+                        </span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="language-options">
@@ -43,8 +51,9 @@
                             {% csrf_token %}
                             <input name="next" type="hidden" value="{{ request.path }}">
                             {% get_available_languages as LANGUAGES %}
+                            {% get_current_language as CURRENT_LANGUAGE %}
                             {% for lang_code, lang_name in LANGUAGES %}
-                            <button type="submit" name="language" value="{{ lang_code }}" class="lang-option {% if lang_code == LANGUAGE_CODE %}active{% endif %}">
+                            <button type="submit" name="language" value="{{ lang_code }}" class="lang-option {% if lang_code == CURRENT_LANGUAGE %}active{% endif %}">
                                 <span class="lang-flag flag-{{ lang_code }}"></span>
                                 <span class="lang-name">{{ lang_name }}</span>
                             </button>
@@ -86,49 +95,8 @@
     </div>
 
     <!-- JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Logo hover effect
-            const logo = document.querySelector('.logo a');
-            const logoGlow = document.querySelector('.logo-glow');
-            
-            if (logo && logoGlow) {
-                logo.addEventListener('mouseenter', function() {
-                    logoGlow.classList.add('active');
-                });
-                
-                logo.addEventListener('mouseleave', function() {
-                    logoGlow.classList.remove('active');
-                });
-            }
-            
-            // Language dropdown
-            const langBtn = document.querySelector('.lang-btn');
-            const langOptions = document.querySelector('.language-options');
-            
-            if (langBtn && langOptions) {
-                langBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    langOptions.classList.toggle('show');
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!langBtn.contains(e.target) && !langOptions.contains(e.target)) {
-                        langOptions.classList.remove('show');
-                    }
-                });
-            }
-            
-            // Message close functionality
-            const closeButtons = document.querySelectorAll('.close-message');
-            closeButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    this.parentElement.style.display = 'none';
-                });
-            });
-        });
-    </script>
-    {% block extra_js %}{% endblock %}
+    <!-- JavaScript -->
+<script src="{% static 'js/auth.js' %}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

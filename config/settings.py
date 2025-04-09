@@ -1,6 +1,9 @@
 import os
 import sys
 from pathlib import Path
+from decouple import config, Csv
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,12 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR / 'apps'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
 # Application definition
 INSTALLED_APPS = [
@@ -44,6 +47,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # Dil detekciyası üçün
+    'apps.core.middleware.LocaleMiddleware',      #locale middleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -77,11 +81,27 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # İlkin test üçün SQLite istifadə edək (PostgreSQL istifadə etmək istəsəniz, bu hissəni düzəldəcəyik)
+
+# Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME', default='holovera'),
+        'USER': config('DATABASE_USER', default='postgres'),
+        'PASSWORD': config('DATABASE_PASSWORD', default=''),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
+}
+
+# Firebase Configuration
+FIREBASE_CONFIG = {
+    'apiKey': config('FIREBASE_API_KEY', default=''),
+    'authDomain': config('FIREBASE_AUTH_DOMAIN', default=''),
+    'projectId': config('FIREBASE_PROJECT_ID', default=''),
+    'storageBucket': config('FIREBASE_STORAGE_BUCKET', default=''),
+    'messagingSenderId': config('FIREBASE_MESSAGING_SENDER_ID', default=''),
+    'appId': config('FIREBASE_APP_ID', default=''),
 }
 
 # Password validation
