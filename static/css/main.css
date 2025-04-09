@@ -1,0 +1,306 @@
+/* static/css/main.css */
+/* Global styles for Holovera platform */
+
+:root {
+    --primary-color: #4DF0FF;
+    --primary-dark: #1E3A5A;
+    --background-dark: #0A0C16;
+    --background-light: #1C2332;
+    --text-color: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(77, 240, 255, 0.3);
+    --shadow-color: rgba(77, 240, 255, 0.2);
+    --glow-color: rgba(77, 240, 255, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Header & Navigation */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 15px 0;
+    background: rgba(10, 12, 22, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 2;
+}
+
+.logo-glow {
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    opacity: 0;
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-link {
+    position: relative;
+    padding: 5px 0;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link .nav-text {
+    position: relative;
+    z-index: 2;
+}
+
+.nav-hover-effect {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    opacity: 0;
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+}
+
+.nav-link.active .nav-hover-effect {
+    width: 100%;
+    opacity: 1;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 40, 60, 0.7);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.btn-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: -1;
+}
+
+.icon-btn i {
+    font-size: 16px;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.icon-btn:hover i {
+    color: var(--primary-color);
+}
+
+/* Main Content */
+main {
+    padding-top: 80px;
+    min-height: 100vh;
+}
+
+/* Message alerts */
+.messages-container {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 1000;
+    width: 300px;
+}
+
+.message {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    position: relative;
+    animation: slideInRight 0.3s forwards;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.message.success {
+    background: rgba(46, 204, 113, 0.9);
+    border-left: 4px solid #27ae60;
+}
+
+.message.error {
+    background: rgba(231, 76, 60, 0.9);
+    border-left: 4px solid #c0392b;
+}
+
+.message.info {
+    background: rgba(52, 152, 219, 0.9);
+    border-left: 4px solid #2980b9;
+}
+
+.message.warning {
+    background: rgba(241, 196, 15, 0.9);
+    border-left: 4px solid #f39c12;
+}
+
+.close-message {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+/* Language selector */
+.language-selector {
+    margin-left: 15px;
+}
+
+.language-select {
+    background: rgba(30, 40, 60, 0.7);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.language-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.language-select option {
+    background: var(--background-light);
+    color: var(--text-color);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 250px;
+        height: calc(100vh - 70px);
+        background: rgba(10, 12, 22, 0.95);
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+        transition: left 0.3s ease;
+        align-items: flex-start;
+        backdrop-filter: blur(10px);
+        border-right: 1px solid var(--border-color);
+    }
+    
+    .nav-links.active {
+        left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 20px;
+    }
+    
+    .user-controls {
+        gap: 10px;
+    }
+    
+    .icon-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .icon-btn i {
+        font-size: 14px;
+    }
+}

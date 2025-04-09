@@ -1,0 +1,106 @@
+<!-- templates/accounts/register.html -->
+{% extends 'auth_base.html' %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Qeydiyyat" %} - Holovera{% endblock %}
+
+{% block content %}
+<div class="auth-scene">
+    <!-- Optimizasiya olunmuş arxa fon -->
+    <div class="auth-bg"></div>
+    
+    <!-- Static dekorasiya elementləri -->
+    <div class="auth-elements">
+        <div class="element flower-element"></div>
+        <div class="element gift-element"></div>
+        <div class="element ribbon-element"></div>
+        <div class="element basket-element"></div>
+    </div>
+    
+    <!-- Auth konteyner - sadələşdirilmiş animasiyalar -->
+    <div class="auth-container">
+        <div class="auth-form-container register-form">
+            <div class="auth-header">
+                <h2>{% trans "Hesab yaradın" %}</h2>
+                <div class="auth-divider"></div>
+            </div>
+            
+            <div class="auth-form">
+                <form method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="id_name">{% trans "Tam ad" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="name" id="id_name" class="form-control" placeholder="{% trans 'Tam adınız' %}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_email">{% trans "E-poçt" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" id="id_email" class="form-control" placeholder="{% trans 'E-poçt ünvanı' %}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="text" name="phone_number" id="id_phone_number" class="form-control" placeholder="{% trans 'Telefon nömrəsi' %}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="id_age">{% trans "Yaş" %}</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-birthday-cake"></i>
+                                <input type="number" name="age" id="id_age" class="form-control" placeholder="{% trans 'Yaşınız' %}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label for="id_gender">{% trans "Cins" %}</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-venus-mars"></i>
+                                <select name="gender" id="id_gender" class="form-control" required>
+                                    <option value="M">{% trans 'Kişi' %}</option>
+                                    <option value="F">{% trans 'Qadın' %}</option>
+                                    <option value="O">{% trans 'Digər' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_password1">{% trans "Şifrə" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password1" id="id_password1" class="form-control" placeholder="{% trans 'Şifrəniz' %}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_password2">{% trans "Şifrəni təsdiqləyin" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password2" id="id_password2" class="form-control" placeholder="{% trans 'Şifrəni təkrar daxil edin' %}" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-button register-btn">{% trans "Qeydiyyatdan keç" %}</button>
+                    
+                    <div class="login-link">
+                        <p>{% trans "Artıq hesabınız var?" %} <a href="{% url 'login' %}">{% trans "Daxil olun" %}</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

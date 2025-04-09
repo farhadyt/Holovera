@@ -1,0 +1,59 @@
+<!-- templates/accounts/login.html -->
+{% extends 'auth_base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Login" %} - Holovera{% endblock %}
+
+{% block content %}
+<div class="auth-scene">
+    <!-- Optimizasiya olunmuş arxa fon -->
+    <div class="auth-bg"></div>
+    
+    <!-- Auth konteyner -->
+    <div class="auth-container">
+        <div class="auth-form-container">
+            <div class="auth-header">
+                <h2>{% trans "Hesabınıza daxil olun" %}</h2>
+                <div class="auth-divider"></div>
+            </div>
+            
+            <div class="auth-form">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="id_email">{% trans "E-poçt" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" id="id_email" class="form-control" placeholder="{% trans 'E-poçt ünvanı' %}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_password">{% trans "Şifrə" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" id="id_password" class="form-control" placeholder="{% trans 'Şifrə' %}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me" name="remember">
+                            <label for="remember-me">{% trans "Məni xatırla" %}</label>
+                        </div>
+                        <a href="#" class="forgot-password">{% trans "Şifrəni unutmusunuz?" %}</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-button login-btn">{% trans "Daxil ol" %}</button>
+                    
+                    <div class="register-link">
+                        <p>{% trans "Hesabınız yoxdur?" %} <a href="{% url 'register' %}">{% trans "Qeydiyyatdan keçin" %}</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
