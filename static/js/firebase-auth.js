@@ -1,20 +1,44 @@
 // Firebase Auth JS - v8 API üçün
 document.addEventListener('DOMContentLoaded', function() {
-    // Firebase authentication yoxla 
-    if (typeof firebase !== 'undefined' && firebase.auth) {
-        // Listen for auth state changes
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // User is signed in
-                user.getIdToken().then(function(idToken) {
-                    // Send the token to the server
-                    sendTokenToServer(idToken);
-                });
-            }
-        });
-    } else {
-        console.log("Firebase auth yüklənmədi və ya konfiqurasiya edilmədi");
+    console.log("Firebase auth.js yükləndi");
+    
+    // Firebase başlatılıb mı? Xeyr isə gözlə
+    function checkFirebaseInit() {
+        if (window.firebaseInitialized === true) {
+            console.log("Firebase başladıldığı təsdiq edildi, auth kodları işləyir");
+            initializeFirebaseAuth();
+        } else {
+            console.log("Firebase hələ başladılmayıb, 100ms sonra yenidən yoxlanacaq");
+            setTimeout(checkFirebaseInit, 100);
+        }
     }
+    
+    // Firebase auth kodları
+    function initializeFirebaseAuth() {
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            console.log("Firebase auth moduluna erişildi");
+            
+            // Listen for auth state changes
+            firebase.auth().onAuthStateChanged(function(user) {
+                console.log("Auth durumu dəyişdi:", user ? "İstifadəçi daxil olub" : "İstifadəçi daxil olmayıb");
+                
+                if (user) {
+                    // User is signed in
+                    user.getIdToken().then(function(idToken) {
+                        // Send the token to the server
+                        sendTokenToServer(idToken);
+                    }).catch(function(error) {
+                        console.error("Token alma xətası:", error);
+                    });
+                }
+            });
+        } else {
+            console.error("Firebase auth modulu tapılmadı!");
+        }
+    }
+    
+    // Firebase başladılıb mı yoxla, sonra işlə
+    checkFirebaseInit();
 });
 
 // Send ID token to the server

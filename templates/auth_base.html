@@ -94,26 +94,47 @@
         <div class="bg-element ribbon-element"></div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript temel -->
     <script src="{% static 'js/auth.js' %}"></script>
+    
+    <!-- Firebase konfigürasyon ve başlatma -->
     {% if firebase_config %}
+    <!-- Firebase konfiqurasyonunu data attribute olaraq gizli div içinde saxlayaq -->
+    <div id="firebase-data" style="display:none;" 
+         data-config='{{ firebase_config|safe }}'></div>
+    
+    <!-- Firebase SDK yükle -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
-    <!-- Firebase konfiqurasyası JSON script formatında -->
-    {{ firebase_config|json_script:"firebase-config-data" }}
-    
-    <script type="text/javascript">
-        // Firebase konfiqurasiyası
-        const firebaseConfig = JSON.parse(document.getElementById('firebase-config-data').textContent);
+    <!-- Firebase başlatma ve ardından firebase-auth.js yükle -->
+    <script>
+        // Global değişken tanımlayalım
+        window.firebaseInitialized = false;
         
-        // Firebase-i inisializasiya et
-        if (firebaseConfig && firebaseConfig.apiKey) {
-            firebase.initializeApp(firebaseConfig);
+        // Konfigurasyon verilerini al
+        const firebaseData = document.getElementById('firebase-data');
+        try {
+            const firebaseConfig = JSON.parse(firebaseData.getAttribute('data-config'));
+            console.log("Firebase konfiqurasyonu:", firebaseConfig);
+            
+            // Firebase başlat
+            if (firebaseConfig && firebaseConfig.apiKey) {
+                firebase.initializeApp(firebaseConfig);
+                window.firebaseInitialized = true;
+                console.log("Firebase başarıyla başlatıldı!");
+            } else {
+                console.error("Firebase konfiqurasiyası hatalı:", firebaseConfig);
+            }
+        } catch (error) {
+            console.error("Firebase konfiqurasiya parse hatası:", error);
         }
     </script>
+    
+    <!-- Kendi Firebase auth kodumuz -->
     <script src="{% static 'js/firebase-auth.js' %}"></script>
     {% endif %}
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
