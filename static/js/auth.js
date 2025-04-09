@@ -1,6 +1,27 @@
-// Password visibility toggle
+// static/js/auth.js
 document.addEventListener('DOMContentLoaded', function() {
+    // Password visibility toggle
     const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+    
+    togglePasswordButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Find the password input field
+            const passwordField = this.previousElementSibling;
+            
+            // Toggle password visibility
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                passwordField.type = 'password';
+                this.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        });
+    });
+
+    // Logo hover effect
     const logo = document.querySelector('.logo a');
     const logoGlow = document.querySelector('.logo-glow');
     
@@ -37,24 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
     closeButtons.forEach(button => {
         button.addEventListener('click', function() {
             this.parentElement.style.display = 'none';
-        });
-    });
-    
-    togglePasswordButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Find the password input field
-            const passwordField = this.previousElementSibling;
-            
-            // Toggle password visibility
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
-            } else {
-                passwordField.type = 'password';
-                this.innerHTML = '<i class="fas fa-eye"></i>';
-            }
         });
     });
 });

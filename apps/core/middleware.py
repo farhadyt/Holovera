@@ -8,8 +8,17 @@ class LocaleMiddleware(MiddlewareMixin):
     açarkən bu dilə uyğun tərcümə olunmuş məzmun göstərir.
     """
     def process_request(self, request):
-        # İstifadəçi artıq dil seçmişdirsə, heç nə etmə
-        if request.session.get('django_language', None):
+        # Əgər dil artıq POST sorğusunda varsa, onu aktivləşdir
+        if request.method == 'POST' and 'language' in request.POST:
+            language = request.POST.get('language')
+            if language in [lang_code for lang_code, _ in settings.LANGUAGES]:
+                translation.activate(language)
+                request.session['django_language'] = language
+                return None
+        
+        # İstifadəçi artıq dil seçmişdirsə, onu aktiv et
+        if 'django_language' in request.session:
+            translation.activate(request.session['django_language'])
             return None
             
         # Brauzer dilini al
@@ -27,3 +36,18 @@ class LocaleMiddleware(MiddlewareMixin):
                 request.session['django_language'] = settings.LANGUAGE_CODE
                 
         return None
+
+    def process_response(self, request, response):
+        # Əmin olaq ki, seçilən dil cookie-də saxlanılır
+        if 'django_language' in request.session:
+            response.set_cookie(
+                settings.LANGUAGE_COOKIE_NAME,
+                request.session['django_language'],
+                max_age=settings.LANGUAGE_COOKIE_AGE,
+                path=settings.LANGUAGE_COOKIE_PATH,
+                domain=settings.LANGUAGE_COOKIE_DOMAIN,
+                secure=settings.LANGUAGE_COOKIE_SECURE,
+                httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
+                samesite=settings.LANGUAGE_COOKIE_SAMESITE,
+            )
+        return response

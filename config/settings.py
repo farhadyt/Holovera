@@ -1,15 +1,20 @@
+# config/settings.py
 import os
 import sys
 from pathlib import Path
 from decouple import config, Csv
-
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Apps qovluğunu Python yoluna əlavə et
 sys.path.insert(0, str(BASE_DIR / 'apps'))
+
+# Firebase Admin SDK üçün path
+FIREBASE_ADMIN_SDK_PATH = os.path.join(BASE_DIR, 'firebase-service-account.json')
+# Əgər Firebase Admin SDK faylı hələ yaradılmayıbsa:
+if not os.path.exists(FIREBASE_ADMIN_SDK_PATH):
+    FIREBASE_ADMIN_SDK_PATH = None
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
@@ -80,8 +85,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# İlkin test üçün SQLite istifadə edək (PostgreSQL istifadə etmək istəsəniz, bu hissəni düzəldəcəyik)
-
 # Database
 DATABASES = {
     'default': {
@@ -146,6 +149,15 @@ LANGUAGES = [
     ('ru', _('Русский')),
     ('tr', _('Türkçe')),
 ]
+
+# Dil cookie ayarları
+LANGUAGE_COOKIE_NAME = 'django_language'
+LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 il
+LANGUAGE_COOKIE_PATH = '/'
+LANGUAGE_COOKIE_DOMAIN = None
+LANGUAGE_COOKIE_SECURE = False
+LANGUAGE_COOKIE_HTTPONLY = False
+LANGUAGE_COOKIE_SAMESITE = None
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'

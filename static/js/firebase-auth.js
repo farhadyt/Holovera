@@ -1,32 +1,21 @@
-// Firebase configuration from Django settings
-let firebaseConfig;
-
-// Get Firebase config from data attribute
+// Firebase Auth JS - v8 API üçün
 document.addEventListener('DOMContentLoaded', function() {
-    const firebaseConfigEl = document.getElementById('firebase-config');
-    if (firebaseConfigEl) {
-        firebaseConfig = JSON.parse(firebaseConfigEl.getAttribute('data-config'));
-        initializeFirebase();
+    // Firebase authentication yoxla 
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        // Listen for auth state changes
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in
+                user.getIdToken().then(function(idToken) {
+                    // Send the token to the server
+                    sendTokenToServer(idToken);
+                });
+            }
+        });
+    } else {
+        console.log("Firebase auth yüklənmədi və ya konfiqurasiya edilmədi");
     }
 });
-
-// Initialize Firebase
-function initializeFirebase() {
-    if (!firebaseConfig) return;
-    
-    firebase.initializeApp(firebaseConfig);
-    
-    // Listen for auth state changes
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            // User is signed in
-            user.getIdToken().then(function(idToken) {
-                // Send the token to the server
-                sendTokenToServer(idToken);
-            });
-        }
-    });
-}
 
 // Send ID token to the server
 function sendTokenToServer(idToken) {
@@ -70,29 +59,40 @@ function getCSRFToken() {
 
 // Firebase email/password sign in
 function signInWithEmail(email, password) {
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        return firebase.auth().signInWithEmailAndPassword(email, password);
+    }
+    return Promise.reject("Firebase auth yüklənmədi");
 }
 
 // Firebase email/password sign up
 function signUpWithEmail(email, password) {
-    return firebase.auth().createUserWithEmailAndPassword(email, password);
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        return firebase.auth().createUserWithEmailAndPassword(email, password);
+    }
+    return Promise.reject("Firebase auth yüklənmədi");
 }
 
 // Update user profile
 function updateUserProfile(name, phoneNumber) {
-    const user = firebase.auth().currentUser;
-    if (user) {
-        return user.updateProfile({
-            displayName: name
-        }).then(() => {
-            // Custom claims for phone number can be set from server side
-            return user.getIdToken(true);
-        });
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        const user = firebase.auth().currentUser;
+        if (user) {
+            return user.updateProfile({
+                displayName: name
+            }).then(() => {
+                // Custom claims for phone number can be set from server side
+                return user.getIdToken(true);
+            });
+        }
     }
     return Promise.reject('No user is signed in');
 }
 
 // Sign out
 function signOut() {
-    return firebase.auth().signOut();
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        return firebase.auth().signOut();
+    }
+    return Promise.reject("Firebase auth not loaded");
 }
