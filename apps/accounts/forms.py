@@ -1,4 +1,4 @@
-# apps/accounts/forms.py - sadələşdirilmiş versiya
+# apps/accounts/forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
@@ -19,18 +19,14 @@ class CustomLoginForm(forms.Form):
         widget=forms.CheckboxInput(attrs={'class': 'remember-checkbox'})
     )
 
-class CustomRegistrationForm(UserCreationForm):
+class CustomRegistrationForm(forms.ModelForm):
     name = forms.CharField(
         label=_("Tam ad"),
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Tam adınız")})
     )
-    email = forms.EmailField(
-        label=_("E-poçt"),
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': _("E-poçt ünvanı")})
-    )
     phone_number = forms.CharField(
         label=_("Telefon nömrəsi"),
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Telefon nömrəsi")})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("+994501234567")})
     )
     age = forms.IntegerField(
         label=_("Yaş"),
@@ -44,4 +40,4 @@ class CustomRegistrationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ('name', 'email', 'phone_number', 'age', 'gender', 'password1', 'password2')
+        fields = ('name', 'phone_number', 'age', 'gender')
