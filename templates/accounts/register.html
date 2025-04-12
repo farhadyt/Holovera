@@ -31,18 +31,19 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="id_email">{% trans "E-poçt" %}</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" name="email" id="id_email" class="form-control" placeholder="{% trans 'E-poçt ünvanı' %}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            <input type="text" name="phone_number" id="id_phone_number" class="form-control" placeholder="{% trans 'Telefon nömrəsi' %}" required>
+                            <input type="tel" name="phone_number" id="id_phone_number" class="form-control" placeholder="+994501234567" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Telefon doğrulama kodu alanı (gizli başlar) -->
+                    <div id="verification-code-container" class="form-group" style="display:none">
+                        <label for="id_verification_code">{% trans "Doğrulama kodu" %}</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-key"></i>
+                            <input type="text" id="id_verification_code" class="form-control" placeholder="{% trans 'SMS ilə gələn kod' %}">
                         </div>
                     </div>
                     
@@ -68,29 +69,11 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="id_password1">{% trans "Şifrə" %}</label>
-                        <div class="input-with-icon password-field">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" name="password1" id="id_password1" class="form-control" placeholder="{% trans 'Şifrəniz' %}" required>
-                            <button type="button" class="toggle-password" tabindex="-1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Normal şifrə sahələrini silirəm, telefon autentifikasiyasında lazım deyil -->
                     
-                    <div class="form-group">
-                        <label for="id_password2">{% trans "Şifrəni təsdiqləyin" %}</label>
-                        <div class="input-with-icon password-field">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" name="password2" id="id_password2" class="form-control" placeholder="{% trans 'Şifrəni təkrar daxil edin' %}" required>
-                            <button type="button" class="toggle-password" tabindex="-1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="auth-button register-btn">{% trans "Qeydiyyatdan keç" %}</button>
+                    <!-- Qeydiyyat və telefon doğrulama düymələri -->
+                    <button type="button" id="send-code-btn" class="auth-button login-btn">{% trans "SMS kodu göndər" %}</button>
+                    <button type="button" id="verify-code-btn" style="display:none" class="auth-button register-btn">{% trans "Kodu doğrula və qeydiyyatdan keç" %}</button>
                     
                     <div class="login-link">
                         <p>{% trans "Artıq hesabınız var?" %} <a href="{% url 'login' %}">{% trans "Daxil olun" %}</a></p>
@@ -103,50 +86,101 @@
 {% endblock %}
 
 {% block extra_js %}
-{% if firebase_config %}
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
 <script>
-    // Firebase registration
-    document.getElementById('register-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('id_email').value;
-        const password = document.getElementById('id_password1').value;
-        const password2 = document.getElementById('id_password2').value;
-        
-        if (password !== password2) {
-            alert("{% trans 'Şifrələr uyğun gəlmir' %}");
-            return;
-        }
-        
+    // Firebase telefon autentifikasiyasını quraşdıraq
+    document.addEventListener('DOMContentLoaded', function() {
+        // Firebase quraşdırması
         if (typeof firebase !== 'undefined' && firebase.auth) {
-            // Firebase ilə qeydiyyat
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then(userCredential => {
-                    // Qeydiyyat uğurlu
-                    const user = userCredential.user;
-                    
-                    // Profili yenilə
-                    const name = document.getElementById('id_name').value;
-                    const phoneNumber = document.getElementById('id_phone_number').value;
-                    
-                    user.updateProfile({
-                        displayName: name
-                    }).then(() => {
-                        // Firebase-də profil yeniləndi, normal form submit
-                        console.log("Firebase qeydiyyat uğurlu!");
-                        this.submit();
-                    });
-                })
-                .catch(error => {
-                    console.error("Firebase qeydiyyat xətası:", error);
-                    // Firebase error - normal form submit ilə davam et
-                    this.submit();
+            console.log("Firebase telefon autentifikasiyası hazırlanır");
+            
+            let verificationId = null;
+            
+            // Telefon nömrəsinə kod göndərmə
+            document.getElementById('send-code-btn').addEventListener('click', function() {
+                const phoneNumber = document.getElementById('id_phone_number').value;
+                
+                if (!phoneNumber || phoneNumber.length < 10) {
+                    alert("{% trans 'Xahiş edirik düzgün telefon nömrəsi daxil edin' %}");
+                    return;
+                }
+                
+                // reCAPTCHA mühitini təyin et
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-code-btn', {
+                    'size': 'invisible',
+                    'callback': function(response) {
+                        // reCAPTCHA doğrulandı
+                        console.log("reCAPTCHA doğrulandı");
+                    }
                 });
+                
+                // Telefon nömrəsinə kod göndər
+                firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+                    .then(function(confirmationResult) {
+                        // SMS göndərildi
+                        console.log("SMS kodu göndərildi");
+                        window.confirmationResult = confirmationResult;
+                        verificationId = confirmationResult.verificationId;
+                        
+                        // Kod sahəsini və doğrulama düyməsini göstər
+                        document.getElementById('verification-code-container').style.display = 'block';
+                        document.getElementById('verify-code-btn').style.display = 'block';
+                        document.getElementById('send-code-btn').style.display = 'none';
+                        
+                        // Telefon sahəsini deaktiv et
+                        document.getElementById('id_phone_number').disabled = true;
+                    })
+                    .catch(function(error) {
+                        console.error("SMS göndərmə xətası:", error);
+                        alert("SMS kodu göndərmə xətası: " + error.message);
+                        
+                        // reCAPTCHA'nı sıfırla
+                        window.recaptchaVerifier.render().then(function(widgetId) {
+                            grecaptcha.reset(widgetId);
+                        });
+                    });
+            });
+            
+            // Kodu doğrulama və qeydiyyatı tamamlama
+            document.getElementById('verify-code-btn').addEventListener('click', function() {
+                const code = document.getElementById('id_verification_code').value;
+                
+                if (!code || code.length < 4) {
+                    alert("{% trans 'Xahiş edirik düzgün doğrulama kodu daxil edin' %}");
+                    return;
+                }
+                
+                // Doğrulama kodunu təsdiqlə
+                window.confirmationResult.confirm(code)
+                    .then(function(result) {
+                        // Doğrulama uğurlu
+                        console.log("Telefon nömrəsi doğrulandı!");
+                        const user = result.user;
+                        
+                        // Django servere telefon doğrulamasını göndər
+                        const form = document.getElementById('register-form');
+                        
+                        // Firebase UID-ni gizli sahə kimi əlavə et
+                        const uidField = document.createElement('input');
+                        uidField.type = 'hidden';
+                        uidField.name = 'firebase_uid';
+                        uidField.value = user.uid;
+                        form.appendChild(uidField);
+                        
+                        // Formu göndər
+                        form.submit();
+                    })
+                    .catch(function(error) {
+                        console.error("Doğrulama kodu xətası:", error);
+                        alert("Doğrulama kodu xətası: " + error.message);
+                    });
+            });
         } else {
-            // Firebase yüklənmədisə, normal form submit
-            this.submit();
+            console.error("Firebase auth yüklənmədi");
+            alert("Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin");
         }
     });
 </script>
-{% endif %}
 {% endblock %}
