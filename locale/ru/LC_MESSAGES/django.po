@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Holovera 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-12 20:00+0400\n"
+"PO-Revision-Date: 2025-04-12 20:00+0400\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: Russian <ru@example.com>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+# Login page
+msgid "Login"
+msgstr "Вход"
+
+msgid "Hesabınıza daxil olun"
+msgstr "Войдите в свой аккаунт"
+
+msgid "Telefon nömrəsi"
+msgstr "Номер телефона"
+
+msgid "Doğrulama kodu"
+msgstr "Код подтверждения"
+
+msgid "SMS ilə gələn kod"
+msgstr "Код из SMS"
+
+msgid "Məni xatırla"
+msgstr "Запомнить меня"
+
+msgid "Nömrənizi unutmusunuz?"
+msgstr "Забыли номер?"
+
+msgid "SMS kodu göndər"
+msgstr "Отправить SMS-код"
+
+msgid "Kodu doğrula və daxil ol"
+msgstr "Подтвердить код и войти"
+
+msgid "Hesabınız yoxdur?"
+msgstr "Нет аккаунта?"
+
+msgid "Qeydiyyatdan keçin"
+msgstr "Зарегистрироваться"
+
+msgid "Xahiş edirik düzgün telefon nömrəsi daxil edin"
+msgstr "Пожалуйста, введите правильный номер телефона"
+
+msgid "Xahiş edirik düzgün doğrulama kodu daxil edin"
+msgstr "Пожалуйста, введите правильный код подтверждения"
+
+msgid "SMS kodu göndərmə xətası:"
+msgstr "Ошибка отправки SMS-кода:"
+
+msgid "Doğrulama kodu xətası:"
+msgstr "Ошибка кода подтверждения:"
+
+msgid "Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin"
+msgstr "Аутентификация Firebase не загрузилась, пожалуйста, обновите страницу"
+
+# Register page
+msgid "Qeydiyyat"
+msgstr "Регистрация"
+
+msgid "Hesab yaradın"
+msgstr "Создать аккаунт"
+
+msgid "Tam ad"
+msgstr "Полное имя"
+
+msgid "Tam adınız"
+msgstr "Ваше полное имя"
+
+msgid "Yaş"
+msgstr "Возраст"
+
+msgid "Yaşınız"
+msgstr "Ваш возраст"
+
+msgid "Cins"
+msgstr "Пол"
+
+msgid "Kişi"
+msgstr "Мужской"
+
+msgid "Qadın"
+msgstr "Женский"
+
+msgid "Digər"
+msgstr "Другой"
+
+msgid "Kodu doğrula və qeydiyyatdan keç"
+msgstr "Подтвердить код и зарегистрироваться"
+
+msgid "Artıq hesabınız var?"
+msgstr "Уже есть аккаунт?"
+
+msgid "Daxil olun"
+msgstr "Войти"
+
+# Form messages
+msgid "E-poçt"
+msgstr "Электронная почта"
+
+msgid "E-poçt ünvanı"
+msgstr "Адрес электронной почты"
+
+msgid "Şifrə"
+msgstr "Пароль"
+
+msgid "+994501234567"
+msgstr "+994501234567"
+
+# Success messages
+msgid "Uğurla daxil oldunuz!"
+msgstr "Вы успешно вошли в систему!"
+
+msgid "Yanlış e-poçt və ya şifrə."
+msgstr "Неверный адрес электронной почты или пароль."
+
+msgid "Hesabınız yaradıldı! İndi daxil ola bilərsiniz."
+msgstr "Ваш аккаунт создан! Теперь вы можете войти."
+
+msgid "Token təqdim edilməyib"
+msgstr "Не предоставлен токен"
+
+msgid "İstifadəçi yaradıla bilmədi"
+msgstr "Не удалось создать пользователя"
