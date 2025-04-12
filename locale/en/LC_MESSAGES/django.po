@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Holovera 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-12 20:00+0400\n"
+"PO-Revision-Date: 2025-04-12 20:00+0400\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: English <en@example.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Login page
+msgid "Login"
+msgstr "Login"
+
+msgid "Hesabınıza daxil olun"
+msgstr "Login to your account"
+
+msgid "Telefon nömrəsi"
+msgstr "Phone number"
+
+msgid "Doğrulama kodu"
+msgstr "Verification code"
+
+msgid "SMS ilə gələn kod"
+msgstr "SMS verification code"
+
+msgid "Məni xatırla"
+msgstr "Remember me"
+
+msgid "Nömrənizi unutmusunuz?"
+msgstr "Forgot your number?"
+
+msgid "SMS kodu göndər"
+msgstr "Send SMS code"
+
+msgid "Kodu doğrula və daxil ol"
+msgstr "Verify code and login"
+
+msgid "Hesabınız yoxdur?"
+msgstr "Don't have an account?"
+
+msgid "Qeydiyyatdan keçin"
+msgstr "Register"
+
+msgid "Xahiş edirik düzgün telefon nömrəsi daxil edin"
+msgstr "Please enter a valid phone number"
+
+msgid "Xahiş edirik düzgün doğrulama kodu daxil edin"
+msgstr "Please enter a valid verification code"
+
+msgid "SMS kodu göndərmə xətası:"
+msgstr "SMS code sending error:"
+
+msgid "Doğrulama kodu xətası:"
+msgstr "Verification code error:"
+
+msgid "Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin"
+msgstr "Firebase authentication could not be loaded, please refresh the page"
+
+# Register page
+msgid "Qeydiyyat"
+msgstr "Registration"
+
+msgid "Hesab yaradın"
+msgstr "Create an account"
+
+msgid "Tam ad"
+msgstr "Full name"
+
+msgid "Tam adınız"
+msgstr "Your full name"
+
+msgid "Yaş"
+msgstr "Age"
+
+msgid "Yaşınız"
+msgstr "Your age"
+
+msgid "Cins"
+msgstr "Gender"
+
+msgid "Kişi"
+msgstr "Male"
+
+msgid "Qadın"
+msgstr "Female"
+
+msgid "Digər"
+msgstr "Other"
+
+msgid "Kodu doğrula və qeydiyyatdan keç"
+msgstr "Verify code and register"
+
+msgid "Artıq hesabınız var?"
+msgstr "Already have an account?"
+
+msgid "Daxil olun"
+msgstr "Login"
+
+# Form messages
+msgid "E-poçt"
+msgstr "Email"
+
+msgid "E-poçt ünvanı"
+msgstr "Email address"
+
+msgid "Şifrə"
+msgstr "Password"
+
+msgid "+994501234567"
+msgstr "+994501234567"
+
+# Success messages
+msgid "Uğurla daxil oldunuz!"
+msgstr "Successfully logged in!"
+
+msgid "Yanlış e-poçt və ya şifrə."
+msgstr "Incorrect email or password."
+
+msgid "Hesabınız yaradıldı! İndi daxil ola bilərsiniz."
+msgstr "Your account has been created! You can now login."
+
+msgid "Token təqdim edilməyib"
+msgstr "No token provided"
+
+msgid "İstifadəçi yaradıla bilmədi"
+msgstr "User could not be created"

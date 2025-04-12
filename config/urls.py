@@ -11,7 +11,7 @@ urlpatterns = [
     # Non-i18n patterns
     path('i18n/', include('django.conf.urls.i18n')),
     # Default redirect to login
-    path('', RedirectView.as_view(pattern_name='login', permanent=False)),
+    path('', RedirectView.as_view(url='/az/accounts/login/', permanent=False)),
 ]
 
 # i18n patterns - tərcümə ediləcək URL patternləri
@@ -19,7 +19,7 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('accounts/', include('apps.accounts.urls')),
     path('home/', HomeView.as_view(), name='home'),
-    prefix_default_language=False
+    prefix_default_language=True  # Bu True olmalıdır
 )
 
 if settings.DEBUG:

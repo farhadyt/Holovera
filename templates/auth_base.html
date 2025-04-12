@@ -32,35 +32,35 @@
             </div>
             
             <div class="auth-controls">
-                <div class="language-dropdown">
-                    <button class="lang-btn">
-                        <i class="fas fa-globe"></i>
-                        <span class="current-lang">
-                            {% get_current_language as CURRENT_LANGUAGE %}
-                            {% for lang_code, lang_name in LANGUAGES %}
-                                {% if lang_code == CURRENT_LANGUAGE %}
-                                    <span class="lang-flag flag-{{ lang_code }}"></span>
-                                    {{ lang_name }}
-                                {% endif %}
-                            {% endfor %}
-                        </span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="language-options">
-                        <form action="{% url 'set_language' %}" method="post" class="language-form">
-                            {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ request.path }}">
-                            {% get_available_languages as LANGUAGES %}
-                            {% get_current_language as CURRENT_LANGUAGE %}
-                            {% for lang_code, lang_name in LANGUAGES %}
-                            <button type="submit" name="language" value="{{ lang_code }}" class="lang-option {% if lang_code == CURRENT_LANGUAGE %}active{% endif %}">
-                                <span class="lang-flag flag-{{ lang_code }}"></span>
-                                <span class="lang-name">{{ lang_name }}</span>
-                            </button>
-                            {% endfor %}
-                        </form>
-                    </div>
-                </div>
+<!-- Dil seçimi dropdown -->
+<!-- Dil seçimi hissəsi - dəyişdirilmiş versiya -->
+<div class="language-dropdown">
+    <button class="lang-btn">
+        <i class="fas fa-globe"></i>
+        <span class="current-lang">
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% for lang_code, lang_name in LANGUAGES %}
+                {% if lang_code == CURRENT_LANGUAGE %}
+                    <span class="lang-flag flag-{{ lang_code }}"></span>
+                    {{ lang_name }}
+                {% endif %}
+            {% endfor %}
+        </span>
+        <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="language-options">
+        {% get_available_languages as LANGUAGES %}
+        {% get_current_language as CURRENT_LANGUAGE %}
+        {% for lang_code, lang_name in LANGUAGES %}
+            <a href="/{{ lang_code }}{{ request.path|slice:'3:' }}" 
+               class="lang-option {% if lang_code == CURRENT_LANGUAGE %}active{% endif %}"
+               data-lang="{{ lang_code }}">
+                <span class="lang-flag flag-{{ lang_code }}"></span>
+                <span class="lang-name">{{ lang_name }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</div>
                 
                 <a href="#" class="icon-btn search-btn">
                     <i class="fas fa-search"></i>

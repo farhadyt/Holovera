@@ -4,9 +4,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import FormView, CreateView, View
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _  # Tərcümə üçün
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.http import JsonResponse
 import json
 
 from .forms import CustomLoginForm, CustomRegistrationForm
@@ -87,14 +88,14 @@ class VerifyFirebaseTokenView(View):
             id_token = data.get('idToken')
             
             if not id_token:
-                return JsonResponse({'success': False, 'error': 'No token provided'}, status=400)
+                return JsonResponse({'success': False, 'error': _('Token təqdim edilməyib')}, status=400)
             
             # Firebase integration işləmirsə geçici olarak deaktive edirik
             firebase_user = {'uid': 'test', 'phone_number': data.get('phone_number')}
             user = self.get_or_create_user(firebase_user)
             
             if not user:
-                return JsonResponse({'success': False, 'error': 'Could not create user'}, status=400)
+                return JsonResponse({'success': False, 'error': _('İstifadəçi yaradıla bilmədi')}, status=400)
             
             # User-i login et
             login(request, user)

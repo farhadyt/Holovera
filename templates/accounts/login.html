@@ -1,6 +1,6 @@
 {% extends 'auth_base.html' %}
 {% load static %}
-{% load i18n %}
+{% load i18n %}  <!-- Tərcümə funksiyalarını yükləyirik -->
 
 {% block title %}{% trans "Login" %} - Holovera{% endblock %}
 
@@ -58,104 +58,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-<script>
-    // Firebase telefon autentifikasiyasını quraşdıraq
-    document.addEventListener('DOMContentLoaded', function() {
-        // Firebase quraşdırması
-        if (typeof firebase !== 'undefined' && firebase.auth) {
-            console.log("Firebase telefon autentifikasiyası hazırlanır");
-            
-            let verificationId = null;
-            
-            // Telefon nömrəsinə kod göndərmə
-            document.getElementById('send-code-btn').addEventListener('click', function() {
-                const phoneNumber = document.getElementById('id_phone_number').value;
-                
-                if (!phoneNumber || phoneNumber.length < 10) {
-                    alert("{% trans 'Xahiş edirik düzgün telefon nömrəsi daxil edin' %}");
-                    return;
-                }
-                
-                // reCAPTCHA mühitini təyin et
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-code-btn', {
-                    'size': 'invisible',
-                    'callback': function(response) {
-                        // reCAPTCHA doğrulandı
-                        console.log("reCAPTCHA doğrulandı");
-                    }
-                });
-                
-                // Telefon nömrəsinə kod göndər
-                firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-                    .then(function(confirmationResult) {
-                        // SMS göndərildi
-                        console.log("SMS kodu göndərildi");
-                        window.confirmationResult = confirmationResult;
-                        verificationId = confirmationResult.verificationId;
-                        
-                        // Kod sahəsini və doğrulama düyməsini göstər
-                        document.getElementById('verification-code-container').style.display = 'block';
-                        document.getElementById('verify-code-btn').style.display = 'block';
-                        document.getElementById('send-code-btn').style.display = 'none';
-                        
-                        // Telefon sahəsini deaktiv et
-                        document.getElementById('id_phone_number').disabled = true;
-                    })
-                    .catch(function(error) {
-                        console.error("SMS göndərmə xətası:", error);
-                        alert("SMS kodu göndərmə xətası: " + error.message);
-                        
-                        // reCAPTCHA'nı sıfırla
-                        window.recaptchaVerifier.render().then(function(widgetId) {
-                            grecaptcha.reset(widgetId);
-                        });
-                    });
-            });
-            
-            // Kodu doğrulama və giriş
-            document.getElementById('verify-code-btn').addEventListener('click', function() {
-                const code = document.getElementById('id_verification_code').value;
-                
-                if (!code || code.length < 4) {
-                    alert("{% trans 'Xahiş edirik düzgün doğrulama kodu daxil edin' %}");
-                    return;
-                }
-                
-                // Doğrulama kodunu təsdiqlə
-                window.confirmationResult.confirm(code)
-                    .then(function(result) {
-                        // Doğrulama uğurlu
-                        console.log("Telefon nömrəsi doğrulandı!");
-                        const user = result.user;
-                        
-                        // Django servere telefon doğrulamasını göndər
-                        const form = document.getElementById('login-form');
-                        
-                        // Firebase UID-ni gizli sahə kimi əlavə et
-                        const uidField = document.createElement('input');
-                        uidField.type = 'hidden';
-                        uidField.name = 'firebase_uid';
-                        uidField.value = user.uid;
-                        form.appendChild(uidField);
-                        
-                        // Formu göndər
-                        form.submit();
-                    })
-                    .catch(function(error) {
-                        console.error("Doğrulama kodu xətası:", error);
-                        alert("Doğrulama kodu xətası: " + error.message);
-                    });
-            });
-        } else {
-            console.error("Firebase auth yüklənmədi");
-            alert("Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin");
-        }
-    });
-</script>
 {% endblock %}

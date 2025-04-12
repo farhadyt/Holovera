@@ -35,21 +35,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Language dropdown
+    // Language dropdown - Təkmilləşdirilmiş versiya
     const langBtn = document.querySelector('.lang-btn');
     const langOptions = document.querySelector('.language-options');
     
     if (langBtn && langOptions) {
+        // Drop-down toggle funksionallığı
         langBtn.addEventListener('click', function(e) {
             e.preventDefault();
             langOptions.classList.toggle('show');
         });
         
-        // Close dropdown when clicking outside
+        // Drop-down bağlama
         document.addEventListener('click', function(e) {
             if (!langBtn.contains(e.target) && !langOptions.contains(e.target)) {
                 langOptions.classList.remove('show');
             }
+        });
+        
+        // Dil keçidi linkləri üçün event dinləyicilər
+        const languageLinks = document.querySelectorAll('.language-options a.lang-option');
+        languageLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // URL-i aşkarlayırıq
+                const currentPath = window.location.pathname;
+                // İlk "/" simvoldan sonra ikinci "/" simvoluna qədər (dil kodu)
+                const pathParts = currentPath.split('/');
+                if (pathParts.length > 2) {
+                    const langCode = this.getAttribute('data-lang');
+                    if (langCode) {
+                        // Sadəcə dil kodunu dəyişirik, qalan yol eyni qalır
+                        pathParts[1] = langCode; 
+                        const newUrl = pathParts.join('/');
+                        window.location.href = newUrl;
+                        e.preventDefault(); // Default davranışı dayandır
+                    }
+                }
+            });
         });
     }
     

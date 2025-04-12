@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Holovera 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-12 20:00+0400\n"
+"PO-Revision-Date: 2025-04-12 20:00+0400\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: Azerbaijani <az@example.com>\n"
+"Language: az\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Login page (Bu dil default olduğu üçün tərcümələrə ehtiyac yoxdur, mesajlar birbaşa Azərbaycancadır)
+msgid "Login"
+msgstr "Giriş"
+
+msgid "Hesabınıza daxil olun"
+msgstr "Hesabınıza daxil olun"
+
+msgid "Telefon nömrəsi"
+msgstr "Telefon nömrəsi"
+
+msgid "Doğrulama kodu"
+msgstr "Doğrulama kodu"
+
+msgid "SMS ilə gələn kod"
+msgstr "SMS ilə gələn kod"
+
+msgid "Məni xatırla"
+msgstr "Məni xatırla"
+
+msgid "Nömrənizi unutmusunuz?"
+msgstr "Nömrənizi unutmusunuz?"
+
+msgid "SMS kodu göndər"
+msgstr "SMS kodu göndər"
+
+msgid "Kodu doğrula və daxil ol"
+msgstr "Kodu doğrula və daxil ol"
+
+msgid "Hesabınız yoxdur?"
+msgstr "Hesabınız yoxdur?"
+
+msgid "Qeydiyyatdan keçin"
+msgstr "Qeydiyyatdan keçin"
+
+msgid "Xahiş edirik düzgün telefon nömrəsi daxil edin"
+msgstr "Xahiş edirik düzgün telefon nömrəsi daxil edin"
+
+msgid "Xahiş edirik düzgün doğrulama kodu daxil edin"
+msgstr "Xahiş edirik düzgün doğrulama kodu daxil edin"
+
+msgid "SMS kodu göndərmə xətası:"
+msgstr "SMS kodu göndərmə xətası:"
+
+msgid "Doğrulama kodu xətası:"
+msgstr "Doğrulama kodu xətası:"
+
+msgid "Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin"
+msgstr "Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin"
+
+# Register page
+msgid "Qeydiyyat"
+msgstr "Qeydiyyat"
+
+msgid "Hesab yaradın"
+msgstr "Hesab yaradın"
+
+msgid "Tam ad"
+msgstr "Tam ad"
+
+msgid "Tam adınız"
+msgstr "Tam adınız"
+
+msgid "Yaş"
+msgstr "Yaş"
+
+msgid "Yaşınız"
+msgstr "Yaşınız"
+
+msgid "Cins"
+msgstr "Cins"
+
+msgid "Kişi"
+msgstr "Kişi"
+
+msgid "Qadın"
+msgstr "Qadın"
+
+msgid "Digər"
+msgstr "Digər"
+
+msgid "Kodu doğrula və qeydiyyatdan keç"
+msgstr "Kodu doğrula və qeydiyyatdan keç"
+
+msgid "Artıq hesabınız var?"
+msgstr "Artıq hesabınız var?"
+
+msgid "Daxil olun"
+msgstr "Daxil olun"
+
+# Form messages
+msgid "E-poçt"
+msgstr "E-poçt"
+
+msgid "E-poçt ünvanı"
+msgstr "E-poçt ünvanı"
+
+msgid "Şifrə"
+msgstr "Şifrə"
+
+msgid "+994501234567"
+msgstr "+994501234567"
+
+# Success messages
+msgid "Uğurla daxil oldunuz!"
+msgstr "Uğurla daxil oldunuz!"
+
+msgid "Yanlış e-poçt və ya şifrə."
+msgstr "Yanlış e-poçt və ya şifrə."
+
+msgid "Hesabınız yaradıldı! İndi daxil ola bilərsiniz."
+msgstr "Hesabınız yaradıldı! İndi daxil ola bilərsiniz."
+
+msgid "Token təqdim edilməyib"
+msgstr "Token təqdim edilməyib"
+
+msgid "İstifadəçi yaradıla bilmədi"
+msgstr "İstifadəçi yaradıla bilmədi"
