@@ -1,0 +1,396 @@
+/* Ana konteyner stil */
+.carousel {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    margin-top: -50px; /* Header'dan əvvələ keçid */
+}
+
+/* Ana video elementləri */
+.carousel .list {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    z-index: 1;
+}
+
+.carousel .list .item {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: right;
+    z-index: 1;
+    transition: 0.5s ease-in-out;
+}
+
+.carousel .list .item .main-video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* İlk itemi aktiv et */
+.carousel .list .item:nth-child(1) {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+/* Kontent stili */
+.carousel .list .item .content {
+    position: absolute;
+    top: 20%;
+    width: 1140px;
+    max-width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    padding-right: 30%;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 5px 15px black;
+}
+
+.carousel .list .item .content .author {
+    font-size: 1.2em;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(50px);
+    animation-name: showContent;
+    animation-duration: 0.8s;
+    animation-delay: 0.2s;
+    animation-fill-mode: forwards;
+}
+
+.carousel .list .item .content .title {
+    font-size: 5em;
+    font-weight: bold;
+    line-height: 1.3em;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(50px);
+    animation-name: showContent;
+    animation-duration: 0.8s;
+    animation-delay: 0.4s;
+    animation-fill-mode: forwards;
+}
+
+.carousel .list .item .content .topic {
+    color: #FFA500;
+}
+
+.carousel .list .item .content .des {
+    font-size: 1.15em;
+    line-height: 1.6em;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(50px);
+    animation-name: showContent;
+    animation-duration: 0.8s;
+    animation-delay: 0.6s;
+    animation-fill-mode: forwards;
+}
+
+.carousel .list .item .content .buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 130px);
+    grid-template-rows: 40px;
+    gap: 5px;
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateY(50px);
+    animation-name: showContent;
+    animation-duration: 0.8s;
+    animation-delay: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+.carousel .list .item .content .buttons button {
+    border: none;
+    background-color: white;
+    padding: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.carousel .list .item .content .buttons button:nth-child(2) {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.carousel .list .item .content .buttons button:hover {
+    opacity: 0.8;
+}
+
+/* Kiçik önizləmə stili */
+.carousel .thumbnail {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    width: max-content;
+    z-index: 100;
+    display: flex;
+    gap: 20px;
+}
+
+.carousel .thumbnail .item {
+    width: 150px;
+    height: 220px;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: 0.5s;
+    cursor: pointer;
+    opacity: 0.6;
+    border: 2px solid transparent;
+}
+
+.carousel .thumbnail .item:hover {
+    opacity: 1;
+}
+
+.carousel .thumbnail .item.active {
+    opacity: 1;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.5);
+}
+
+.carousel .thumbnail .item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel .thumbnail .item .content {
+    position: absolute;
+    inset: auto 10px 10px 10px;
+    color: white;
+    font-size: 0.8em;
+    text-shadow: 0 2px 5px black;
+}
+
+.carousel .thumbnail .item .content .title {
+    font-weight: bold;
+}
+
+/* Düymələr stili */
+.carousel .arrows {
+    position: absolute;
+    top: 80%;
+    right: 52%;
+    width: 300px;
+    max-width: 30%;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.carousel .arrows button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: none;
+    font-family: monospace;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.carousel .arrows button:hover {
+    background-color: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+}
+
+/* Zaman çubuğu stili */
+.carousel .time {
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background-color: #FFA500;
+    box-shadow: 0 0 10px #FFA500;
+}
+
+/* Animasiyalar */
+@keyframes showContent {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+@keyframes timeRunning {
+    to {
+        width: 0;
+    }
+}
+
+/* "Next" düyməsi üçün effekt */
+.carousel.next .list .item:nth-child(1) .main-video {
+    width: 150px;
+    height: 220px;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 10px;
+    animation-name: showImage;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes showImage {
+    to {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        border-radius: 0;
+    }
+}
+
+.carousel.next .thumbnail {
+    transform: translateX(-150px);
+    animation-name: returnThumbnail;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes returnThumbnail {
+    to {
+        transform: translateX(0);
+    }
+}
+
+.carousel.next .thumbnail .item:nth-child(5) {
+    width: 0;
+    overflow: hidden;
+    animation-name: showThumbnail;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes showThumbnail {
+    to {
+        width: 150px;
+    }
+}
+
+/* "Prev" düyməsi üçün effekt */
+.carousel.prev .list .item:nth-child(2) .main-video {
+    width: 100%;
+    height: 100%;
+    animation-name: outImage;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes outImage {
+    to {
+        width: 150px;
+        height: 220px;
+        bottom: 50px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        border-radius: 10px;
+    }
+}
+
+.carousel.prev .thumbnail .item:nth-child(1) {
+    width: 0;
+    overflow: hidden;
+    animation-name: showThumbnail;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+.carousel.prev .list .item:nth-child(2) .content .author,
+.carousel.prev .list .item:nth-child(2) .content .title,
+.carousel.prev .list .item:nth-child(2) .content .des,
+.carousel.prev .list .item:nth-child(2) .content .buttons {
+    animation-name: outContent;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes outContent {
+    to {
+        opacity: 0;
+        transform: translateY(150px);
+        filter: blur(20px);
+    }
+}
+
+/* Animasiya zamanı düymələri deaktiv et */
+.carousel.next .arrows button,
+.carousel.prev .arrows button {
+    pointer-events: none;
+}
+
+/* Responsiv dizayn */
+@media screen and (max-width: 767px) {
+    .carousel .list .item .content {
+        padding-right: 0;
+    }
+    
+    .carousel .list .item .content .title {
+        font-size: 2.5em;
+    }
+    
+    .carousel .list .item .content .buttons {
+        grid-template-columns: repeat(2, 100px);
+    }
+    
+    .carousel .thumbnail {
+        justify-content: center;
+        transform: translateX(0) !important;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .carousel .thumbnail .item {
+        width: 100px;
+        height: 150px;
+    }
+    
+    .carousel .arrows {
+        right: 20px;
+        max-width: 80px;
+        justify-content: flex-end;
+    }
+    
+    @keyframes outImage {
+        to {
+            width: 100px;
+            height: 150px;
+        }
+    }
+    
+    .carousel.next .list .item:nth-child(1) .main-video {
+        width: 100px;
+        height: 150px;
+    }
+    
+    @keyframes showThumbnail {
+        to {
+            width: 100px;
+        }
+    }
+}

@@ -5,13 +5,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
-from apps.core.views import HomeView
+from apps.core.views import HomeView, LandingPageView  # LandingPageView əlavə olundu
 
 urlpatterns = [
     # Non-i18n patterns
     path('i18n/', include('django.conf.urls.i18n')),
-    # Default redirect to login
-    path('', RedirectView.as_view(url='/az/accounts/login/', permanent=False)),
+    # Default redirect to landing page
+    path('', RedirectView.as_view(url='/az/landing/', permanent=False)),
 ]
 
 # i18n patterns - tərcümə ediləcək URL patternləri
@@ -19,7 +19,8 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('accounts/', include('apps.accounts.urls')),
     path('home/', HomeView.as_view(), name='home'),
-    prefix_default_language=True  # Bu True olmalıdır
+    path('landing/', LandingPageView.as_view(), name='landing'),  # Yeni URL əlavə olundu
+    prefix_default_language=True
 )
 
 if settings.DEBUG:
