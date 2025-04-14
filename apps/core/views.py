@@ -11,3 +11,11 @@ class HomeView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = _("Holovera - 3D Buket Dizayn Platforması")
         return context
+    
+class LandingPageView(TemplateView):
+    template_name = 'landing_page.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("Holovera - 3D Buket Dizayn Platforması")
+        return context
