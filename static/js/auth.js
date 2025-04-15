@@ -35,6 +35,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Add scroll effect to navigation
+    const nav = document.querySelector('.integrated-nav');
+    
+    if (nav) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    }
+    
     // Language dropdown - Təkmilləşdirilmiş versiya
     const langBtn = document.querySelector('.lang-btn');
     const langOptions = document.querySelector('.language-options');
