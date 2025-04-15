@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<!-- Loading Overlay -->
+<!-- Loading Overlay - SADECE BİR TANE OLACAK -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <div class="loading-text">Holovera yüklənir...</div>
@@ -18,12 +18,12 @@
 <div class="carousel">
     <!-- Ana video və kontentlər -->
     <div class="list">
-        <!-- 1-ci element -->
+        <!-- 1-ci element - data-index will be added by JS -->
         <div class="item">
             <video class="main-video" muted playsinline>
                 <source src="{% static 'videos/video1.mp4' %}" type="video/mp4">
             </video>
-            <div class="content">
+            <!-- <div class="content">
                 <div class="author">{% trans "Sənətkarlar üçün" %}</div>
                 <div class="title">{% trans "Əl işlərinizi" %} <span class="topic">{% trans "dünyaya təqdim edin" %}</span></div>
                 <div class="des">{% trans "Sən artıq mağaza axtarmalı deyilsən! Sadəcə mobil telefonunla məhsulunun 2D şəklini çək və platformaya yüklə. Holovera sistemi bu şəkli 3D formatına avtomatik çevirir və dünya bazarlarına çıxarır." %}</div>
@@ -31,15 +31,16 @@
                     <button>{% trans "Başla" %}</button>
                     <button>{% trans "Daha Ətraflı" %}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
         
+        <!-- Diğer video öğeleri -->
         <!-- 2-ci element -->
         <div class="item">
             <video class="main-video" muted playsinline>
                 <source src="{% static 'videos/video2.mp4' %}" type="video/mp4">
             </video>
-            <div class="content">
+            <!-- <div class="content">
                 <div class="author">{% trans "Yaradıcılar üçün" %}</div>
                 <div class="title">{% trans "İstedadınla" %} <span class="topic">{% trans "qazanc əldə et" %}</span></div>
                 <div class="des">{% trans "Sən Holovera-nın ruhusa! Mövcud məhsulları seçərək onların kombinasiyasından unikal hədiyyə dəstləri hazırlaya bilərsən. Hər bir dizayn sənin imzan altında satışa çıxarılır və platforma sənin dizayner haqqını avtomatik qiymətə əlavə edir." %}</div>
@@ -47,7 +48,7 @@
                     <button>{% trans "Başla" %}</button>
                     <button>{% trans "Daha Ətraflı" %}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
         
         <!-- 3-cü element -->
@@ -55,7 +56,7 @@
             <video class="main-video" muted playsinline>
                 <source src="{% static 'videos/video3.mp4' %}" type="video/mp4">
             </video>
-            <div class="content">
+            <!-- <div class="content">
                 <div class="author">{% trans "Hədiyyə sevənlər üçün" %}</div>
                 <div class="title">{% trans "Hissini" %} <span class="topic">{% trans "əlavə et" %}</span></div>
                 <div class="des">{% trans "Sən sadəcə hədiyyə almırsan – sən xatirə yaradırsan. Platformaya daxil olaraq hazır dizayn edilmiş hədiyyələri bir kliklə sifariş edə bilərsən. İstəyirsənsə, özün interaktiv 3D konstruktorla hədiyyəni sıfırdan yarada bilərsən. Özəl olaraq gizli QR kod əlavə et və içərisinə mətn, səs və ya video mesaj yerləşdir." %}</div>
@@ -63,7 +64,7 @@
                     <button>{% trans "Başla" %}</button>
                     <button>{% trans "Daha Ətraflı" %}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
         
         <!-- 4-cü element -->
@@ -71,7 +72,7 @@
             <video class="main-video" muted playsinline>
                 <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
             </video>
-            <div class="content">
+            <!-- <div class="content">
                 <div class="author">{% trans "İlham axtaranlar üçün" %}</div>
                 <div class="title">{% trans "İlhamın" %} <span class="topic">{% trans "qaynağı ol" %}</span></div>
                 <div class="des">{% trans "Holovera ilə yeni dizayn trendlərini kəşf edin, başqalarının yaratdığı unikal işləri izləyin və öz yaradıcılığınızı artırın. Hər yeni dizayn və hər yeni kompozisiya ilə dünyaya töhfə verin və başqalarına ilham qaynağı olun." %}</div>
@@ -79,7 +80,7 @@
                     <button>{% trans "Başla" %}</button>
                     <button>{% trans "Daha Ətraflı" %}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
         
         <!-- 5-ci element -->
@@ -87,7 +88,7 @@
             <video class="main-video" muted playsinline>
                 <source src="{% static 'videos/video5.mp4' %}" type="video/mp4">
             </video>
-            <div class="content">
+            <!-- <div class="content">
                 <div class="author">{% trans "Biznes tərəfdaşları üçün" %}</div>
                 <div class="title">{% trans "Biznesinizi" %} <span class="topic">{% trans "böyüdün" %}</span></div>
                 <div class="des">{% trans "Holovera ilə biznesinizi böyüdün, yeni imkanlar qazanın və satışlarınızı artırın. Məhsullarınızı 3D formatında təqdim etməklə müştərilərinizə unudulmaz alış-veriş təcrübəsi yaşadın və onların loyallığını qazanın." %}</div>
@@ -95,7 +96,7 @@
                     <button>{% trans "Başla" %}</button>
                     <button>{% trans "Daha Ətraflı" %}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     

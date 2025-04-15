@@ -1,3 +1,4 @@
+// Advanced video slider with targeted thumbnail animations
 document.addEventListener('DOMContentLoaded', function() {
     // Element seçiciləri
     const carousel = document.querySelector('.carousel');
@@ -5,90 +6,235 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevBtn = document.querySelector('#prev');
     const timeRunning = 7000; // 7 saniyə avtomatik keçid
     const timeAutoNext = 7000; // 7 saniyə avtomatik keçid
+    const loadingOverlay = document.getElementById('loadingOverlay'); // Ana loading overlay
     
-    // İlk video elementini aktivləşdirin
+    // Initialize video indices for targeted animations
+    function initializeVideoIndices() {
+        const items = document.querySelectorAll('.carousel .list .item');
+        items.forEach((item, index) => {
+            item.setAttribute('data-index', index % 5); // Cycle through 0-4 for the 5 positions
+        });
+    }
+    
+    // Call once at start
+    initializeVideoIndices();
+    
+    // Preload all videos to ensure smooth transitions
+    const preloadVideos = function() {
+        const videos = document.querySelectorAll('.carousel video');
+        videos.forEach(video => {
+            video.setAttribute('playsinline', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('preload', 'auto');
+            video.muted = true;
+            
+            video.addEventListener('loadeddata', function() {
+                this.classList.add('loaded');
+            });
+            
+            video.load();
+        });
+    };
+    
+    // Immediate preload
+    preloadVideos();
+    
+    // Hide loading overlay after all needed resources are loaded
+    function hideLoading() {
+        if (loadingOverlay) {
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+            }, 500);
+        }
+    }
+
+    // Initialize first video
     const firstVideo = document.querySelector('.list .item:first-child .main-video');
     if (firstVideo) {
         firstVideo.muted = true;
-        firstVideo.play();
+        firstVideo.play().catch(e => console.log('Auto-play prevented:', e));
+        
+        // Hide loading when first video is ready
+        firstVideo.addEventListener('canplay', function() {
+            hideLoading();
+        });
+        
+        // Backup timeout in case video loading takes too long
+        setTimeout(hideLoading, 4000);
     }
     
-    // Kiçik videolar üçün loop
+    // Initialize thumbnail videos
     const thumbnailVideos = document.querySelectorAll('.thumbnail .item video');
     thumbnailVideos.forEach(video => {
         video.muted = true;
-        video.play();
+        video.play().catch(e => {}); // Ignore errors for thumbnail videos
     });
     
-    // İlk thumbnail'i aktiv et
+    // Activate first thumbnail
     const thumbnailItems = document.querySelectorAll('.thumbnail .item');
     if (thumbnailItems.length > 0) {
         thumbnailItems[0].classList.add('active');
     }
     
-    // Avtomatik slider başlatma
+    // Auto slider setup
     let runTimeOut;
     let runNextAuto = setTimeout(() => {
         nextBtn.click();
     }, timeAutoNext);
     
-    // Slider funksiyası
-    function showSlider(type) {
-        // Mövcud aktivləşdirilmiş elementi aşkar etmək
-        const sliderItems = document.querySelectorAll('.carousel .list .item');
-        const thumbnailItems = document.querySelectorAll('.carousel .thumbnail .item');
+    // Go to target thumbnail position
+    function animateToThumbnail(video, index) {
+        // Add animating-out class which has targeted positions
+        video.classList.add('animating-out');
+    }
+    
+    // Come from target thumbnail position
+    function animateFromThumbnail(video, index) {
+        // First position at thumbnail
+        video.classList.add('animating-in');
         
-        // Current active video elementini dayandır
-        const currentActiveVideo = document.querySelector('.list .item:nth-child(1) .main-video');
-        if (currentActiveVideo) {
-            currentActiveVideo.pause();
+        // Force browser to recognize the initial position
+        setTimeout(() => {
+            // Then animate to full screen
+            video.classList.add('animate');
+        }, 50);
+    }
+    
+    // Enhanced slider with targeted animations
+    function showSlider(type) {
+        // If already transitioning, don't stack animations
+        if (carousel.classList.contains('transitioning')) {
+            return;
         }
         
+        // Add transitioning class for UI state
+        carousel.classList.add('transitioning');
+        
+        // Handle transition based on direction
         if (type === 'next') {
-            // İlk elementi son mövqeyə köçürün
-            const firstItem = carousel.querySelector('.list .item:first-child');
-            carousel.querySelector('.list').appendChild(firstItem);
+            // Get current video and its index
+            const currentItem = document.querySelector('.carousel .list .item:nth-child(1)');
+            const currentVideo = currentItem.querySelector('.main-video');
+            const currentIndex = currentItem.getAttribute('data-index');
             
-            // İlk thumbnail'i son mövqeyə köçürün
-            const firstThumbnail = carousel.querySelector('.thumbnail .item:first-child');
-            carousel.querySelector('.thumbnail').appendChild(firstThumbnail);
+            // Get next item that will become active
+            const nextItem = document.querySelector('.carousel .list .item:nth-child(2)');
+            const nextVideo = nextItem.querySelector('.main-video');
+            const nextIndex = nextItem.getAttribute('data-index');
             
-            // Aktiv sinif mənimsədin
-            thumbnailItems.forEach(item => item.classList.remove('active'));
-            carousel.querySelector('.thumbnail .item:first-child').classList.add('active');
+            // Make sure next video is ready
+            nextVideo.currentTime = 0;
+            nextVideo.play().catch(e => {});
             
-            // Animasiya sinfi əlavə edin
-            carousel.classList.add('next');
-        } else {
-            // Son elementi ilk mövqeyə köçürün
+            // Show both items during transition
+            currentItem.style.zIndex = 3;
+            nextItem.style.zIndex = 2;
+            nextItem.style.opacity = 1;
+            
+            // Animate current video to its thumbnail position
+            animateToThumbnail(currentVideo, currentIndex);
+            
+            // After current video shrinks
+            setTimeout(() => {
+                // Position next video at its thumbnail then animate to full screen
+                animateFromThumbnail(nextVideo, nextIndex);
+                
+                // After the animation is done, reset DOM
+                setTimeout(() => {
+                    // Move first item to end
+                    const firstItem = carousel.querySelector('.list .item:first-child');
+                    carousel.querySelector('.list').appendChild(firstItem);
+                    
+                    // Move first thumbnail to end
+                    const firstThumbnail = carousel.querySelector('.thumbnail .item:first-child');
+                    carousel.querySelector('.thumbnail').appendChild(firstThumbnail);
+                    
+                    // Update active thumbnail
+                    thumbnailItems.forEach(item => item.classList.remove('active'));
+                    carousel.querySelector('.thumbnail .item:first-child').classList.add('active');
+                    
+                    // Clean up all animation classes
+                    document.querySelectorAll('.main-video').forEach(video => {
+                        video.classList.remove('animating-out', 'animating-in', 'animate');
+                    });
+                    
+                    // Reset item styles
+                    document.querySelectorAll('.carousel .list .item').forEach(item => {
+                        item.style.zIndex = '';
+                        item.style.opacity = '';
+                    });
+                    
+                    // Remove transition class
+                    carousel.classList.remove('transitioning');
+                    
+                    // Reinitialize indices for the updated order
+                    initializeVideoIndices();
+                    
+                }, 1200); // Match animation duration
+            }, 300); // Small delay to ensure the first animation is visible
+            
+        } else { // Previous
+            // For prev direction, we need to move last item to first position
             const lastItem = carousel.querySelector('.list .item:last-child');
+            const lastVideo = lastItem.querySelector('.main-video');
+            const lastIndex = lastItem.getAttribute('data-index');
+            
+            // First position the last video at its thumbnail position (instantly)
+            animateFromThumbnail(lastVideo, lastIndex);
+            
+            // Move it to first position
             carousel.querySelector('.list').prepend(lastItem);
             
-            // Son thumbnail'i ilk mövqeyə köçürün
+            // Move last thumbnail to first
             const lastThumbnail = carousel.querySelector('.thumbnail .item:last-child');
             carousel.querySelector('.thumbnail').prepend(lastThumbnail);
             
-            // Aktiv sinif mənimsədin
+            // Update active thumbnail
             thumbnailItems.forEach(item => item.classList.remove('active'));
             carousel.querySelector('.thumbnail .item:first-child').classList.add('active');
             
-            // Animasiya sinfi əlavə edin
-            carousel.classList.add('prev');
+            // Make it visible
+            lastItem.style.opacity = 1;
+            lastItem.style.zIndex = 3;
+            
+            // Get the item that was first but is now second
+            const secondItem = carousel.querySelector('.list .item:nth-child(2)');
+            const secondVideo = secondItem.querySelector('.main-video');
+            
+            // Start playing the video
+            lastVideo.currentTime = 0;
+            lastVideo.play().catch(e => {});
+            
+            // Animate from thumbnail to full screen
+            setTimeout(() => {
+                lastVideo.classList.add('animate');
+                
+                // After animation completes
+                setTimeout(() => {
+                    // Clean up all animation classes
+                    document.querySelectorAll('.main-video').forEach(video => {
+                        video.classList.remove('animating-out', 'animating-in', 'animate');
+                    });
+                    
+                    // Reset item styles
+                    document.querySelectorAll('.carousel .list .item').forEach(item => {
+                        item.style.zIndex = '';
+                        item.style.opacity = '';
+                    });
+                    
+                    // End transitioning state
+                    carousel.classList.remove('transitioning');
+                    
+                    // Reinitialize indices
+                    initializeVideoIndices();
+                    
+                }, 1200); // Match animation duration
+            }, 50);
         }
         
-        // İndi aktiv olan yeni video elementini işə salın
-        const newActiveVideo = document.querySelector('.list .item:nth-child(1) .main-video');
-        if (newActiveVideo) {
-            newActiveVideo.currentTime = 0;
-            newActiveVideo.play();
-        }
-        
-        // Geri sayım başlat
+        // Reset timeout
         clearTimeout(runTimeOut);
-        runTimeOut = setTimeout(() => {
-            carousel.classList.remove('next');
-            carousel.classList.remove('prev');
-        }, 3000); // 3 saniyə animasiya müddəti
         
         // Auto next restart
         clearTimeout(runNextAuto);
@@ -96,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nextBtn.click();
         }, timeAutoNext);
         
-        // Zaman çubuğu animasiyası
+        // Time bar animation
         const timeBar = document.querySelector('.carousel .time');
         timeBar.style.width = '100%';
         timeBar.style.transition = 'none';
@@ -107,44 +253,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 50);
     }
     
-    // Next düyməsi hadisəsi
+    // Next button click
     nextBtn.addEventListener('click', function() {
         showSlider('next');
     });
     
-    // Previous düyməsi hadisəsi
+    // Previous button click
     prevBtn.addEventListener('click', function() {
         showSlider('prev');
     });
     
-    // Thumbnail tiklanma hadisəsi 
+    // Thumbnail click handler 
     thumbnailItems.forEach((item, index) => {
         item.addEventListener('click', function() {
-            // Cari aktiv element indeksini al
-            const currentActive = Array.from(thumbnailItems).findIndex(item => item.classList.contains('active'));
+            // Find current active index
+            const currentActive = Array.from(thumbnailItems).findIndex(
+                item => item.classList.contains('active')
+            );
             
-            // İndekslər arası fərqə görə slider istiqamətini təyin et
+            // Calculate clicks needed
             const clicksNeeded = index - currentActive;
             
             if (clicksNeeded > 0) {
-                // Lazım olduğu qədər "next" çağır
+                // Need to go forward
                 for (let i = 0; i < clicksNeeded; i++) {
                     setTimeout(() => {
                         nextBtn.click();
-                    }, i * 100);
+                    }, i * 1500); // Increased delay between transitions
                 }
             } else if (clicksNeeded < 0) {
-                // Lazım olduğu qədər "prev" çağır
+                // Need to go backward
                 for (let i = 0; i < Math.abs(clicksNeeded); i++) {
                     setTimeout(() => {
                         prevBtn.click();
-                    }, i * 100);
+                    }, i * 1500); // Increased delay between transitions
                 }
             }
         });
     });
     
-    // İlk zaman çubuğu animasiyası
+    // Initialize time bar
     const timeBar = document.querySelector('.carousel .time');
     timeBar.style.width = '100%';
     
