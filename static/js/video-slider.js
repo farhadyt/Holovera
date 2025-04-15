@@ -1,303 +1,231 @@
-// Advanced video slider with targeted thumbnail animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Element seçiciləri
+// static/js/video-slider.js
+document.addEventListener('DOMContentLoaded', function () {
     const carousel = document.querySelector('.carousel');
-    const nextBtn = document.querySelector('#next');
-    const prevBtn = document.querySelector('#prev');
-    const timeRunning = 7000; // 7 saniyə avtomatik keçid
-    const timeAutoNext = 7000; // 7 saniyə avtomatik keçid
-    const loadingOverlay = document.getElementById('loadingOverlay'); // Ana loading overlay
-    
-    // Initialize video indices for targeted animations
-    function initializeVideoIndices() {
-        const items = document.querySelectorAll('.carousel .list .item');
-        items.forEach((item, index) => {
-            item.setAttribute('data-index', index % 5); // Cycle through 0-4 for the 5 positions
-        });
+    const list = carousel.querySelector('.list');
+    const items = list.querySelectorAll('.item');
+    const thumbnails = carousel.querySelectorAll('.thumbnail .item');
+    const nextBtn = document.getElementById('next');
+    const prevBtn = document.getElementById('prev');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const timeBar = document.querySelector('.carousel .time');
+
+    const timeRunning = 7000; // Total cycle time
+    const timeAutoNext = 7000;
+    const videoPlaybackRate = 0.6; // Significantly slow down video playback
+    let runNextAuto;
+    let currentIndex = 0;
+    let isInitialized = false;
+
+    // --- Hide loading overlay
+    function hideLoading() {
+        if (loadingOverlay) {
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => loadingOverlay.style.display = 'none', 800);
+        }
     }
-    
-    // Call once at start
-    initializeVideoIndices();
-    
-    // Preload all videos to ensure smooth transitions
-    const preloadVideos = function() {
+
+    // --- Preload videos and track loading progress
+    function preloadVideos(callback) {
         const videos = document.querySelectorAll('.carousel video');
+        let loadedCount = 0;
+
         videos.forEach(video => {
+            // Reset video attributes
             video.setAttribute('playsinline', '');
             video.setAttribute('muted', '');
             video.setAttribute('preload', 'auto');
             video.muted = true;
-            
-            video.addEventListener('loadeddata', function() {
-                this.classList.add('loaded');
+
+            // Apply slow playback rate immediately
+            video.playbackRate = videoPlaybackRate;
+
+            video.addEventListener('loadeddata', () => {
+                loadedCount++;
+                console.log(`Video ${loadedCount} loaded`, video.duration / videoPlaybackRate);
+                if (loadedCount === videos.length) callback();
             });
-            
+
+            video.addEventListener('error', () => {
+                console.warn('Video loading error:', video.src);
+                loadedCount++;
+                if (loadedCount === videos.length) callback();
+            });
+
             video.load();
         });
-    };
-    
-    // Immediate preload
-    preloadVideos();
-    
-    // Hide loading overlay after all needed resources are loaded
-    function hideLoading() {
-        if (loadingOverlay) {
-            loadingOverlay.style.opacity = '0';
-            setTimeout(() => {
-                loadingOverlay.style.display = 'none';
-            }, 500);
+
+        setTimeout(() => {
+            if (loadedCount < videos.length) {
+                console.warn('Timeout: Proceeding with incomplete video loading');
+                callback();
+            }
+        }, 5000);
+    }
+
+    // --- Initialize time bar animation
+    function initTimeBar() {
+        if (timeBar) {
+            // Reset time bar
+            timeBar.style.transition = 'none';
+            timeBar.style.width = '100%';
+            
+            // Trigger reflow
+            timeBar.offsetWidth;
+
+            // Apply transition for reducing width
+            timeBar.style.transition = `width ${timeRunning}ms linear`;
+            timeBar.style.width = '0%';
         }
     }
 
-    // Initialize first video
-    const firstVideo = document.querySelector('.list .item:first-child .main-video');
-    if (firstVideo) {
-        firstVideo.muted = true;
-        firstVideo.play().catch(e => console.log('Auto-play prevented:', e));
-        
-        // Hide loading when first video is ready
-        firstVideo.addEventListener('canplay', function() {
-            hideLoading();
+    // --- Update active thumbnail highlighting
+    function updateActiveThumbnail(index) {
+        thumbnails.forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
         });
-        
-        // Backup timeout in case video loading takes too long
-        setTimeout(hideLoading, 4000);
     }
-    
-    // Initialize thumbnail videos
-    const thumbnailVideos = document.querySelectorAll('.thumbnail .item video');
-    thumbnailVideos.forEach(video => {
-        video.muted = true;
-        video.play().catch(e => {}); // Ignore errors for thumbnail videos
-    });
-    
-    // Activate first thumbnail
-    const thumbnailItems = document.querySelectorAll('.thumbnail .item');
-    if (thumbnailItems.length > 0) {
-        thumbnailItems[0].classList.add('active');
-    }
-    
-    // Auto slider setup
-    let runTimeOut;
-    let runNextAuto = setTimeout(() => {
-        nextBtn.click();
-    }, timeAutoNext);
-    
-    // Go to target thumbnail position
-    function animateToThumbnail(video, index) {
-        // Add animating-out class which has targeted positions
-        video.classList.add('animating-out');
-    }
-    
-    // Come from target thumbnail position
-    function animateFromThumbnail(video, index) {
-        // First position at thumbnail
-        video.classList.add('animating-in');
-        
-        // Force browser to recognize the initial position
-        setTimeout(() => {
-            // Then animate to full screen
-            video.classList.add('animate');
-        }, 50);
-    }
-    
-    // Enhanced slider with targeted animations
-    function showSlider(type) {
-        // If already transitioning, don't stack animations
-        if (carousel.classList.contains('transitioning')) {
-            return;
-        }
-        
-        // Add transitioning class for UI state
-        carousel.classList.add('transitioning');
-        
-        // Handle transition based on direction
-        if (type === 'next') {
-            // Get current video and its index
-            const currentItem = document.querySelector('.carousel .list .item:nth-child(1)');
-            const currentVideo = currentItem.querySelector('.main-video');
-            const currentIndex = currentItem.getAttribute('data-index');
-            
-            // Get next item that will become active
-            const nextItem = document.querySelector('.carousel .list .item:nth-child(2)');
-            const nextVideo = nextItem.querySelector('.main-video');
-            const nextIndex = nextItem.getAttribute('data-index');
-            
-            // Make sure next video is ready
-            nextVideo.currentTime = 0;
-            nextVideo.play().catch(e => {});
-            
-            // Show both items during transition
-            currentItem.style.zIndex = 3;
-            nextItem.style.zIndex = 2;
-            nextItem.style.opacity = 1;
-            
-            // Animate current video to its thumbnail position
-            animateToThumbnail(currentVideo, currentIndex);
-            
-            // After current video shrinks
-            setTimeout(() => {
-                // Position next video at its thumbnail then animate to full screen
-                animateFromThumbnail(nextVideo, nextIndex);
-                
-                // After the animation is done, reset DOM
-                setTimeout(() => {
-                    // Move first item to end
-                    const firstItem = carousel.querySelector('.list .item:first-child');
-                    carousel.querySelector('.list').appendChild(firstItem);
-                    
-                    // Move first thumbnail to end
-                    const firstThumbnail = carousel.querySelector('.thumbnail .item:first-child');
-                    carousel.querySelector('.thumbnail').appendChild(firstThumbnail);
-                    
-                    // Update active thumbnail
-                    thumbnailItems.forEach(item => item.classList.remove('active'));
-                    carousel.querySelector('.thumbnail .item:first-child').classList.add('active');
-                    
-                    // Clean up all animation classes
-                    document.querySelectorAll('.main-video').forEach(video => {
-                        video.classList.remove('animating-out', 'animating-in', 'animate');
-                    });
-                    
-                    // Reset item styles
-                    document.querySelectorAll('.carousel .list .item').forEach(item => {
-                        item.style.zIndex = '';
-                        item.style.opacity = '';
-                    });
-                    
-                    // Remove transition class
-                    carousel.classList.remove('transitioning');
-                    
-                    // Reinitialize indices for the updated order
-                    initializeVideoIndices();
-                    
-                }, 1200); // Match animation duration
-            }, 300); // Small delay to ensure the first animation is visible
-            
-        } else { // Previous
-            // For prev direction, we need to move last item to first position
-            const lastItem = carousel.querySelector('.list .item:last-child');
-            const lastVideo = lastItem.querySelector('.main-video');
-            const lastIndex = lastItem.getAttribute('data-index');
-            
-            // First position the last video at its thumbnail position (instantly)
-            animateFromThumbnail(lastVideo, lastIndex);
-            
-            // Move it to first position
-            carousel.querySelector('.list').prepend(lastItem);
-            
-            // Move last thumbnail to first
-            const lastThumbnail = carousel.querySelector('.thumbnail .item:last-child');
-            carousel.querySelector('.thumbnail').prepend(lastThumbnail);
-            
-            // Update active thumbnail
-            thumbnailItems.forEach(item => item.classList.remove('active'));
-            carousel.querySelector('.thumbnail .item:first-child').classList.add('active');
-            
-            // Make it visible
-            lastItem.style.opacity = 1;
-            lastItem.style.zIndex = 3;
-            
-            // Get the item that was first but is now second
-            const secondItem = carousel.querySelector('.list .item:nth-child(2)');
-            const secondVideo = secondItem.querySelector('.main-video');
-            
-            // Start playing the video
-            lastVideo.currentTime = 0;
-            lastVideo.play().catch(e => {});
-            
-            // Animate from thumbnail to full screen
-            setTimeout(() => {
-                lastVideo.classList.add('animate');
-                
-                // After animation completes
-                setTimeout(() => {
-                    // Clean up all animation classes
-                    document.querySelectorAll('.main-video').forEach(video => {
-                        video.classList.remove('animating-out', 'animating-in', 'animate');
-                    });
-                    
-                    // Reset item styles
-                    document.querySelectorAll('.carousel .list .item').forEach(item => {
-                        item.style.zIndex = '';
-                        item.style.opacity = '';
-                    });
-                    
-                    // End transitioning state
-                    carousel.classList.remove('transitioning');
-                    
-                    // Reinitialize indices
-                    initializeVideoIndices();
-                    
-                }, 1200); // Match animation duration
-            }, 50);
-        }
-        
-        // Reset timeout
-        clearTimeout(runTimeOut);
-        
-        // Auto next restart
-        clearTimeout(runNextAuto);
-        runNextAuto = setTimeout(() => {
-            nextBtn.click();
-        }, timeAutoNext);
-        
-        // Time bar animation
-        const timeBar = document.querySelector('.carousel .time');
-        timeBar.style.width = '100%';
-        timeBar.style.transition = 'none';
-        
-        setTimeout(() => {
-            timeBar.style.width = '0';
-            timeBar.style.transition = `width ${timeRunning}ms linear`;
-        }, 50);
-    }
-    
-    // Next button click
-    nextBtn.addEventListener('click', function() {
-        showSlider('next');
-    });
-    
-    // Previous button click
-    prevBtn.addEventListener('click', function() {
-        showSlider('prev');
-    });
-    
-    // Thumbnail click handler 
-    thumbnailItems.forEach((item, index) => {
-        item.addEventListener('click', function() {
-            // Find current active index
-            const currentActive = Array.from(thumbnailItems).findIndex(
-                item => item.classList.contains('active')
-            );
-            
-            // Calculate clicks needed
-            const clicksNeeded = index - currentActive;
-            
-            if (clicksNeeded > 0) {
-                // Need to go forward
-                for (let i = 0; i < clicksNeeded; i++) {
-                    setTimeout(() => {
-                        nextBtn.click();
-                    }, i * 1500); // Increased delay between transitions
-                }
-            } else if (clicksNeeded < 0) {
-                // Need to go backward
-                for (let i = 0; i < Math.abs(clicksNeeded); i++) {
-                    setTimeout(() => {
-                        prevBtn.click();
-                    }, i * 1500); // Increased delay between transitions
-                }
+
+    // --- Reset all videos (pause and rewind)
+    function resetVideos() {
+        items.forEach(item => {
+            const video = item.querySelector('video');
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+                video.playbackRate = videoPlaybackRate;
             }
         });
-    });
-    
-    // Initialize time bar
-    const timeBar = document.querySelector('.carousel .time');
-    timeBar.style.width = '100%';
-    
+    }
+
+    // --- Transition to selected video index with animations
+// --- Transition to selected video index with animations
+function transitionTo(index) {
+    if (index === currentIndex || carousel.classList.contains('transitioning')) return;
+
+    carousel.classList.add('transitioning');
+
+    const currentItem = items[currentIndex];
+    const nextItem = items[index];
+    const currentVideo = currentItem.querySelector('video');
+    const nextVideo = nextItem.querySelector('video');
+
+    // Reset next video and prepare for transition
+    nextVideo.currentTime = 0;
+    nextVideo.playbackRate = videoPlaybackRate;
+
+    // Start preparing next video early
+    nextItem.style.opacity = '1';
+    nextItem.style.zIndex = '3';
+    nextVideo.classList.add('animating-in');
+
+    // Add transition class to current video
+    currentVideo.classList.add('animating-out');
+
     setTimeout(() => {
-        timeBar.style.width = '0';
-        timeBar.style.transition = `width ${timeRunning}ms linear`;
-    }, 50);
+        // Fully prepare next video
+        nextVideo.classList.add('animate');
+        
+        // Attempt to play next video
+        nextVideo.play().catch(e => console.log('Autoplay prevented:', e));
+    }, 100);
+
+    setTimeout(() => {
+        // Complete transition
+        currentVideo.classList.remove('animating-out');
+        nextVideo.classList.remove('animating-in', 'animate');
+        
+        // Reset current video
+        currentVideo.pause();
+        currentVideo.currentTime = 0;
+        
+        // Update visual states
+        currentItem.style.opacity = '0';
+        currentItem.style.zIndex = '';
+        nextItem.style.zIndex = '2';
+
+        // Update index and UI
+        currentIndex = index;
+        updateActiveThumbnail(index);
+        carousel.classList.remove('transitioning');
+        
+        // Restart time bar and auto-rotation
+        initTimeBar();
+        startAutoRotation();
+    }, 1200);
+}
+
+    // --- Go to next video
+    function showNext() {
+        const nextIndex = (currentIndex + 1) % items.length;
+        transitionTo(nextIndex);
+    }
+
+    // --- Go to previous video
+    function showPrev() {
+        const prevIndex = (currentIndex - 1 + items.length) % items.length;
+        transitionTo(prevIndex);
+    }
+
+    // --- Auto rotate videos every few seconds
+    function startAutoRotation() {
+        clearTimeout(runNextAuto);
+        runNextAuto = setTimeout(() => {
+            if (document.visibilityState === 'visible') {
+                showNext();
+            } else {
+                startAutoRotation(); // Try again later if hidden
+            }
+        }, timeAutoNext);
+    }
+
+    // --- Handle thumbnail click transitions
+    function handleThumbnailClick() {
+        thumbnails.forEach((thumb, index) => {
+            thumb.addEventListener('click', () => {
+                transitionTo(index);
+            });
+        });
+    }
+
+    // --- Initialization logic
+    function initialize() {
+        if (isInitialized) return;
+        isInitialized = true;
+
+        items[currentIndex].style.opacity = '1';
+        updateActiveThumbnail(currentIndex);
+
+        const currentVideo = items[currentIndex].querySelector('video');
+        if (currentVideo) {
+            // Set playback rate before playing
+            currentVideo.playbackRate = videoPlaybackRate;
+            currentVideo.play().catch(e => console.log('Autoplay error:', e));
+        }
+
+        hideLoading();
+        initTimeBar();
+        startAutoRotation();
+    }
+
+    // --- Handle visibility (tab change)
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            startAutoRotation();
+            const currentVideo = items[currentIndex].querySelector('video');
+            if (currentVideo) {
+                currentVideo.playbackRate = videoPlaybackRate;
+                currentVideo.play().catch(() => {});
+            }
+        } else {
+            clearTimeout(runNextAuto);
+        }
+    });
+
+    // --- Set event listeners
+    nextBtn.addEventListener('click', showNext);
+    prevBtn.addEventListener('click', showPrev);
+    handleThumbnailClick();
+
+    // --- Start everything
+    preloadVideos(initialize);
 });
