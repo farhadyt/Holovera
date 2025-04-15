@@ -1,9 +1,12 @@
+/* Enhanced video slider with targeted thumbnail animations and blur effect */
+
 /* Ana konteyner stil */
 .carousel {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    margin-top: -50px; /* Header'dan əvvələ keçid */
+    margin-top: -50px;
+    background-color: #06090f;
 }
 
 /* Ana video elementləri */
@@ -21,23 +24,69 @@
     overflow: hidden;
     opacity: 0;
     pointer-events: none;
-    transform-origin: right;
     z-index: 1;
-    transition: 0.5s ease-in-out;
+    transition: opacity 0.8s ease-in-out;
 }
 
+/* Bulanık video üzerine koyu overlay ekle */
+.carousel .list .item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(6, 9, 15, 0.6); /* Daha koyu bir overlay (0.3 yerine 0.6) */
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Gradyan overlay ekleme - daha derinlikli bir görünüm için */
+.carousel .list .item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+                rgba(6, 9, 15, 0.7) 0%, 
+                rgba(6, 9, 15, 0.5) 50%, 
+                rgba(6, 9, 15, 0.7) 100%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Video positioning and animation */
 .carousel .list .item .main-video {
     position: absolute;
     width: 100%;
     height: 100%;
     object-fit: cover;
     z-index: 1;
+    transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Slightly bouncy effect */
+    transform-origin: center;
+    will-change: transform, width, height, top, left, right, border-radius;
+}
+
+/* Ana ekrandaki aktif video için bulanıklık */
+.carousel .list .item:nth-child(1) .main-video:not(.animating-out):not(.animating-in) {
+    filter: blur(0px);
+    transform: scale(1.05); /* Bulanıklık kenarlarını gizlemek için hafifçe büyüt */
 }
 
 /* İlk itemi aktiv et */
 .carousel .list .item:nth-child(1) {
     opacity: 1;
     pointer-events: auto;
+    z-index: 2;
+}
+
+/* Transitioning state */
+.carousel.transitioning .list .item:nth-child(1),
+.carousel.transitioning .list .item:nth-child(2) {
+    opacity: 1;
     z-index: 2;
 }
 
@@ -51,9 +100,10 @@
     transform: translateX(-50%);
     box-sizing: border-box;
     padding-right: 30%;
-    z-index: 2;
+    z-index: 3; /* Overlay üstünde olmalı */
     color: white;
     text-shadow: 0 5px 15px black;
+    display: none; /* Geçici olarak içeriği gizle */
 }
 
 .carousel .list .item .content .author {
@@ -132,20 +182,25 @@
     opacity: 0.8;
 }
 
-/* Kiçik önizləmə stili */
+/* Kiçik önizləmə stili - ŞAQULİ LAYOUT */
 .carousel .thumbnail {
     position: absolute;
-    bottom: 50px;
-    left: 50%;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
     width: max-content;
     z-index: 100;
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 25px;
+    height: auto;
+    max-height: 85vh;
+    transition: transform 1s ease-in-out;
 }
 
 .carousel .thumbnail .item {
-    width: 150px;
-    height: 220px;
+    width: 200px;
+    height: 120px;
     flex-shrink: 0;
     position: relative;
     border-radius: 10px;
@@ -170,6 +225,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: none !important; /* Thumbnail videoları bulanık olmasın */
+    transform: none !important;
 }
 
 .carousel .thumbnail .item .content {
@@ -178,20 +235,171 @@
     color: white;
     font-size: 0.8em;
     text-shadow: 0 2px 5px black;
+    display: none; /* Geçici olarak içeriği gizle */
 }
 
 .carousel .thumbnail .item .content .title {
     font-weight: bold;
 }
 
-/* Düymələr stili */
+/* Animation data attributes for videos */
+.carousel .list .item[data-index="0"] .main-video.animating-out {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% - 240px) !important; /* Position for first thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    filter: none !important; /* Animasyon sırasında blur olmasın */
+}
+
+.carousel .list .item[data-index="1"] .main-video.animating-out {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% - 120px) !important; /* Position for second thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="2"] .main-video.animating-out {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: 50% !important; /* Position for third thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="3"] .main-video.animating-out {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% + 120px) !important; /* Position for fourth thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="4"] .main-video.animating-out {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% + 240px) !important; /* Position for fifth thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    filter: none !important;
+}
+
+/* Animating in from thumbnails */
+.carousel .list .item[data-index="0"] .main-video.animating-in {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% - 240px) !important; /* Position for first thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    transition: all 0s !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="1"] .main-video.animating-in {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% - 120px) !important; /* Position for second thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    transition: all 0s !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="2"] .main-video.animating-in {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: 50% !important; /* Position for third thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    transition: all 0s !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="3"] .main-video.animating-in {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% + 120px) !important; /* Position for fourth thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    transition: all 0s !important;
+    filter: none !important;
+}
+
+.carousel .list .item[data-index="4"] .main-video.animating-in {
+    width: 200px !important;
+    height: 120px !important;
+    position: absolute !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    top: calc(50% + 240px) !important; /* Position for fifth thumbnail */
+    right: 30px !important;
+    left: auto !important;
+    transform: translateY(0) !important;
+    transition: all 0s !important;
+    filter: none !important;
+}
+
+/* Animation final state */
+.carousel .list .item .main-video.animating-in.animate {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    border-radius: 0 !important;
+    transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    filter: none !important; /* Başlangıçta bulanıklık olmasın */
+}
+
+/* Düymələr stili - ALT HISSƏYƏ DAŞINIB */
 .carousel .arrows {
     position: absolute;
-    top: 80%;
-    right: 52%;
-    width: 300px;
-    max-width: 30%;
+    bottom: 30px;
+    right: 30px;
+    width: 200px;
     display: flex;
+    justify-content: center;
     gap: 10px;
     z-index: 100;
 }
@@ -243,105 +451,48 @@
     }
 }
 
-/* "Next" düyməsi üçün effekt */
-.carousel.next .list .item:nth-child(1) .main-video {
-    width: 150px;
-    height: 220px;
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    border-radius: 10px;
-    animation-name: showImage;
-    animation-duration: 0.8s;
-    animation-fill-mode: forwards;
+/* Animasiya zamanı düymələri deaktiv et */
+.carousel.transitioning .arrows button {
+    pointer-events: none;
 }
 
-@keyframes showImage {
-    to {
-        width: 100%;
-        height: 100%;
-        bottom: 0;
-        border-radius: 0;
-    }
-}
-
-.carousel.next .thumbnail {
-    transform: translateX(-150px);
-    animation-name: returnThumbnail;
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-}
-
-@keyframes returnThumbnail {
-    to {
-        transform: translateX(0);
-    }
-}
-
-.carousel.next .thumbnail .item:nth-child(5) {
-    width: 0;
-    overflow: hidden;
-    animation-name: showThumbnail;
-    animation-duration: 0.8s;
-    animation-fill-mode: forwards;
-}
-
-@keyframes showThumbnail {
-    to {
-        width: 150px;
-    }
-}
-
-/* "Prev" düyməsi üçün effekt */
-.carousel.prev .list .item:nth-child(2) .main-video {
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    animation-name: outImage;
-    animation-duration: 0.8s;
-    animation-fill-mode: forwards;
+    background-color: #06090f;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
 }
 
-@keyframes outImage {
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(77, 240, 255, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    color: white;
+    font-size: 18px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+}
+
+@keyframes spin {
     to {
-        width: 150px;
-        height: 220px;
-        bottom: 50px;
-        left: 50%;
-        transform: translate(-50%, 0);
-        border-radius: 10px;
+        transform: rotate(360deg);
     }
-}
-
-.carousel.prev .thumbnail .item:nth-child(1) {
-    width: 0;
-    overflow: hidden;
-    animation-name: showThumbnail;
-    animation-duration: 0.8s;
-    animation-fill-mode: forwards;
-}
-
-.carousel.prev .list .item:nth-child(2) .content .author,
-.carousel.prev .list .item:nth-child(2) .content .title,
-.carousel.prev .list .item:nth-child(2) .content .des,
-.carousel.prev .list .item:nth-child(2) .content .buttons {
-    animation-name: outContent;
-    animation-duration: 0.8s;
-    animation-fill-mode: forwards;
-}
-
-@keyframes outContent {
-    to {
-        opacity: 0;
-        transform: translateY(150px);
-        filter: blur(20px);
-    }
-}
-
-/* Animasiya zamanı düymələri deaktiv et */
-.carousel.next .arrows button,
-.carousel.prev .arrows button {
-    pointer-events: none;
 }
 
 /* Responsiv dizayn */
@@ -359,38 +510,53 @@
     }
     
     .carousel .thumbnail {
-        justify-content: center;
-        transform: translateX(0) !important;
-        width: 100%;
-        gap: 10px;
+        right: 10px;
+        max-height: 65vh;
+        gap: 15px;
     }
     
     .carousel .thumbnail .item {
-        width: 100px;
-        height: 150px;
+        width: 140px;
+        height: 90px;
     }
     
     .carousel .arrows {
-        right: 20px;
-        max-width: 80px;
-        justify-content: flex-end;
+        right: 10px;
+        bottom: 10px;
+        width: 140px;
     }
     
-    @keyframes outImage {
-        to {
-            width: 100px;
-            height: 150px;
-        }
+    /* Update mobile positions */
+    .carousel .list .item[data-index] .main-video.animating-out,
+    .carousel .list .item[data-index] .main-video.animating-in {
+        width: 140px !important;
+        height: 90px !important;
+        right: 10px !important;
+        filter: none !important;
     }
     
-    .carousel.next .list .item:nth-child(1) .main-video {
-        width: 100px;
-        height: 150px;
+    .carousel .list .item[data-index="0"] .main-video.animating-out,
+    .carousel .list .item[data-index="0"] .main-video.animating-in {
+        top: calc(50% - 190px) !important;
     }
     
-    @keyframes showThumbnail {
-        to {
-            width: 100px;
-        }
+    .carousel .list .item[data-index="1"] .main-video.animating-out,
+    .carousel .list .item[data-index="1"] .main-video.animating-in {
+        top: calc(50% - 95px) !important;
+    }
+    
+    .carousel .list .item[data-index="2"] .main-video.animating-out,
+    .carousel .list .item[data-index="2"] .main-video.animating-in {
+        top: 50% !important;
+    }
+    
+    .carousel .list .item[data-index="3"] .main-video.animating-out,
+    .carousel .list .item[data-index="3"] .main-video.animating-in {
+        top: calc(50% + 95px) !important;
+    }
+    
+    .carousel .list .item[data-index="4"] .main-video.animating-out,
+    .carousel .list .item[data-index="4"] .main-video.animating-in {
+        top: calc(50% + 190px) !important;
     }
 }
