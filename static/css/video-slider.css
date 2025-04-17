@@ -131,7 +131,7 @@
     bottom: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(6, 9, 15, 0.9); /* istədiyin tündlük */
+    background-color: rgba(6, 9, 15, 0.8); /* istədiyin tündlük */
     z-index: 2;
     pointer-events: none;
     opacity: 1; /* dərhal tam görünsün */
@@ -618,6 +618,44 @@
       bottom: 10px;
       width: 140px;
     }
+
+
+    /* Add these styles to the end of your static/css/video-slider.css file */
+/* Improved content transitions */
+@keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+  
+  .carousel .list .item .content.fade-out .author,
+  .carousel .list .item .content.fade-out .title,
+  .carousel .list .item .content.fade-out .des,
+  .carousel .list .item .content.fade-out .buttons {
+    animation: fadeOut 0.5s forwards !important;
+  }
+  
+  /* Increase all animation delays by 1 second to create proper spacing */
+  .carousel .list .item .content .author {
+    animation-delay: 1.5s;
+  }
+  
+  .carousel .list .item .content .title {
+    animation-delay: 1.7s;
+  }
+  
+  .carousel .list .item .content .des {
+    animation-delay: 1.9s;
+  }
+  
+  .carousel .list .item .content .buttons {
+    animation-delay: 2.1s;
+  }
     
     /* Update mobile positions */
     .carousel .list .item[data-index] .main-video.animating-out,
