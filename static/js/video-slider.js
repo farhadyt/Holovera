@@ -98,61 +98,83 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Transition to selected video index with animations
-// --- Transition to selected video index with animations
-function transitionTo(index) {
-    if (index === currentIndex || carousel.classList.contains('transitioning')) return;
+    function transitionTo(index) {
+        if (index === currentIndex || carousel.classList.contains('transitioning')) return;
 
-    carousel.classList.add('transitioning');
+        carousel.classList.add('transitioning');
 
-    const currentItem = items[currentIndex];
-    const nextItem = items[index];
-    const currentVideo = currentItem.querySelector('video');
-    const nextVideo = nextItem.querySelector('video');
-
-    // Reset next video and prepare for transition
-    nextVideo.currentTime = 0;
-    nextVideo.playbackRate = videoPlaybackRate;
-
-    // Start preparing next video early
-    nextItem.style.opacity = '1';
-    nextItem.style.zIndex = '3';
-    nextVideo.classList.add('animating-in');
-
-    // Add transition class to current video
-    currentVideo.classList.add('animating-out');
-
-    setTimeout(() => {
-        // Fully prepare next video
-        nextVideo.classList.add('animate');
+        const currentItem = items[currentIndex];
+        const nextItem = items[index];
+        const currentVideo = currentItem.querySelector('video');
+        const nextVideo = nextItem.querySelector('video');
         
-        // Attempt to play next video
-        nextVideo.play().catch(e => console.log('Autoplay prevented:', e));
-    }, 100);
+        // Hide current content with a fade-out effect
+        const currentContent = currentItem.querySelector('.content');
+        if (currentContent) {
+            currentContent.classList.add('fade-out');
+        }
 
-    setTimeout(() => {
-        // Complete transition
-        currentVideo.classList.remove('animating-out');
-        nextVideo.classList.remove('animating-in', 'animate');
-        
-        // Reset current video
-        currentVideo.pause();
-        currentVideo.currentTime = 0;
-        
-        // Update visual states
-        currentItem.style.opacity = '0';
-        currentItem.style.zIndex = '';
-        nextItem.style.zIndex = '2';
+        // Reset next video and prepare for transition
+        nextVideo.currentTime = 0;
+        nextVideo.playbackRate = videoPlaybackRate;
 
-        // Update index and UI
-        currentIndex = index;
-        updateActiveThumbnail(index);
-        carousel.classList.remove('transitioning');
-        
-        // Restart time bar and auto-rotation
-        initTimeBar();
-        startAutoRotation();
-    }, 1200);
-}
+        // Start preparing next video early
+        nextItem.style.opacity = '1';
+        nextItem.style.zIndex = '3';
+        nextVideo.classList.add('animating-in');
+
+        // Add transition class to current video
+        currentVideo.classList.add('animating-out');
+
+        // Reset animation classes on next item so they can animate in properly
+        const nextContent = nextItem.querySelector('.content');
+        if (nextContent) {
+            const elements = nextContent.querySelectorAll('.author, .title, .des, .buttons');
+            elements.forEach(el => {
+                // Remove and reapply animation to restart it
+                el.style.animation = 'none';
+                el.offsetHeight; // Trigger reflow
+                el.style.animation = '';
+            });
+        }
+
+        setTimeout(() => {
+            // Fully prepare next video
+            nextVideo.classList.add('animate');
+            
+            // Attempt to play next video
+            nextVideo.play().catch(e => console.log('Autoplay prevented:', e));
+        }, 100);
+
+        setTimeout(() => {
+            // Complete transition
+            currentVideo.classList.remove('animating-out');
+            nextVideo.classList.remove('animating-in', 'animate');
+            
+            // Reset current video
+            currentVideo.pause();
+            currentVideo.currentTime = 0;
+            
+            // Update visual states
+            currentItem.style.opacity = '0';
+            currentItem.style.zIndex = '';
+            nextItem.style.zIndex = '2';
+            
+            // Remove fade-out class from previous content
+            if (currentContent) {
+                currentContent.classList.remove('fade-out');
+            }
+
+            // Update index and UI
+            currentIndex = index;
+            updateActiveThumbnail(index);
+            carousel.classList.remove('transitioning');
+            
+            // Restart time bar and auto-rotation
+            initTimeBar();
+            startAutoRotation();
+        }, 1200);
+    }
 
     // --- Go to next video
     function showNext() {

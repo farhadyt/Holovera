@@ -1,65 +1,184 @@
+/* static/css/nav.css */
 /* Integrated Navigation - for auth.css and main.css */
 .integrated-nav {
-    position: fixed;
-    top: 20px;
-    left: 0;
-    width: 100%;
-    z-index: 1500; 
-    padding: 15px 50px; /* Fixed padding */
-    display: flex;
-    justify-content: space-between; /* This ensures logo on left, controls on right */
-    align-items: center;
-    background: transparent; 
-    transition: all 0.3s ease;
-    max-width: none; /* Remove any max-width constraint */
+  position: fixed;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  z-index: 1500; 
+  padding: 15px 50px; /* Fixed padding */
+  display: flex;
+  justify-content: space-between; /* This ensures logo on left, controls on right */
+  align-items: center;
+  background: transparent; 
+  transition: all 0.3s ease;
+  max-width: none; /* Remove any max-width constraint */
 }
 
 /* On scroll effect */
 .integrated-nav.scrolled {
-    top: 0;
-    background: rgba(6, 9, 15, 0.85);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  top: 0;
+  background: rgba(6, 9, 15, 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Logo */
 .logo {
-    position: relative;
-    z-index: 1501;
-    margin: 0; /* Reset any margins */
-    padding: 0; /* Reset any padding */
+  position: relative;
+  z-index: 1501;
+  margin: 0; /* Reset any margins */
+  padding: 0; /* Reset any padding */
 }
 
 .logo a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
 }
 
 /* Auth Controls - explicitly position on right */
 .auth-controls {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    z-index: 1501;
-    margin-left: auto; /* Force to right side */
-    margin-right: 0; /* Reset right margin */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 1501;
+  margin-left: auto; /* Force to right side */
+  margin-right: 0; /* Reset right margin */
 }
 
 /* Make sure there are no overriding styles */
 .integrated-nav > * {
-    flex: 0 0 auto; /* Prevent flex items from growing/shrinking */
+  flex: 0 0 auto; /* Prevent flex items from growing/shrinking */
 }
 
 /* Make sure there's no center justification anywhere */
 .integrated-nav .logo,
 .integrated-nav .auth-controls {
-    justify-content: flex-start;
-    text-align: left;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .integrated-nav .auth-controls {
-    justify-content: flex-end;
-    text-align: right;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* Enhance futuristic appearance */
+.logo a:hover .logo-text {
+  text-shadow: 0 0 20px rgba(77, 240, 255, 0.7);
+}
+
+/* Pulsing glow effect for logo */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(77, 240, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(77, 240, 255, 0.5);
+  }
+}
+
+.logo-glow {
+  animation: pulse-glow 3s infinite;
+}
+
+/* Enhanced language dropdown for futuristic feel */
+.language-dropdown {
+  position: relative;
+}
+
+.lang-btn {
+  background: rgba(10, 20, 35, 0.7);
+  border: 1px solid rgba(77, 240, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(77, 240, 255, 0.2);
+  box-shadow: 0 0 15px rgba(77, 240, 255, 0.3);
+}
+
+.language-options {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: rgba(10, 20, 35, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(77, 240, 255, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.language-options.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Responsive styles to prevent overlap */
+@media (max-width: 992px) {
+  .integrated-nav {
+    padding: 12px 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .integrated-nav {
+    padding: 10px 20px;
+    top: 10px;
+  }
+  
+  .logo-text {
+    font-size: 24px;
+  }
+  
+  .auth-controls {
+    gap: 10px;
+  }
+  
+  /* Ensure we have enough space for slider content */
+  .auth-controls .language-dropdown .lang-btn {
+    padding: 6px 10px;
+  }
+  
+  .auth-controls .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 576px) {
+  .integrated-nav {
+    padding: 8px 15px;
+  }
+  
+  .logo-text {
+    font-size: 20px;
+  }
+  
+  /* Simplified language button for mobile */
+  .lang-btn .current-lang {
+    display: none;
+  }
+  
+  .auth-controls .icon-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
 }
