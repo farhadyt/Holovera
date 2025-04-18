@@ -1,253 +1,255 @@
 // static/js/video-slider.js
 document.addEventListener('DOMContentLoaded', function () {
+    // DOM Elements
     const carousel = document.querySelector('.carousel');
-    const list = carousel.querySelector('.list');
-    const items = list.querySelectorAll('.item');
-    const thumbnails = carousel.querySelectorAll('.thumbnail .item');
+    const list = document.querySelector('.list');
+    const items = document.querySelectorAll('.list .item');
     const nextBtn = document.getElementById('next');
     const prevBtn = document.getElementById('prev');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const timeBar = document.querySelector('.carousel .time');
-
-    const timeRunning = 7000; // Total cycle time
-    const timeAutoNext = 7000;
-    const videoPlaybackRate = 0.6; // Significantly slow down video playback
-    let runNextAuto;
+    const timeProgress = document.querySelector('.time-progress');
+    
+    // Configuration
+    const timeRunning = 7000; // 7 seconds duration
+    const timeAutoNext = 7000; // Auto-rotate every 7 seconds
+    let autoRotateTimer;
     let currentIndex = 0;
-    let isInitialized = false;
-
-    // --- Hide loading overlay
+    let isTransitioning = false;
+    
+    // Initialize the slider
+    function initSlider() {
+        setupThumbnails();
+        setupEventListeners();
+        hideLoading();
+        startVideoPlayback();
+        resetTimeBar();
+        startAutoRotation();
+    }
+    
+    // Create thumbnail items
+    function setupThumbnails() {
+        const thumbnailContainer = document.querySelector('.thumbnail');
+        
+        // Clear existing thumbnails
+        if (thumbnailContainer) {
+            thumbnailContainer.innerHTML = '';
+            
+            // Create thumbnails for each video
+            items.forEach((item, index) => {
+                const videoSrc = item.querySelector('video source').getAttribute('src');
+                
+                const thumbnailItem = document.createElement('div');
+                thumbnailItem.className = `item ${index === currentIndex ? 'active' : ''}`;
+                thumbnailItem.dataset.index = index;
+                
+                // Create thumbnail video
+                const thumbnailVideo = document.createElement('video');
+                thumbnailVideo.muted = true;
+                thumbnailVideo.loop = true;
+                thumbnailVideo.playsInline = true;
+                
+                const thumbnailSource = document.createElement('source');
+                thumbnailSource.src = videoSrc;
+                thumbnailSource.type = 'video/mp4';
+                
+                thumbnailVideo.appendChild(thumbnailSource);
+                thumbnailItem.appendChild(thumbnailVideo);
+                
+                // Add content info
+                const content = document.createElement('div');
+                content.className = 'content';
+                
+                const title = document.createElement('div');
+                title.className = 'title';
+                title.textContent = getTitleForIndex(index);
+                
+                content.appendChild(title);
+                thumbnailItem.appendChild(content);
+                
+                // Add click event to select this thumbnail
+                thumbnailItem.addEventListener('click', function() {
+                    if (!isTransitioning && index !== currentIndex) {
+                        switchToVideo(index);
+                    }
+                });
+                
+                thumbnailContainer.appendChild(thumbnailItem);
+                
+                // Start playing the thumbnail video
+                thumbnailVideo.load();
+                thumbnailVideo.play().catch(e => {
+                    console.log('Thumbnail video autoplay prevented:', e);
+                });
+            });
+        }
+    }
+    
+    // Get title for a specific index
+    function getTitleForIndex(index) {
+        const titles = [
+            "Sənətkarlar üçün",
+            "Yaradıcılar üçün",
+            "Hədiyyə sevənlər üçün", 
+            "İlham axtaranlar üçün",
+            "Biznes tərəfdaşları üçün"
+        ];
+        return titles[index] || "";
+    }
+    
+    // Set up event listeners
+    function setupEventListeners() {
+        // Next button click
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                if (!isTransitioning) {
+                    const nextIndex = (currentIndex + 1) % items.length;
+                    switchToVideo(nextIndex);
+                }
+            });
+        }
+        
+        // Previous button click
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                if (!isTransitioning) {
+                    const prevIndex = (currentIndex - 1 + items.length) % items.length;
+                    switchToVideo(prevIndex);
+                }
+            });
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                nextBtn.click();
+            } else if (e.key === 'ArrowLeft') {
+                prevBtn.click();
+            }
+        });
+    }
+    
+    // Start video playback
+    function startVideoPlayback() {
+        // Ensure the current video is playing
+        const currentVideo = items[currentIndex].querySelector('video');
+        if (currentVideo) {
+            currentVideo.play().catch(e => {
+                console.log('Main video autoplay prevented:', e);
+            });
+        }
+        
+        // Make sure the current item is visible
+        items.forEach((item, i) => {
+            item.style.opacity = i === currentIndex ? '1' : '0';
+            item.style.zIndex = i === currentIndex ? '2' : '1';
+        });
+    }
+    
+    // Switch to a specific video
+    function switchToVideo(index) {
+        if (isTransitioning || index === currentIndex) return;
+        
+        isTransitioning = true;
+        
+        // Update current index
+        const previousIndex = currentIndex;
+        currentIndex = index;
+        
+        // Get videos
+        const currentVideo = items[currentIndex].querySelector('video');
+        const previousVideo = items[previousIndex].querySelector('video');
+        
+        // Reset time bar
+        resetTimeBar();
+        
+        // Fade out current content if any
+        const previousContent = items[previousIndex].querySelector('.content');
+        if (previousContent) {
+            previousContent.classList.add('fade-out');
+        }
+        
+        // Play the new video
+        if (currentVideo) {
+            currentVideo.currentTime = 0;
+            currentVideo.play().catch(e => {
+                console.log('Video play error:', e);
+            });
+        }
+        
+        // Update thumbnail active state
+        updateThumbnailActiveState();
+        
+        // Switch videos with fade transition
+        setTimeout(function() {
+            // Show the new video
+            items.forEach((item, i) => {
+                item.style.opacity = i === currentIndex ? '1' : '0';
+                item.style.zIndex = i === currentIndex ? '2' : '1';
+            });
+            
+            // Remove fade-out class
+            if (previousContent) {
+                previousContent.classList.remove('fade-out');
+            }
+            
+            // Reset the transitioning state
+            isTransitioning = false;
+            
+            // Restart auto-rotation
+            startAutoRotation();
+        }, 500);
+    }
+    
+    // Update the active state of thumbnails
+    function updateThumbnailActiveState() {
+        const thumbnails = document.querySelectorAll('.thumbnail .item');
+        thumbnails.forEach((thumbnail, i) => {
+            if (i === currentIndex) {
+                thumbnail.classList.add('active');
+            } else {
+                thumbnail.classList.remove('active');
+            }
+        });
+    }
+    
+    // Reset and start the time bar animation
+    function resetTimeBar() {
+        if (timeProgress) {
+            // Reset time bar
+            timeProgress.style.transition = 'none';
+            timeProgress.style.width = '100%';
+            
+            // Force reflow to apply the change immediately
+            timeProgress.offsetWidth;
+            
+            // Start animation
+            timeProgress.style.transition = `width ${timeRunning}ms linear`;
+            timeProgress.style.width = '0%';
+        }
+    }
+    
+    // Start auto-rotation
+    function startAutoRotation() {
+        // Clear any existing timer
+        clearTimeout(autoRotateTimer);
+        
+        // Set new timer
+        autoRotateTimer = setTimeout(function() {
+            const nextIndex = (currentIndex + 1) % items.length;
+            switchToVideo(nextIndex);
+        }, timeAutoNext);
+    }
+    
+    // Hide loading overlay
     function hideLoading() {
         if (loadingOverlay) {
             loadingOverlay.style.opacity = '0';
-            setTimeout(() => loadingOverlay.style.display = 'none', 800);
+            setTimeout(function() {
+                loadingOverlay.style.display = 'none';
+            }, 800);
         }
     }
-
-    // --- Preload videos and track loading progress
-    function preloadVideos(callback) {
-        const videos = document.querySelectorAll('.carousel video');
-        let loadedCount = 0;
-
-        videos.forEach(video => {
-            // Reset video attributes
-            video.setAttribute('playsinline', '');
-            video.setAttribute('muted', '');
-            video.setAttribute('preload', 'auto');
-            video.muted = true;
-
-            // Apply slow playback rate immediately
-            video.playbackRate = videoPlaybackRate;
-
-            video.addEventListener('loadeddata', () => {
-                loadedCount++;
-                console.log(`Video ${loadedCount} loaded`, video.duration / videoPlaybackRate);
-                if (loadedCount === videos.length) callback();
-            });
-
-            video.addEventListener('error', () => {
-                console.warn('Video loading error:', video.src);
-                loadedCount++;
-                if (loadedCount === videos.length) callback();
-            });
-
-            video.load();
-        });
-
-        setTimeout(() => {
-            if (loadedCount < videos.length) {
-                console.warn('Timeout: Proceeding with incomplete video loading');
-                callback();
-            }
-        }, 5000);
-    }
-
-    // --- Initialize time bar animation
-    function initTimeBar() {
-        if (timeBar) {
-            // Reset time bar
-            timeBar.style.transition = 'none';
-            timeBar.style.width = '100%';
-            
-            // Trigger reflow
-            timeBar.offsetWidth;
-
-            // Apply transition for reducing width
-            timeBar.style.transition = `width ${timeRunning}ms linear`;
-            timeBar.style.width = '0%';
-        }
-    }
-
-    // --- Update active thumbnail highlighting
-    function updateActiveThumbnail(index) {
-        thumbnails.forEach((thumb, i) => {
-            thumb.classList.toggle('active', i === index);
-        });
-    }
-
-    // --- Reset all videos (pause and rewind)
-    function resetVideos() {
-        items.forEach(item => {
-            const video = item.querySelector('video');
-            if (video) {
-                video.pause();
-                video.currentTime = 0;
-                video.playbackRate = videoPlaybackRate;
-            }
-        });
-    }
-
-    // --- Transition to selected video index with animations
-    function transitionTo(index) {
-        if (index === currentIndex || carousel.classList.contains('transitioning')) return;
-
-        carousel.classList.add('transitioning');
-
-        const currentItem = items[currentIndex];
-        const nextItem = items[index];
-        const currentVideo = currentItem.querySelector('video');
-        const nextVideo = nextItem.querySelector('video');
-        
-        // Hide current content with a fade-out effect
-        const currentContent = currentItem.querySelector('.content');
-        if (currentContent) {
-            currentContent.classList.add('fade-out');
-        }
-
-        // Reset next video and prepare for transition
-        nextVideo.currentTime = 0;
-        nextVideo.playbackRate = videoPlaybackRate;
-
-        // Start preparing next video early
-        nextItem.style.opacity = '1';
-        nextItem.style.zIndex = '3';
-        nextVideo.classList.add('animating-in');
-
-        // Add transition class to current video
-        currentVideo.classList.add('animating-out');
-
-        // Reset animation classes on next item so they can animate in properly
-        const nextContent = nextItem.querySelector('.content');
-        if (nextContent) {
-            const elements = nextContent.querySelectorAll('.author, .title, .des, .buttons');
-            elements.forEach(el => {
-                // Remove and reapply animation to restart it
-                el.style.animation = 'none';
-                el.offsetHeight; // Trigger reflow
-                el.style.animation = '';
-            });
-        }
-
-        setTimeout(() => {
-            // Fully prepare next video
-            nextVideo.classList.add('animate');
-            
-            // Attempt to play next video
-            nextVideo.play().catch(e => console.log('Autoplay prevented:', e));
-        }, 100);
-
-        setTimeout(() => {
-            // Complete transition
-            currentVideo.classList.remove('animating-out');
-            nextVideo.classList.remove('animating-in', 'animate');
-            
-            // Reset current video
-            currentVideo.pause();
-            currentVideo.currentTime = 0;
-            
-            // Update visual states
-            currentItem.style.opacity = '0';
-            currentItem.style.zIndex = '';
-            nextItem.style.zIndex = '2';
-            
-            // Remove fade-out class from previous content
-            if (currentContent) {
-                currentContent.classList.remove('fade-out');
-            }
-
-            // Update index and UI
-            currentIndex = index;
-            updateActiveThumbnail(index);
-            carousel.classList.remove('transitioning');
-            
-            // Restart time bar and auto-rotation
-            initTimeBar();
-            startAutoRotation();
-        }, 1200);
-    }
-
-    // --- Go to next video
-    function showNext() {
-        const nextIndex = (currentIndex + 1) % items.length;
-        transitionTo(nextIndex);
-    }
-
-    // --- Go to previous video
-    function showPrev() {
-        const prevIndex = (currentIndex - 1 + items.length) % items.length;
-        transitionTo(prevIndex);
-    }
-
-    // --- Auto rotate videos every few seconds
-    function startAutoRotation() {
-        clearTimeout(runNextAuto);
-        runNextAuto = setTimeout(() => {
-            if (document.visibilityState === 'visible') {
-                showNext();
-            } else {
-                startAutoRotation(); // Try again later if hidden
-            }
-        }, timeAutoNext);
-    }
-
-    // --- Handle thumbnail click transitions
-    function handleThumbnailClick() {
-        thumbnails.forEach((thumb, index) => {
-            thumb.addEventListener('click', () => {
-                transitionTo(index);
-            });
-        });
-    }
-
-    // --- Initialization logic
-    function initialize() {
-        if (isInitialized) return;
-        isInitialized = true;
-
-        items[currentIndex].style.opacity = '1';
-        updateActiveThumbnail(currentIndex);
-
-        const currentVideo = items[currentIndex].querySelector('video');
-        if (currentVideo) {
-            // Set playback rate before playing
-            currentVideo.playbackRate = videoPlaybackRate;
-            currentVideo.play().catch(e => console.log('Autoplay error:', e));
-        }
-
-        hideLoading();
-        initTimeBar();
-        startAutoRotation();
-    }
-
-    // --- Handle visibility (tab change)
-    document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'visible') {
-            startAutoRotation();
-            const currentVideo = items[currentIndex].querySelector('video');
-            if (currentVideo) {
-                currentVideo.playbackRate = videoPlaybackRate;
-                currentVideo.play().catch(() => {});
-            }
-        } else {
-            clearTimeout(runNextAuto);
-        }
-    });
-
-    // --- Set event listeners
-    nextBtn.addEventListener('click', showNext);
-    prevBtn.addEventListener('click', showPrev);
-    handleThumbnailClick();
-
-    // --- Start everything
-    preloadVideos(initialize);
+    
+    // Start everything
+    initSlider();
 });

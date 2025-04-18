@@ -9,18 +9,19 @@
 {% endblock %}
 
 {% block content %}
-<!-- Loading Overlay - SADECE BİR TANE OLACAK -->
+<!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <div class="loading-text">Holovera yüklənir...</div>
 </div>
 
+<!-- Main Background Video Carousel -->
 <div class="carousel">
-    <!-- Ana video və kontentlər -->
+    <!-- Main video list -->
     <div class="list">
-        <!-- 1-ci element - data-index will be added by JS -->
+        <!-- 1-ci element -->
         <div class="item">
-            <video class="main-video" muted playsinline>
+            <video class="main-video" muted playsinline loop>
                 <source src="{% static 'videos/video1.mp4' %}" type="video/mp4">
             </video>
             <div class="content">
@@ -34,10 +35,9 @@
             </div>
         </div>
         
-        <!-- Diğer video öğeleri -->
         <!-- 2-ci element -->
         <div class="item">
-            <video class="main-video" muted playsinline>
+            <video class="main-video" muted playsinline loop>
                 <source src="{% static 'videos/video2.mp4' %}" type="video/mp4">
             </video>
             <div class="content">
@@ -53,7 +53,7 @@
         
         <!-- 3-cü element -->
         <div class="item">
-            <video class="main-video" muted playsinline>
+            <video class="main-video" muted playsinline loop>
                 <source src="{% static 'videos/video3.mp4' %}" type="video/mp4">
             </video>
             <div class="content">
@@ -69,7 +69,7 @@
         
         <!-- 4-cü element -->
         <div class="item">
-            <video class="main-video" muted playsinline>
+            <video class="main-video" muted playsinline loop>
                 <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
             </video>
             <div class="content">
@@ -85,7 +85,7 @@
         
         <!-- 5-ci element -->
         <div class="item">
-            <video class="main-video" muted playsinline>
+            <video class="main-video" muted playsinline loop>
                 <source src="{% static 'videos/video5.mp4' %}" type="video/mp4">
             </video>
             <div class="content">
@@ -100,63 +100,40 @@
         </div>
     </div>
     
-    <!-- Kiçik önizləmə videoları -->
+    <!-- Vertical thumbnail list on the right side -->
     <div class="thumbnail">
-        <div class="item">
-            <video muted playsinline loop>
-                <source src="{% static 'videos/video1.mp4' %}" type="video/mp4">
-            </video>
-            <div class="content">
-                <div class="title">{% trans "Sənətkarlar üçün" %}</div>
-                <div class="des">{% trans "Evdən çıxmadan qlobal satış et" %}</div>
-            </div>
-        </div>
-        <div class="item">
-            <video muted playsinline loop>
-                <source src="{% static 'videos/video2.mp4' %}" type="video/mp4">
-            </video>
-            <div class="content">
-                <div class="title">{% trans "Yaradıcılar üçün" %}</div>
-                <div class="des">{% trans "İstedadınla qazanc əldə et" %}</div>
-            </div>
-        </div>
-        <div class="item">
-            <video muted playsinline loop>
-                <source src="{% static 'videos/video3.mp4' %}" type="video/mp4">
-            </video>
-            <div class="content">
-                <div class="title">{% trans "Hədiyyə sevənlər üçün" %}</div>
-                <div class="des">{% trans "Hissini əlavə et" %}</div>
-            </div>
-        </div>
-        <div class="item">
-            <video muted playsinline loop>
-                <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
-            </video>
-            <div class="content">
-                <div class="title">{% trans "İlham axtaranlar üçün" %}</div>
-                <div class="des">{% trans "İlhamın qaynağı ol" %}</div>
-            </div>
-        </div>
-        <div class="item">
-            <video muted playsinline loop>
-                <source src="{% static 'videos/video5.mp4' %}" type="video/mp4">
-            </video>
-            <div class="content">
-                <div class="title">{% trans "Biznes tərəfdaşları üçün" %}</div>
-                <div class="des">{% trans "Biznesinizi böyüdün" %}</div>
-            </div>
-        </div>
+        <!-- Thumbnails will be generated dynamically via JS -->
     </div>
     
-    <!-- İrəli/geri düymələri -->
+    <!-- Control arrows -->
     <div class="arrows">
-        <button id="prev">&lt;</button>
-        <button id="next">&gt;</button>
+        <button id="prev"><i class="fas fa-chevron-left"></i></button>
+        <button id="next"><i class="fas fa-chevron-right"></i></button>
     </div>
     
-    <!-- Zaman çubuğu -->
-    <div class="time"></div>
+    <!-- Time progress bar -->
+    <div class="time">
+        <div class="time-progress" id="timeProgress"></div>
+    </div>
+</div>
+
+<!-- Hidden video sources for preloading -->
+<div class="video-sources">
+    <video data-index="0">
+        <source src="{% static 'videos/video1.mp4' %}" type="video/mp4">
+    </video>
+    <video data-index="1">
+        <source src="{% static 'videos/video2.mp4' %}" type="video/mp4">
+    </video>
+    <video data-index="2">
+        <source src="{% static 'videos/video3.mp4' %}" type="video/mp4">
+    </video>
+    <video data-index="3">
+        <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
+    </video>
+    <video data-index="4">
+        <source src="{% static 'videos/video5.mp4' %}" type="video/mp4">
+    </video>
 </div>
 {% endblock %}
 
