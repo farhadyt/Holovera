@@ -7,9 +7,8 @@
     {% load static %}
     {% load i18n %}
     <!-- CSS files -->
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/nav.css' %}">
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     {% block extra_css %}{% endblock %}
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
@@ -20,80 +19,81 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="auth-page">
-    <!-- Integrated navigation bar -->
-    <nav class="integrated-nav">
-        <div class="logo">
-            <a href="/">
-                <span class="logo-text">HOLOVERA</span>
-                <div class="logo-glow"></div>
-            </a>
-        </div>
-        
-        <div class="auth-controls">
-            <!-- Dil seçimi dropdown -->
-            <div class="language-dropdown">
-                <button class="lang-btn">
-                    <i class="fas fa-globe"></i>
-                    <span class="current-lang">
-                        {% get_current_language as CURRENT_LANGUAGE %}
-                        {% for lang_code, lang_name in LANGUAGES %}
-                            {% if lang_code == CURRENT_LANGUAGE %}
-                                <span class="lang-flag flag-{{ lang_code }}"></span>
-                                {{ lang_name }}
-                            {% endif %}
-                        {% endfor %}
-                    </span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="language-options">
-                    {% get_available_languages as LANGUAGES %}
-                    {% get_current_language as CURRENT_LANGUAGE %}
-                    {% for lang_code, lang_name in LANGUAGES %}
-                        <a href="/{{ lang_code }}{{ request.path|slice:'3:' }}" 
-                           class="lang-option {% if lang_code == CURRENT_LANGUAGE %}active{% endif %}"
-                           data-lang="{{ lang_code }}">
-                            <span class="lang-flag flag-{{ lang_code }}"></span>
-                            <span class="lang-name">{{ lang_name }}</span>
-                        </a>
-                    {% endfor %}
+<body>
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+        <!-- Header - Absolute positioned on top of everything -->
+        <header id="site-header">
+            <div class="header-container">
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="/">
+                        <span class="logo-text">HOLOVERA</span>
+                        <div class="logo-glow"></div>
+                    </a>
+                </div>
+                
+                <!-- Right Controls -->
+                <div class="header-controls">
+                    <!-- Language Dropdown -->
+                    <div class="language-dropdown">
+                        <button class="lang-btn">
+                            <i class="fas fa-globe"></i>
+                            <span class="current-lang">
+                                {% get_current_language as CURRENT_LANGUAGE %}
+                                {% for lang_code, lang_name in LANGUAGES %}
+                                    {% if lang_code == CURRENT_LANGUAGE %}
+                                        <span class="lang-flag flag-{{ lang_code }}"></span>
+                                        {{ lang_name }}
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-options">
+                            {% get_available_languages as LANGUAGES %}
+                            {% get_current_language as CURRENT_LANGUAGE %}
+                            {% for lang_code, lang_name in LANGUAGES %}
+                                <a href="/{{ lang_code }}{{ request.path|slice:'3:' }}" 
+                                class="lang-option {% if lang_code == CURRENT_LANGUAGE %}active{% endif %}"
+                                data-lang="{{ lang_code }}">
+                                    <span class="lang-flag flag-{{ lang_code }}"></span>
+                                    <span class="lang-name">{{ lang_name }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Search button -->
+                    <a href="#" class="icon-btn search-btn">
+                        <i class="fas fa-search"></i>
+                        <span class="btn-glow"></span>
+                    </a>
                 </div>
             </div>
-            
-            <a href="#" class="icon-btn search-btn">
-                <i class="fas fa-search"></i>
-                <span class="btn-glow"></span>
-            </a>
-        </div>
-    </nav>
+        </header>
 
-    <!-- Main Content -->
-    <main>
-        {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-            <div class="message {{ message.tags }}">
-                {{ message }}
-                <span class="close-message">&times;</span>
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Messages -->
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                    <span class="close-message">&times;</span>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Background elements -->
-    <div class="bg-elements">
-        <div class="bg-element gift-element"></div>
-        <div class="bg-element flower-element"></div>
-        <div class="bg-element basket-element"></div>
-        <div class="bg-element ribbon-element"></div>
+            {% endif %}
+            
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </main>
     </div>
 
-    <!-- JavaScript temel -->
+    <!-- JavaScript -->
     <script src="{% static 'js/auth.js' %}"></script>
-    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

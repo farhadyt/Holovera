@@ -1,51 +1,45 @@
 /* static/css/video-slider.css */
-/* Professional video slider with full screen coverage and smooth transitions */
+/* Full Screen Video Slider */
 
 :root {
     --primary-color: #4DF0FF;
     --primary-glow: rgba(77, 240, 255, 0.5);
     --dark-bg: #06090f;
-    --overlay-light: rgba(6, 9, 15, 0.2);
-    --overlay-medium: rgba(6, 9, 15, 0.3);
+    --header-height: 70px;
+    --slider-bg: rgba(6, 9, 15, 0.8);
+    --content-width: 50%;
+    --thumbnail-width: 320px;
     --transition-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
-    /* Fixed padding values to match navigation */
-    --padding-large: 50px;
-    --padding-medium: 30px;
-    --padding-small: 20px;
-    --padding-xsmall: 15px;
-}
+  }
   
-/* Main container with fixed positioning for full coverage */
-.carousel {
+  /* Main Carousel */
+  .carousel-container {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 10; /* Below header */
+  }
+  
+  /* Loading Overlay */
+  .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    background-color: var(--dark-bg);
-    z-index: 10; /* Lower than nav z-index */
-}
-  
-/* Loading overlay with proper positioning */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--dark-bg);
+    background: var(--dark-bg);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 950; /* Above carousel but below header */
     transition: opacity 0.8s ease;
-}
+  }
   
-.loading-spinner {
+  .loading-spinner {
     width: 60px;
     height: 60px;
     border: 5px solid rgba(77, 240, 255, 0.2);
@@ -53,536 +47,423 @@
     border-top-color: var(--primary-color);
     animation: spin 1s ease-in-out infinite;
     margin-bottom: 20px;
-}
+  }
   
-.loading-text {
+  .loading-text {
     color: white;
     font-size: 18px;
     font-family: 'Orbitron', sans-serif;
     letter-spacing: 2px;
-}
+  }
   
-/* Main video container with full dimensions */
-.carousel .list {
+  /* Slide List Container */
+  .carousel {
     position: absolute;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 1;
-}
+    padding-top: var(--header-height); /* Make room for the header */
+    box-sizing: border-box;
+  }
   
-/* Individual video items with full screen coverage */
-.carousel .list .item {
+  .carousel .list {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Individual Slide Items */
+  .carousel .list .item {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
     opacity: 0;
+    overflow: hidden;
     pointer-events: none;
-    z-index: 1;
     transition: opacity 1s ease-in-out;
-    background-color: var(--dark-bg);
-}
+    background: var(--dark-bg);
+  }
   
-/* Active item styling */
-.carousel .list .item:nth-child(1) {
+  .carousel .list .item:nth-child(1) {
     opacity: 1;
     pointer-events: auto;
-    z-index: 2;
-}
+  }
   
-/* Video styling with improved initial appearance and full coverage */
-.carousel .list .item .main-video {
+  /* Video Background */
+  .carousel .list .item .main-video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: brightness(0.7);
+  }
+  
+  /* Overlay for better text visibility */
+  .carousel .list .item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 9, 15, 0.7);
     z-index: 1;
-    transition: all 1s var(--transition-smooth);
-    transform-origin: center;
-    will-change: transform, filter, opacity;
-    filter: brightness(1.2) contrast(1.05);
-    opacity: 0;
-    animation: fadeInVideo 1s forwards;
-}
+  }
   
-/* Animation to fade in videos smoothly */
-@keyframes fadeInVideo {
-    0% {
-      opacity: 0;
-      filter: brightness(1) contrast(1);
-    }
-    100% {
-      opacity: 1;
-      filter: brightness(1.2) contrast(1.05);
-    }
-}
-  
-/* Video overlay with reduced opacity and full coverage */
-.carousel .list .item::before {
-    content: '';
+  /* Content Box */
+  .carousel .list .item .content {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(6, 9, 15, 0.8);
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    width: var(--content-width);
+    max-width: 800px;
     z-index: 2;
-    pointer-events: none;
-    opacity: 1;
-    animation: none;
-}
-
-  
-/* Gradient overlay with better fade-in and full coverage */
-.carousel .list .item::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      to bottom, 
-      var(--overlay-light) 0%, 
-      transparent 50%, 
-      var(--overlay-light) 100%
-    );
-    z-index: 2;
-    pointer-events: none;
-    opacity: 0;
-    animation: fadeInOverlay 1.5s forwards;
-    animation-delay: 0.3s;
-}
-  
-@keyframes fadeInOverlay {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-}
-  
-/* Ensure first video has proper styling and full size */
-.carousel .list .item:nth-child(1) .main-video:not(.animating-out):not(.animating-in) {
-    filter: brightness(1.2) contrast(1.05);
-    transform: scale(1.05);
-}
-  
-/* Transitioning state with better z-index management */
-.carousel.transitioning .list .item:nth-child(1),
-.carousel.transitioning .list .item:nth-child(2) {
-    opacity: 1;
-    z-index: 2;
-}
-  
-/* Content styling with better visibility */
-.carousel .list .item .content {
-    position: absolute;
-    top: 20%;
-    width: 1140px;
-    max-width: 80%;
-    left: 28%;
-    transform: translateX(-50%);
-    box-sizing: border-box;
-    padding-right: 30%;
-    z-index: 3;
     color: white;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-    display: block;
-}
+    padding-right: 20px;
+  }
   
-/* Content animations with improved timing */
-.carousel .list .item .content .author {
+  /* Content Animations */
+  .carousel .list .item .content .author {
     font-size: 1.2em;
     letter-spacing: 10px;
     text-transform: uppercase;
     margin-bottom: 10px;
+    animation: fadeIn 0.8s forwards;
+    animation-delay: 0.2s;
     opacity: 0;
-    transform: translateY(30px);
-    animation-name: showContent;
-    animation-duration: 0.8s;
-    animation-delay: 0.5s;
-    animation-fill-mode: forwards;
-}
+  }
   
-.carousel .list .item .content .title {
-    font-size: 5em;
+  .carousel .list .item .content .title {
+    font-size: 4em;
     font-weight: bold;
     line-height: 1.3em;
     margin-bottom: 10px;
+    animation: fadeIn 0.8s forwards;
+    animation-delay: 0.4s;
     opacity: 0;
-    transform: translateY(30px);
-    animation-name: showContent;
-    animation-duration: 0.8s;
-    animation-delay: 0.7s;
-    animation-fill-mode: forwards;
-}
+  }
   
-.carousel .list .item .content .topic {
+  .carousel .list .item .content .topic {
     color: var(--primary-color);
     text-shadow: 0 0 10px var(--primary-glow);
-}
+  }
   
-.carousel .list .item .content .des {
+  .carousel .list .item .content .des {
     font-size: 1.15em;
     line-height: 1.6em;
     margin-bottom: 20px;
+    animation: fadeIn 0.8s forwards;
+    animation-delay: 0.6s;
     opacity: 0;
-    transform: translateY(30px);
-    animation-name: showContent;
-    animation-duration: 0.8s;
-    animation-delay: 0.9s;
-    animation-fill-mode: forwards;
-}
+  }
   
-.carousel .list .item .content .buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 130px);
-    grid-template-rows: 40px;
+  .carousel .list .item .content .buttons {
+    display: flex;
     gap: 15px;
-    margin-top: 20px;
+    animation: fadeIn 0.8s forwards;
+    animation-delay: 0.8s;
     opacity: 0;
-    transform: translateY(30px);
-    animation-name: showContent;
-    animation-duration: 0.8s;
-    animation-delay: 1.1s;
-    animation-fill-mode: forwards;
-}
+  }
   
-/* Button styling with better appearance */
-.carousel .list .item .content .buttons button {
-    border: none;
-    background-color: var(--primary-color);
-    padding: 8px;
-    font-family: 'Montserrat', sans-serif;
+  /* Action Buttons */
+  .carousel .list .item .content .buttons button {
+    padding: 12px 24px;
     font-weight: 600;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    color: #06090f;
     border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(77, 240, 255, 0.3);
-}
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
   
-.carousel .list .item .content .buttons button:nth-child(2) {
-    background-color: transparent;
+  .carousel .list .item .content .buttons button:nth-child(1) {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.3);
+  }
+  
+  .carousel .list .item .content .buttons button:nth-child(2) {
+    background: transparent;
     border: 1px solid var(--primary-color);
     color: white;
-}
+  }
   
-.carousel .list .item .content .buttons button:hover {
+  .carousel .list .item .content .buttons button:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px var(--primary-glow);
-}
+  }
   
-.carousel .list .item .content .buttons button:nth-child(1):hover {
-    background-color: #5df8ff;
-}
-  
-.carousel .list .item .content .buttons button:nth-child(2):hover {
-    background-color: rgba(77, 240, 255, 0.1);
-}
-  
-/* Thumbnail container with improved positioning - aligned to match the navigation */
-.carousel .thumbnail {
+  /* Thumbnails */
+  .carousel .thumbnail {
     position: absolute;
-    right: var(--padding-large); /* Same padding as navigation */
-    top: 0;
-    height: 100vh;
-    width: 320px;
-    padding: 80px 0 100px 0;
-    box-sizing: border-box;
+    right: 50px;
+    top: var(--header-height);
+    width: var(--thumbnail-width);
+    height: calc(100vh - var(--header-height) - 100px);
     display: flex;
     flex-direction: column;
-    gap: 20px;
     justify-content: center;
-    z-index: 50; /* Higher than content but lower than navbar */
-}
+    gap: 20px;
+    z-index: 20;
+    padding: 20px 0;
+    overflow-y: auto;
+  }
   
-/* Thumbnail items with improved visuals */
-.carousel .thumbnail .item {
-    width: 280px;
+  .carousel .thumbnail .item {
+    width: 100%;
     height: 160px;
-    flex-shrink: 0;
-    position: relative;
     border-radius: 10px;
     overflow: hidden;
-    transition: all 0.3s ease;
     cursor: pointer;
+    transition: all 0.3s ease;
     opacity: 0.6;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border: 2px solid transparent;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-}
+  }
   
-.carousel .thumbnail .item:hover {
+  .carousel .thumbnail .item:hover {
     opacity: 1;
-    transform: scale(1.02);
-}
+    transform: translateX(-5px);
+  }
   
-.carousel .thumbnail .item.active {
+  .carousel .thumbnail .item.active {
     opacity: 1;
     border-color: var(--primary-color);
-    box-shadow: 0 0 15px var(--primary-glow);
-}
+    box-shadow: 0 0 20px var(--primary-glow);
+  }
   
-/* Thumbnail videos with proper brightness */
-.carousel .thumbnail .item video {
+  .carousel .thumbnail .item video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(1.2) !important;
-    transform: none !important;
-}
+  }
   
-/* Thumbnail content styling */
-.carousel .thumbnail .item .content {
+  .carousel .thumbnail .item .content {
     position: absolute;
-    inset: auto 10px 10px 10px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
     color: white;
-    font-size: 0.8em;
-    text-shadow: 0 2px 5px black;
-    display: block;
-    pointer-events: none;
-}
+    font-size: 0.9em;
+    font-weight: 500;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+  }
   
-.carousel .thumbnail .item .content .title {
-    font-weight: bold;
-}
-  
-/* Navigation controls with improved styling and positioning */
-.carousel .arrows {
+  /* Navigation Arrows */
+  .carousel .arrows {
     position: absolute;
     bottom: 30px;
-    right: var(--padding-large); /* Aligned with nav padding */
-    width: 320px;
+    right: 50px;
     display: flex;
-    justify-content: center;
     gap: 15px;
-    z-index: 50; /* Higher than content but lower than navbar */
-    box-sizing: border-box;
-}
+    z-index: 30;
+    width: var(--thumbnail-width);
+    justify-content: center;
+  }
   
-.carousel .arrows button {
+  .carousel .arrows button {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: rgba(77, 240, 255, 0.3);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(77, 240, 255, 0.5);
+    background: rgba(77, 240, 255, 0.2);
+    border: 1px solid var(--primary-color);
     color: white;
-    font-weight: bold;
     font-size: 18px;
-    transition: all 0.3s ease;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
+    transition: all 0.3s ease;
+  }
   
-.carousel .arrows button:hover {
-    background-color: rgba(77, 240, 255, 0.8);
-    color: #06090f;
-    box-shadow: 0 0 15px var(--primary-glow);
-    transform: translateY(-3px);
-}
+  .carousel .arrows button:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    box-shadow: 0 0 20px var(--primary-glow);
+    transform: translateY(-5px);
+  }
   
-/* Time bar with better appearance and positioning */
-.carousel .time {
+  /* Progress Bar */
+  .carousel .time {
     position: absolute;
-    z-index: 50; /* Higher than content but lower than navbar */
     bottom: 0;
     left: 0;
     width: 100%;
     height: 3px;
-    background-color: rgba(255, 255, 255, 0.1);
-}
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 25;
+  }
   
-.carousel .time-progress {
+  .carousel .time-progress {
     height: 100%;
-    width: 100%;
-    background-color: var(--primary-color);
+    width: 0;
+    background: var(--primary-color);
     box-shadow: 0 0 10px var(--primary-glow);
     transition: width 7s linear;
-}
+  }
   
-/* Animations with improved smoothness */
-@keyframes showContent {
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
     to {
       opacity: 1;
       transform: translateY(0);
-      filter: blur(0);
     }
-}
+  }
   
-@keyframes timeRunning {
-    to {
-      width: 0;
-    }
-}
-  
-@keyframes spin {
+  @keyframes spin {
     to {
       transform: rotate(360deg);
     }
-}
+  }
   
-/* Improved content transitions */
-@keyframes fadeOut {
-    from {
-      opacity: 1;
-      transform: translateY(0);
+  /* Responsive Adjustments */
+  @media (max-width: 1400px) {
+    :root {
+      --content-width: 45%;
     }
-    to {
-      opacity: 0;
-      transform: translateY(-20px);
+  }
+  
+  @media (max-width: 1200px) {
+    :root {
+      --content-width: 50%;
+      --thumbnail-width: 280px;
     }
-}
-  
-.carousel .list .item .content.fade-out .author,
-.carousel .list .item .content.fade-out .title,
-.carousel .list .item .content.fade-out .des,
-.carousel .list .item .content.fade-out .buttons {
-    animation: fadeOut 0.5s forwards !important;
-}
-  
-/* Increase all animation delays by 1 second to create proper spacing */
-.carousel .list .item .content .author {
-    animation-delay: 1.5s;
-}
-  
-.carousel .list .item .content .title {
-    animation-delay: 1.7s;
-}
-  
-.carousel .list .item .content .des {
-    animation-delay: 1.9s;
-}
-  
-.carousel .list .item .content .buttons {
-    animation-delay: 2.1s;
-}
-
-/* Responsive design with improved vertical spacing */
-@media screen and (max-width: 992px) {
+    
     .carousel .list .item .content {
-        padding-right: 0;
-        top: 20%;
+      left: 8%;
     }
     
     .carousel .list .item .content .title {
-        font-size: 3.5em;
-    }
-    
-    .carousel .list .item .content .buttons {
-        grid-template-columns: repeat(2, 110px);
+      font-size: 3.5em;
     }
     
     .carousel .thumbnail {
-        width: 270px;
-        right: var(--padding-medium);
-    }
-    
-    .carousel .thumbnail .item {
-        width: 240px;
-        height: 135px;
+      right: 30px;
     }
     
     .carousel .arrows {
-        width: 270px;
-        right: var(--padding-medium);
+      right: 30px;
     }
-}
+  }
   
-@media screen and (max-width: 767px) {
+  @media (max-width: 992px) {
+    :root {
+      --content-width: 60%;
+      --thumbnail-width: 240px;
+    }
+    
     .carousel .list .item .content {
-        padding-right: 0;
-        top: 15%;
-        left: 20%;
+      left: 5%;
     }
     
     .carousel .list .item .content .title {
-        font-size: 2.5em;
-    }
-    
-    .carousel .list .item .content .buttons {
-        grid-template-columns: repeat(2, 100px);
+      font-size: 3em;
     }
     
     .carousel .thumbnail {
-        width: 200px;
-        right: var(--padding-small);
-        gap: 15px;
+      right: 20px;
     }
     
     .carousel .thumbnail .item {
-        width: 180px;
-        height: 100px;
+      height: 140px;
     }
     
     .carousel .arrows {
-        width: 200px;
-        right: var(--padding-small);
-        bottom: 20px;
+      right: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    :root {
+      --content-width: 70%;
+      --thumbnail-width: 200px;
     }
     
-    .carousel .arrows button {
-        width: 40px;
-        height: 40px;
+    .carousel .list .item .content {
+      left: 5%;
     }
-}
-  
-@media screen and (max-width: 576px) {
+    
     .carousel .list .item .content .title {
-        font-size: 2em;
+      font-size: 2.5em;
     }
     
     .carousel .list .item .content .author {
-        font-size: 1em;
-        letter-spacing: 5px;
+      font-size: 1em;
+      letter-spacing: 5px;
     }
     
     .carousel .list .item .content .des {
-        font-size: 0.9em;
-    }
-    
-    .carousel .list .item .content .buttons {
-        grid-template-columns: repeat(2, 90px);
-        grid-template-rows: 32px;
+      font-size: 1em;
     }
     
     .carousel .thumbnail {
-        width: 160px;
-        right: var(--padding-xsmall);
-        gap: 10px;
+      right: 15px;
     }
     
     .carousel .thumbnail .item {
-        width: 140px;
-        height: 80px;
+      height: 120px;
     }
     
     .carousel .arrows {
-        width: 160px;
-        right: var(--padding-xsmall);
-        bottom: 15px;
+      right: 15px;
+      bottom: 20px;
     }
     
     .carousel .arrows button {
-        width: 35px;
-        height: 35px;
-        font-size: 14px;
+      width: 45px;
+      height: 45px;
     }
-}
+  }
+  
+  @media (max-width: 576px) {
+    :root {
+      --content-width: 85%;
+      --thumbnail-width: 160px;
+    }
+    
+    .carousel .list .item .content {
+      left: 5%;
+      padding-right: 10px;
+    }
+    
+    .carousel .list .item .content .title {
+      font-size: 2em;
+    }
+    
+    .carousel .list .item .content .buttons {
+      flex-direction: column;
+      width: 140px;
+    }
+    
+    .carousel .list .item .content .buttons button {
+      padding: 10px;
+    }
+    
+    .carousel .thumbnail {
+      right: 10px;
+    }
+    
+    .carousel .thumbnail .item {
+      height: 90px;
+    }
+    
+    .carousel .arrows {
+      right: 10px;
+      bottom: 15px;
+    }
+    
+    .carousel .arrows button {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+  }

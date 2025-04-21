@@ -1,5 +1,5 @@
 // static/js/video-slider.js
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const carousel = document.querySelector('.carousel');
     const list = document.querySelector('.list');
@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create thumbnails for each video
             items.forEach((item, index) => {
                 const videoSrc = item.querySelector('video source').getAttribute('src');
+                const title = item.querySelector('.author').textContent;
                 
                 const thumbnailItem = document.createElement('div');
                 thumbnailItem.className = `item ${index === currentIndex ? 'active' : ''}`;
@@ -58,12 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Add content info
                 const content = document.createElement('div');
                 content.className = 'content';
+                content.textContent = title;
                 
-                const title = document.createElement('div');
-                title.className = 'title';
-                title.textContent = getTitleForIndex(index);
-                
-                content.appendChild(title);
                 thumbnailItem.appendChild(content);
                 
                 // Add click event to select this thumbnail
@@ -82,18 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
-    }
-    
-    // Get title for a specific index
-    function getTitleForIndex(index) {
-        const titles = [
-            "Sənətkarlar üçün",
-            "Yaradıcılar üçün",
-            "Hədiyyə sevənlər üçün", 
-            "İlham axtaranlar üçün",
-            "Biznes tərəfdaşları üçün"
-        ];
-        return titles[index] || "";
     }
     
     // Set up event listeners
@@ -133,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Ensure the current video is playing
         const currentVideo = items[currentIndex].querySelector('video');
         if (currentVideo) {
+            currentVideo.currentTime = 0;
             currentVideo.play().catch(e => {
                 console.log('Main video autoplay prevented:', e);
             });
@@ -141,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Make sure the current item is visible
         items.forEach((item, i) => {
             item.style.opacity = i === currentIndex ? '1' : '0';
-            item.style.zIndex = i === currentIndex ? '2' : '1';
+            item.style.pointerEvents = i === currentIndex ? 'auto' : 'none';
         });
     }
     
@@ -162,12 +148,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset time bar
         resetTimeBar();
         
-        // Fade out current content if any
-        const previousContent = items[previousIndex].querySelector('.content');
-        if (previousContent) {
-            previousContent.classList.add('fade-out');
-        }
-        
         // Play the new video
         if (currentVideo) {
             currentVideo.currentTime = 0;
@@ -184,13 +164,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Show the new video
             items.forEach((item, i) => {
                 item.style.opacity = i === currentIndex ? '1' : '0';
-                item.style.zIndex = i === currentIndex ? '2' : '1';
+                item.style.pointerEvents = i === currentIndex ? 'auto' : 'none';
             });
-            
-            // Remove fade-out class
-            if (previousContent) {
-                previousContent.classList.remove('fade-out');
-            }
             
             // Reset the transitioning state
             isTransitioning = false;
@@ -215,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Reset and start the time bar animation
     function resetTimeBar() {
         if (timeProgress) {
-            // Reset time bar
+            // Reset and set width
             timeProgress.style.transition = 'none';
             timeProgress.style.width = '100%';
             
