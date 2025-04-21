@@ -21,19 +21,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Logo hover effect
-    const logo = document.querySelector('.logo a');
-    const logoGlow = document.querySelector('.logo-glow');
+    // Logo hover effect - IMPROVED: More robust selector to work across all pages
+    const logos = document.querySelectorAll('.logo a, .header-container .logo a');
     
-    if (logo && logoGlow) {
-        logo.addEventListener('mouseenter', function() {
-            logoGlow.classList.add('active');
-        });
+    logos.forEach(logo => {
+        const logoGlow = logo.querySelector('.logo-glow');
         
-        logo.addEventListener('mouseleave', function() {
-            logoGlow.classList.remove('active');
-        });
-    }
+        if (logoGlow) {
+            logo.addEventListener('mouseenter', function() {
+                logoGlow.classList.add('active');
+            });
+            
+            logo.addEventListener('mouseleave', function() {
+                logoGlow.classList.remove('active');
+            });
+        }
+    });
     
     // Add scroll effect to navigation
     const nav = document.querySelector('.integrated-nav');

@@ -5,121 +5,679 @@
 {% block title %}Holovera - {% trans "Sevgini Dizayn Et" %}{% endblock %}
 
 {% block extra_css %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/video-slider.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing_sections.css' %}">
+<style>
+    /* Critical CSS to ensure scrolling works */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto !important; /* Force enable scrolling */
+    }
+
+    /* Hero section with video */
+    .hero-section {
+        position: relative;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* Fix video container */
+    .video-slider-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* Landing sections start after hero */
+    .landing-sections {
+        position: relative;
+        z-index: 10;
+        background-color: var(--dark-bg);
+    }
+
+    /* First section transition */
+    .about-section::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        background: linear-gradient(to bottom, transparent, var(--dark-bg));
+        z-index: 5;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<!-- Loading Overlay -->
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Holovera yüklənir...</div>
+<!-- Hero section with video slider -->
+<div class="hero-section">
+    <div class="video-slider-container">
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Holovera yüklənir...</div>
+        </div>
+
+        <!-- Full Page Carousel -->
+        <div class="carousel-container">
+            <div class="carousel">
+                <!-- Main video list -->
+                <div class="list">
+                    <!-- 1-ci element -->
+                    <div class="item">
+                        <video class="main-video" muted playsinline loop>
+                            <source src="{% static 'videos/video1.mp4' %}" type="video/mp4">
+                        </video>
+                        <div class="content">
+                            <div class="author">{% trans "Sənətkarlar üçün" %}</div>
+                            <div class="title">{% trans "Əl işlərinizi" %} <span class="topic">{% trans "dünyaya təqdim edin" %}</span></div>
+                            <div class="des">{% trans "Sən artıq mağaza axtarmalı deyilsən! Sadəcə mobil telefonunla məhsulunun 2D şəklini çək və platformaya yüklə. Holovera sistemi bu şəkli 3D formatına avtomatik çevirir və dünya bazarlarına çıxarır." %}</div>
+                            <div class="buttons">
+                                <button>{% trans "Başla" %}</button>
+                                <button>{% trans "Daha Ətraflı" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 2-ci element -->
+                    <div class="item">
+                        <video class="main-video" muted playsinline loop>
+                            <source src="{% static 'videos/video2.mp4' %}" type="video/mp4">
+                        </video>
+                        <div class="content">
+                            <div class="author">{% trans "Yaradıcılar üçün" %}</div>
+                            <div class="title">{% trans "İstedadınla" %} <span class="topic">{% trans "qazanc əldə et" %}</span></div>
+                            <div class="des">{% trans "Sən Holovera-nın ruhusa! Mövcud məhsulları seçərək onların kombinasiyasından unikal hədiyyə dəstləri hazırlaya bilərsən. Hər bir dizayn sənin imzan altında satışa çıxarılır və platforma sənin dizayner haqqını avtomatik qiymətə əlavə edir." %}</div>
+                            <div class="buttons">
+                                <button>{% trans "Başla" %}</button>
+                                <button>{% trans "Daha Ətraflı" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 3-cü element -->
+                    <div class="item">
+                        <video class="main-video" muted playsinline loop>
+                            <source src="{% static 'videos/video3.mp4' %}" type="video/mp4">
+                        </video>
+                        <div class="content">
+                            <div class="author">{% trans "Hədiyyə sevənlər üçün" %}</div>
+                            <div class="title">{% trans "Hissini" %} <span class="topic">{% trans "əlavə et" %}</span></div>
+                            <div class="des">{% trans "Sən sadəcə hədiyyə almırsan – sən xatirə yaradırsan. Platformaya daxil olaraq hazır dizayn edilmiş hədiyyələri bir kliklə sifariş edə bilərsən. İstəyirsənsə, özün interaktiv 3D konstruktorla hədiyyəni sıfırdan yarada bilərsən. Özəl olaraq gizli QR kod əlavə et və içərisinə mətn, səs və ya video mesaj yerləşdir." %}</div>
+                            <div class="buttons">
+                                <button>{% trans "Başla" %}</button>
+                                <button>{% trans "Daha Ətraflı" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 4-cü element -->
+                    <div class="item">
+                        <video class="main-video" muted playsinline loop>
+                            <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
+                        </video>
+                        <div class="content">
+                            <div class="author">{% trans "İlham axtaranlar üçün" %}</div>
+                            <div class="title">{% trans "İlhamın" %} <span class="topic">{% trans "qaynağı ol" %}</span></div>
+                            <div class="des">{% trans "Holovera ilə yeni dizayn trendlərini kəşf edin, başqalarının yaratdığı unikal işləri izləyin və öz yaradıcılığınızı artırın. Hər yeni dizayn və hər yeni kompozisiya ilə dünyaya töhfə verin və başqalarına ilham qaynağı olun." %}</div>
+                            <div class="buttons">
+                                <button>{% trans "Başla" %}</button>
+                                <button>{% trans "Daha Ətraflı" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 5-ci element -->
+                    <div class="item">
+                        <video class="main-video" muted playsinline loop>
+                            <source src="{% static 'videos/video5.mp4' %}" type="video/mp4">
+                        </video>
+                        <div class="content">
+                            <div class="author">{% trans "Biznes tərəfdaşları üçün" %}</div>
+                            <div class="title">{% trans "Biznesinizi" %} <span class="topic">{% trans "böyüdün" %}</span></div>
+                            <div class="des">{% trans "Holovera ilə biznesinizi böyüdün, yeni imkanlar qazanın və satışlarınızı artırın. Məhsullarınızı 3D formatında təqdim etməklə müştərilərinizə unudulmaz alış-veriş təcrübəsi yaşadın və onların loyallığını qazanın." %}</div>
+                            <div class="buttons">
+                                <button>{% trans "Başla" %}</button>
+                                <button>{% trans "Daha Ətraflı" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thumbnails -->
+                <div class="thumbnail">
+                    <!-- Will be populated by JS -->
+                </div>
+                
+                <!-- Navigation Arrows -->
+                <div class="arrows">
+                    <button id="prev"><i class="fas fa-chevron-left"></i></button>
+                    <button id="next"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="time">
+                    <div class="time-progress" id="timeProgress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Full Page Carousel -->
-<div class="carousel-container">
-    <div class="carousel">
-        <!-- Main video list -->
-        <div class="list">
-            <!-- 1-ci element -->
-            <div class="item">
-                <video class="main-video" muted playsinline loop>
-                    <source src="{% static 'videos/video1.mp4' %}" type="video/mp4">
-                </video>
-                <div class="content">
-                    <div class="author">{% trans "Sənətkarlar üçün" %}</div>
-                    <div class="title">{% trans "Əl işlərinizi" %} <span class="topic">{% trans "dünyaya təqdim edin" %}</span></div>
-                    <div class="des">{% trans "Sən artıq mağaza axtarmalı deyilsən! Sadəcə mobil telefonunla məhsulunun 2D şəklini çək və platformaya yüklə. Holovera sistemi bu şəkli 3D formatına avtomatik çevirir və dünya bazarlarına çıxarır." %}</div>
-                    <div class="buttons">
-                        <button>{% trans "Başla" %}</button>
-                        <button>{% trans "Daha Ətraflı" %}</button>
-                    </div>
-                </div>
+<!-- Main landing sections after the video slider -->
+<div class="landing-sections">
+    <!-- About Section -->
+    <section id="about" class="section about-section">
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Haqqımızda" %}</h2>
+                <p class="section-subtitle">{% trans "Holovera ilə yaradıcılığınızı və hisslərinizi ifadə edin. 3D buket dizayn platforması ilə unudulmaz anlar yaradın." %}</p>
             </div>
             
-            <!-- 2-ci element -->
-            <div class="item">
-                <video class="main-video" muted playsinline loop>
-                    <source src="{% static 'videos/video2.mp4' %}" type="video/mp4">
-                </video>
-                <div class="content">
-                    <div class="author">{% trans "Yaradıcılar üçün" %}</div>
-                    <div class="title">{% trans "İstedadınla" %} <span class="topic">{% trans "qazanc əldə et" %}</span></div>
-                    <div class="des">{% trans "Sən Holovera-nın ruhusa! Mövcud məhsulları seçərək onların kombinasiyasından unikal hədiyyə dəstləri hazırlaya bilərsən. Hər bir dizayn sənin imzan altında satışa çıxarılır və platforma sənin dizayner haqqını avtomatik qiymətə əlavə edir." %}</div>
-                    <div class="buttons">
-                        <button>{% trans "Başla" %}</button>
-                        <button>{% trans "Daha Ətraflı" %}</button>
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="about-feature">
+                        <h3 class="about-feature-title">
+                            <i class="fas fa-magic"></i>
+                            {% trans "İnnovativ Dizayn" %}
+                        </h3>
+                        <p class="about-feature-text">
+                            {% trans "Holovera platforması ilə interaktiv 3D dizayn interfeysi vasitəsilə sıfırdan öz unikal buketlərinizi yarada bilərsiniz. Bitkini, rəngi və aksesuarlarını seçin - hər şey sizin zövqünüzdən asılıdır." %}
+                        </p>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <h3 class="about-feature-title">
+                            <i class="fas fa-qrcode"></i>
+                            {% trans "Gizli Mesajlar" %}
+                        </h3>
+                        <p class="about-feature-text">
+                            {% trans "Holovera buketi sadəcə gözəl görünmür - o həm də xüsusi mesajlarınızı daşıyır. QR texnologiyası ilə buketinizə gizli mesaj, foto və ya video əlavə edə bilərsiniz ki, yalnız həmin şəxs bunu görsün." %}
+                        </p>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <h3 class="about-feature-title">
+                            <i class="fas fa-handshake"></i>
+                            {% trans "İstedadları Dəstəkləyirik" %}
+                        </h3>
+                        <p class="about-feature-text">
+                            {% trans "Holovera ilə əl işi yaradan sənətkarlar və yaradıcı dizaynerlər öz istedadlarını bütün dünyaya göstərə bilərlər. Platformamız vasitəsilə öz yaradıcılığınızı gəlirə çevirə bilərsiniz." %}
+                        </p>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 3-cü element -->
-            <div class="item">
-                <video class="main-video" muted playsinline loop>
-                    <source src="{% static 'videos/video3.mp4' %}" type="video/mp4">
-                </video>
-                <div class="content">
-                    <div class="author">{% trans "Hədiyyə sevənlər üçün" %}</div>
-                    <div class="title">{% trans "Hissini" %} <span class="topic">{% trans "əlavə et" %}</span></div>
-                    <div class="des">{% trans "Sən sadəcə hədiyyə almırsan – sən xatirə yaradırsan. Platformaya daxil olaraq hazır dizayn edilmiş hədiyyələri bir kliklə sifariş edə bilərsən. İstəyirsənsə, özün interaktiv 3D konstruktorla hədiyyəni sıfırdan yarada bilərsən. Özəl olaraq gizli QR kod əlavə et və içərisinə mətn, səs və ya video mesaj yerləşdir." %}</div>
-                    <div class="buttons">
-                        <button>{% trans "Başla" %}</button>
-                        <button>{% trans "Daha Ətraflı" %}</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 4-cü element -->
-            <div class="item">
-                <video class="main-video" muted playsinline loop>
-                    <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
-                </video>
-                <div class="content">
-                    <div class="author">{% trans "İlham axtaranlar üçün" %}</div>
-                    <div class="title">{% trans "İlhamın" %} <span class="topic">{% trans "qaynağı ol" %}</span></div>
-                    <div class="des">{% trans "Holovera ilə yeni dizayn trendlərini kəşf edin, başqalarının yaratdığı unikal işləri izləyin və öz yaradıcılığınızı artırın. Hər yeni dizayn və hər yeni kompozisiya ilə dünyaya töhfə verin və başqalarına ilham qaynağı olun." %}</div>
-                    <div class="buttons">
-                        <button>{% trans "Başla" %}</button>
-                        <button>{% trans "Daha Ətraflı" %}</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 5-ci element -->
-            <div class="item">
-                <video class="main-video" muted playsinline loop>
-                    <source src="{% static 'videos/video5.mp4' %}" type="video/mp4">
-                </video>
-                <div class="content">
-                    <div class="author">{% trans "Biznes tərəfdaşları üçün" %}</div>
-                    <div class="title">{% trans "Biznesinizi" %} <span class="topic">{% trans "böyüdün" %}</span></div>
-                    <div class="des">{% trans "Holovera ilə biznesinizi böyüdün, yeni imkanlar qazanın və satışlarınızı artırın. Məhsullarınızı 3D formatında təqdim etməklə müştərilərinizə unudulmaz alış-veriş təcrübəsi yaşadın və onların loyallığını qazanın." %}</div>
-                    <div class="buttons">
-                        <button>{% trans "Başla" %}</button>
-                        <button>{% trans "Daha Ətraflı" %}</button>
+                
+                <div class="about-image">
+                    <div class="about-image-container">
+                        <img src="{% static 'images/about-3d-bouquet.jpg' %}" alt="3D Buket Dizayn">
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Thumbnails -->
-        <div class="thumbnail">
-            <!-- Will be populated by JS -->
+        <div class="about-bg"></div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section id="how" class="section how-section">
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Necə İşləyir" %}</h2>
+                <p class="section-subtitle">{% trans "Holovera platforması istifadəsi çox rahatdır. Sadəcə aşağıdakı addımları izləyərək əsl şah əsərinizi yarada bilərsiniz." %}</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h3 class="step-title">{% trans "Qeydiyyatdan keçin" %}</h3>
+                        <p class="step-description">
+                            {% trans "Holovera platformasında bir hesab yaradın və öz profil məlumatlarınızı tamamlayın. Bu sizə platformada yaradıcılıq etmək imkanı verir." %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 class="step-title">{% trans "Dizayn seçimi" %}</h3>
+                        <p class="step-description">
+                            {% trans "Öz buketinizi dizayn edin və ya hazır şablonlar arasından seçim edin. Bütün detalları istəyinizə uyğun tənzimləyə bilərsiniz." %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3 class="step-title">{% trans "Sifarişi tamamlayın" %}</h3>
+                        <p class="step-description">
+                            {% trans "Dizaynı tamamladıqdan sonra sifarişinizi verin. İstəsəniz, QR kod vasitəsilə özəl mesaj əlavə edə bilərsiniz." %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3 class="step-title">{% trans "Çatdırılma" %}</h3>
+                        <p class="step-description">
+                            {% trans "Yaratdığınız unikal hədiyyə, istədiyiniz tarixdə və ünvanda sevdiyiniz insana çatdırılacaq." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <!-- Navigation Arrows -->
-        <div class="arrows">
-            <button id="prev"><i class="fas fa-chevron-left"></i></button>
-            <button id="next"><i class="fas fa-chevron-right"></i></button>
+        <div class="how-bg"></div>
+    </section>
+    
+    <!-- Audience Section -->
+    <section id="audience" class="section audience-section">
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Kimin üçündür" %}</h2>
+                <p class="section-subtitle">{% trans "Holovera platforması müxtəlif istifadəçilər üçün geniş imkanlar yaradır. Siz də öz məqsədinizə uyğun olaraq platformadan faydalana bilərsiniz." %}</p>
+            </div>
+            
+            <div class="audience-cards">
+                <div class="audience-card">
+                    <div class="audience-card-image">
+                        <img src="{% static 'images/audience-artisans.jpg' %}" alt="Sənətkarlar">
+                    </div>
+                    <div class="audience-card-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="audience-card-content">
+                        <h3 class="audience-card-title">{% trans "Sənətkarlar" %}</h3>
+                        <p class="audience-card-text">
+                            {% trans "Əl işlərini və yaratdığı məhsulları platformada sata bilən sənətkarlar üçün yeni bir bazar. Öz yaradıcılığınızı bütün dünya ilə paylaşın və bunu pula çevirin." %}
+                        </p>
+                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
+                    </div>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-card-image">
+                        <img src="{% static 'images/audience-designers.jpg' %}" alt="Dizaynerlər">
+                    </div>
+                    <div class="audience-card-icon">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <div class="audience-card-content">
+                        <h3 class="audience-card-title">{% trans "Dizaynerlər" %}</h3>
+                        <p class="audience-card-text">
+                            {% trans "Sizin yaradıcı təxəyyülünüz buketlərə həyat verə bilər. Platformada hazır məhsulları birləşdirərək öz dizaynlarınızı yaradın və hər satışdan qazanc əldə edin." %}
+                        </p>
+                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
+                    </div>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-card-image">
+                        <img src="{% static 'images/audience-customers.jpg' %}" alt="Müştərilər">
+                    </div>
+                    <div class="audience-card-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="audience-card-content">
+                        <h3 class="audience-card-title">{% trans "Müştərilər" %}</h3>
+                        <p class="audience-card-text">
+                            {% trans "Ənənəvi hədiyyələrdən fərqli, tam şəxsi və unikal hədiyyə vermək istəyənlər üçün. Hədiyyənizə məxsusi məna və hiss qatın." %}
+                        </p>
+                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Showcase Section -->
+    <section id="showcase" class="section showcase-section">
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Nümunələr" %}</h2>
+                <p class="section-subtitle">{% trans "Platformamızda yaradılan bəzi unikal və fərqli işlərlə tanış olun. Bu nümunələr sizə də ilham verə bilər." %}</p>
+            </div>
+            
+            <div class="showcase-tabs">
+                <div class="showcase-tab active" data-filter="all">{% trans "Hamısı" %}</div>
+                <div class="showcase-tab" data-filter="bouquets">{% trans "Buketlər" %}</div>
+                <div class="showcase-tab" data-filter="arrangements">{% trans "Kompozisiyalar" %}</div>
+                <div class="showcase-tab" data-filter="gifts">{% trans "Hədiyyələr" %}</div>
+            </div>
+            
+            <div class="showcase-grid">
+                <div class="showcase-item" data-category="bouquets">
+                    <img src="{% static 'images/showcase-1.jpg' %}" alt="Buket nümunəsi 1">
+                    <div class="showcase-overlay">
+                        <h3 class="showcase-title">{% trans "Bahar xatirəsi" %}</h3>
+                        <p class="showcase-designer">{% trans "Dizayner: Aysel Məmmədova" %}</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item" data-category="arrangements">
+                    <img src="{% static 'images/showcase-2.jpg' %}" alt="Kompozisiya nümunəsi 1">
+                    <div class="showcase-overlay">
+                        <h3 class="showcase-title">{% trans "Yaz kompozisiyası" %}</h3>
+                        <p class="showcase-designer">{% trans "Dizayner: Elşən Quliyev" %}</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item" data-category="gifts">
+                    <img src="{% static 'images/showcase-3.jpg' %}" alt="Hədiyyə nümunəsi 1">
+                    <div class="showcase-overlay">
+                        <h3 class="showcase-title">{% trans "Sevgi paketi" %}</h3>
+                        <p class="showcase-designer">{% trans "Dizayner: Leyla Əliyeva" %}</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item" data-category="bouquets">
+                    <img src="{% static 'images/showcase-4.jpg' %}" alt="Buket nümunəsi 2">
+                    <div class="showcase-overlay">
+                        <h3 class="showcase-title">{% trans "Mavi xəyallar" %}</h3>
+                        <p class="showcase-designer">{% trans "Dizayner: Səbinə Hüseynli" %}</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item" data-category="arrangements">
+                    <img src="{% static 'images/showcase-5.jpg' %}" alt="Kompozisiya nümunəsi 2">
+                    <div class="showcase-overlay">
+                        <h3 class="showcase-title">{% trans "Gecə parıltısı" %}</h3>
+                        <p class="showcase-designer">{% trans "Dizayner: Kamran Babayev" %}</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item" data-category="gifts">
+                    <img src="{% static 'images/showcase-6.jpg' %}" alt="Hədiyyə nümunəsi 2">
+                    <div class="showcase-overlay">
+                        <h3 class="showcase-title">{% trans "Ad günü sürprizi" %}</h3>
+                        <p class="showcase-designer">{% trans "Dizayner: Nərmin Əhmədova" %}</p>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <!-- Progress Bar -->
-        <div class="time">
-            <div class="time-progress" id="timeProgress"></div>
+        <div class="showcase-bg"></div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section testimonials-section">
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Müştəri rəyləri" %}</h2>
+                <p class="section-subtitle">{% trans "Platformamızdan istifadə edən müştərilərimizin fikirləri ilə tanış olun." %}</p>
+            </div>
+            
+            <div class="testimonials-container">
+                <div class="testimonials-list">
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote-icon">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-quote">
+                                {% trans "Holovera ilə həyat yoldaşıma ad günü hədiyyəsi hazırladım. QR kod vasitəsilə əlavə etdiyim video mesajı açanda üzündəki təəccübü və sevinci görmək ən dəyərli anlardan biri idi. Təşəkkürlər Holovera!" %}
+                            </p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">
+                                <img src="{% static 'images/testimonial-1.jpg' %}" alt="Testimonial 1">
+                            </div>
+                            <h4 class="testimonial-name">{% trans "Rəşad Əlizadə" %}</h4>
+                            <p class="testimonial-position">{% trans "Bakı, Azərbaycan" %}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote-icon">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-quote">
+                                {% trans "Mən sənətkar olaraq əl işlərimi satmaq üçün bir kanal axtarırdım. Holovera mənə sadəcə məhsullarımı satmaq imkanı deyil, həm də onları 3D formatında təqdim etmək şansı verdi. İndi müştərilərim məhsulları hər tərəfdən görə bilirlər!" %}
+                            </p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">
+                                <img src="{% static 'images/testimonial-2.jpg' %}" alt="Testimonial 2">
+                            </div>
+                            <h4 class="testimonial-name">{% trans "Günay Məmmədli" %}</h4>
+                            <p class="testimonial-position">{% trans "Əl işləri ustası" %}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote-icon">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-quote">
+                                {% trans "Dizayner olaraq Holovera mənim yaradıcılığımı yeni səviyyəyə qaldırdı. Platformada hazır elementlərdən istifadə edərək unikal kompozisiyalar yaradıram və bundan gəlir əldə edirəm. Həm yaradıcılıq, həm də qazanc - daha nə istəyə bilərəm?" %}
+                            </p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">
+                                <img src="{% static 'images/testimonial-3.jpg' %}" alt="Testimonial 3">
+                            </div>
+                            <h4 class="testimonial-name">{% trans "Elvin Həsənov" %}</h4>
+                            <p class="testimonial-position">{% trans "Sərbəst dizayner" %}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-nav">
+                    <div class="testimonial-btn prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div class="testimonial-btn next">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="section contact-section">
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Əlaqə" %}</h2>
+                <p class="section-subtitle">{% trans "Bizimlə əlaqə saxlayın və ya platformamızda qeydiyyatdan keçərək öz hekayənizi yaratmağa başlayın." %}</p>
+            </div>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3 class="contact-title">{% trans "Əlaqə məlumatları" %}</h3>
+                    
+                    <div class="contact-list">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>{% trans "Ünvan" %}</h4>
+                                <p>{% trans "Bakı şəhəri, Nərimanov rayonu, Atatürk prospekti, 33" %}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>{% trans "Telefon" %}</h4>
+                                <p>+994 50 123 45 67</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>{% trans "E-poçt" %}</h4>
+                                <p>info@holovera.az</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>{% trans "İş saatları" %}</h4>
+                                <p>{% trans "Həftəiçi: 09:00 - 18:00" %}<br>{% trans "Şənbə: 10:00 - 15:00" %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form action="#" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name" class="form-label">{% trans "Ad Soyad" %}</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">{% trans "E-poçt" %}</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject" class="form-label">{% trans "Mövzu" %}</label>
+                            <input type="text" id="subject" name="subject" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" class="form-label">{% trans "Mesaj" %}</label>
+                            <textarea id="message" name="message" class="form-control" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary submit-btn">
+                            {% trans "Mesaj göndər" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <div class="logo">
+                            <span class="logo-text">HOLOVERA</span>
+                            <div class="logo-glow"></div>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        {% trans "Holovera - 3D buket dizayn platforması, yaradıcılıq və texnologiyanı birləşdirərək hədiyyələrə yeni nəfəs gətirir." %}
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-title">{% trans "Platformamız" %}</h3>
+                    <ul class="footer-links">
+                        <li><a href="#about"><i class="fas fa-angle-right"></i> {% trans "Haqqımızda" %}</a></li>
+                        <li><a href="#how"><i class="fas fa-angle-right"></i> {% trans "Necə İşləyir" %}</a></li>
+                        <li><a href="#audience"><i class="fas fa-angle-right"></i> {% trans "Kimin üçündür" %}</a></li>
+                        <li><a href="#showcase"><i class="fas fa-angle-right"></i> {% trans "Nümunələr" %}</a></li>
+                        <li><a href="#testimonials"><i class="fas fa-angle-right"></i> {% trans "Müştəri rəyləri" %}</a></li>
+                        <li><a href="#contact"><i class="fas fa-angle-right"></i> {% trans "Əlaqə" %}</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-title">{% trans "Xidmətlərimiz" %}</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-angle-right"></i> {% trans "3D Buket Dizayn" %}</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i> {% trans "Dizayner Əməkdaşlığı" %}</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i> {% trans "Buket Çatdırılması" %}</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i> {% trans "Korporativ Sifarişlər" %}</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i> {% trans "Sənətkarlar üçün İmkanlar" %}</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-title">{% trans "Xəbər bülleteni" %}</h3>
+                    <div class="footer-newsletter">
+                        <p>{% trans "Yeniliklərdən xəbərdar olmaq üçün bülletenimizə abunə olun." %}</p>
+                        <form class="newsletter-form">
+                            <input type="email" class="newsletter-input" placeholder="{% trans 'E-poçt ünvanınız' %}" required>
+                            <button type="submit" class="newsletter-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">
+                    &copy; {% now "Y" %} Holovera. {% trans "Bütün hüquqlar qorunur." %}
+                </p>
+                <div class="footer-bottom-links">
+                    <a href="#">{% trans "Məxfilik Siyasəti" %}</a>
+                    <a href="#">{% trans "İstifadə Şərtləri" %}</a>
+                    <a href="#">{% trans "TEZ-TEZ VERİLƏN SUALLAR" %}</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bg"></div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-chevron-up"></i>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<!-- Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script src="{% static 'js/video-slider.js' %}"></script>
+<script src="{% static 'js/landing_animations.js' %}"></script>
 {% endblock %}

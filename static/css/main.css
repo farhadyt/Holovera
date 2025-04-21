@@ -1,13 +1,13 @@
-/* static/css/main.css */
+/* static/css/main.css - Updated Header Styles */
 /* Main Styles for Holovera */
 
 :root {
     /* Colors */
     --primary-color: #4DF0FF;
-    --primary-dark: #1E3A5A;
     --primary-glow: rgba(77, 240, 255, 0.5);
     --dark-bg: #06090f;
     --dark-bg-transparent: rgba(6, 9, 15, 0.85);
+    --header-bg: rgba(6, 9, 15, 0.75); /* Semi-transparent header background */
     --text-color: #FFFFFF;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --border-color: rgba(77, 240, 255, 0.3);
@@ -43,7 +43,7 @@
     width: 100%;
   }
   
-  /* Header Styles */
+  /* Header Styles - Updated with transparency */
   #site-header {
     position: fixed;
     top: 0;
@@ -51,7 +51,10 @@
     width: 100%;
     height: var(--header-height);
     z-index: var(--z-header);
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    background-color: var(--header-bg);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
   }
   
   .header-container {
@@ -70,6 +73,18 @@
     letter-spacing: 3px;
     font-family: 'Orbitron', sans-serif;
     text-shadow: 0 0 15px rgba(77, 240, 255, 0.3);
+  }
+  
+  .logo {
+    position: relative;
+    z-index: 5;
+  }
+  
+  .logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    position: relative;
   }
   
   .logo-glow {
@@ -258,6 +273,7 @@
     position: relative;
     width: 100%;
     min-height: 100vh;
+    padding-top: var(--header-height); /* Add padding to prevent content from being hidden under header */
   }
   
   /* Flash Messages */

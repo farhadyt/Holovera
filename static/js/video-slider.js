@@ -192,14 +192,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (timeProgress) {
             // Reset and set width
             timeProgress.style.transition = 'none';
-            timeProgress.style.width = '100%';
+            timeProgress.style.width = '0%';
             
             // Force reflow to apply the change immediately
             timeProgress.offsetWidth;
             
             // Start animation
             timeProgress.style.transition = `width ${timeRunning}ms linear`;
-            timeProgress.style.width = '0%';
+            timeProgress.style.width = '100%';
         }
     }
     
