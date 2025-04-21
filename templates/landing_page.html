@@ -4,6 +4,15 @@
 
 {% block title %}Holovera - {% trans "Sevgini Dizayn Et" %}{% endblock %}
 
+<!-- landing_page.html head bölməsində -->
+{% block extra_head %}
+<!-- Preload critical images -->
+<link rel="preload" href="{% static 'images/about-3d-bouquet.jpg' %}" as="image">
+<link rel="preload" href="{% static 'images/showcase-1.jpg' %}" as="image">
+<link rel="preload" href="{% static 'images/audience-artisans.jpg' %}" as="image">
+<link rel="preload" href="{% static 'images/testimonial-1.jpg' %}" as="image">
+{% endblock %}
+
 {% block extra_css %}
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -371,7 +380,7 @@
             
             <div class="showcase-grid">
                 <div class="showcase-item" data-category="bouquets">
-                    <img src="{% static 'images/showcase-1.jpg' %}" alt="Buket nümunəsi 1">
+                    <img src="{% static 'images/showcase-1.jpg' %}" alt="Buket nümunəsi 1" loading="eager">>
                     <div class="showcase-overlay">
                         <h3 class="showcase-title">{% trans "Bahar xatirəsi" %}</h3>
                         <p class="showcase-designer">{% trans "Dizayner: Aysel Məmmədova" %}</p>
@@ -379,7 +388,7 @@
                 </div>
                 
                 <div class="showcase-item" data-category="arrangements">
-                    <img src="{% static 'images/showcase-2.jpg' %}" alt="Kompozisiya nümunəsi 1">
+                    <img src="{% static 'images/showcase-2.jpg' %}" alt="Kompozisiya nümunəsi 1"  loading="eager">>
                     <div class="showcase-overlay">
                         <h3 class="showcase-title">{% trans "Yaz kompozisiyası" %}</h3>
                         <p class="showcase-designer">{% trans "Dizayner: Elşən Quliyev" %}</p>
@@ -387,7 +396,7 @@
                 </div>
                 
                 <div class="showcase-item" data-category="gifts">
-                    <img src="{% static 'images/showcase-3.jpg' %}" alt="Hədiyyə nümunəsi 1">
+                    <img src="{% static 'images/showcase-3.jpg' %}" alt="Hədiyyə nümunəsi 1"  loading="eager">>
                     <div class="showcase-overlay">
                         <h3 class="showcase-title">{% trans "Sevgi paketi" %}</h3>
                         <p class="showcase-designer">{% trans "Dizayner: Leyla Əliyeva" %}</p>
@@ -395,7 +404,7 @@
                 </div>
                 
                 <div class="showcase-item" data-category="bouquets">
-                    <img src="{% static 'images/showcase-4.jpg' %}" alt="Buket nümunəsi 2">
+                    <img src="{% static 'images/showcase-4.jpg' %}" alt="Buket nümunəsi 2"  loading="eager">>
                     <div class="showcase-overlay">
                         <h3 class="showcase-title">{% trans "Mavi xəyallar" %}</h3>
                         <p class="showcase-designer">{% trans "Dizayner: Səbinə Hüseynli" %}</p>
@@ -403,7 +412,7 @@
                 </div>
                 
                 <div class="showcase-item" data-category="arrangements">
-                    <img src="{% static 'images/showcase-5.jpg' %}" alt="Kompozisiya nümunəsi 2">
+                    <img src="{% static 'images/showcase-5.jpg' %}" alt="Kompozisiya nümunəsi 2"  loading="eager">>
                     <div class="showcase-overlay">
                         <h3 class="showcase-title">{% trans "Gecə parıltısı" %}</h3>
                         <p class="showcase-designer">{% trans "Dizayner: Kamran Babayev" %}</p>
@@ -411,7 +420,7 @@
                 </div>
                 
                 <div class="showcase-item" data-category="gifts">
-                    <img src="{% static 'images/showcase-6.jpg' %}" alt="Hədiyyə nümunəsi 2">
+                    <img src="{% static 'images/showcase-6.jpg' %}" alt="Hədiyyə nümunəsi 2" loading="eager">>
                     <div class="showcase-overlay">
                         <h3 class="showcase-title">{% trans "Ad günü sürprizi" %}</h3>
                         <p class="showcase-designer">{% trans "Dizayner: Nərmin Əhmədova" %}</p>
@@ -679,5 +688,5 @@
 <!-- Font Awesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script src="{% static 'js/video-slider.js' %}"></script>
-<script src="{% static 'js/landing_animations.js' %}"></script>
+<!-- <script src="{% static 'js/landing_animations.js' %}"></script> -->
 {% endblock %}

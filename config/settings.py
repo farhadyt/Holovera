@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     'django_countries',
     
     # Project apps
-    'accounts',
-    'core',
-    'bouquet_designer',
+    'apps.accounts',
+    'apps.core',
+    'apps.bouquet_designer',
 ]
 
 MIDDLEWARE = [

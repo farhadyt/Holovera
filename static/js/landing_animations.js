@@ -54,18 +54,28 @@ function initParallaxEffects() {
 
 // Scroll-triggered animations using Intersection Observer
 function initScrollAnimations() {
-    // Create observer for fade-in animations
+    // First make all showcase items visible if they're in the initial viewport
+    document.querySelectorAll('.showcase-item, .audience-card, .testimonial-item').forEach(item => {
+        const rect = item.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 1.2) { // If it's in the initial viewport or just below
+            item.classList.add('fade-in-visible');
+            item.classList.add('slide-in-visible');
+            item.classList.add('scale-in-visible');
+        }
+    });
+
+    // Then set up the observer with a lower threshold for the rest
     const fadeObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('fade-in-visible');
-                fadeObserver.unobserve(entry.target); // Only animate once
+                fadeObserver.unobserve(entry.target);
             }
         });
     }, {
         root: null,
-        threshold: 0.15, // Trigger when 15% of element is visible
-        rootMargin: '-50px'
+        threshold: 0.05, // Lower threshold - trigger when just 5% is visible
+        rootMargin: '0px'
     });
     
     // Apply to all elements with fade-in class

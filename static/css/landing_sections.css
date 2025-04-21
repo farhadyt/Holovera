@@ -90,6 +90,7 @@ html {
     padding: 0 50px;
     position: relative;
     z-index: 5;
+    opacity: 1;
 }
 
 .section-bg {
@@ -1112,7 +1113,13 @@ textarea.form-control {
 .fade-in {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.top-level-visible,  /* Add this class to main section elements */
+.fade-in-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .fade-in-visible {
