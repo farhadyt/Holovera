@@ -1,12 +1,12 @@
 /*================================================================
   static/css/video-slider.css – Holovera Landing Page
   ----------------------------------------------------------------
-  FULL FILE  (v2 – 22 Apr 2025)
-  Kombinasiya: orijinal carousel + performans + a11y fix‑ləri
+  FULL FILE  (v4 – 22 Apr 2025)
+  Tam professional versiya: böyük thumbnails, daha yaxşı 3D, düzgün oxlar
 ================================================================*/
 
 /*---------------------------------------------------------------
-  0. ROOT DESIGN‑TOKEN DƏYİŞƏNLƏRİ
+  0. ROOT DESIGN‑TOKEN DƏYİŞƏNLƏRİ
 ----------------------------------------------------------------*/
 :root {
     --primary-color: #4DF0FF;
@@ -16,7 +16,8 @@
     --slider-bg: rgba(6, 9, 15, 0.8);
     --content-width: 50%;
     --thumbnail-width: 320px;
-    /* Added */
+    --thumbnail-height: 140px; /* Bölmələri böyütdüm */
+    --thumbnail-gap: 15px;
     --overlay-bg: rgba(6, 9, 15, 0.7);
     --overlay-blur: blur(2px);
     --transition-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -29,16 +30,16 @@ html {
 }
 
 /*================================================================
-  1. MAIN CAROUSEL KONTEYNERİ
+  1. MAIN CAROUSEL KONTEYNERİ
 ================================================================*/
 .carousel-container {
-    position: absolute; /* Fixed deyil, absolute – skrol icazəli */
+    position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     overflow: hidden;
-    z-index: 1; /* Daha aşağı z‑index (header 1000) */
+    z-index: 1;
 }
 
 /*---------------------------------------------------------------
@@ -78,7 +79,7 @@ html {
 }
 
 /*================================================================
-  2. SLIDE LIST & ITEMLƏR
+  2. SLIDE LIST & ITEMLƏR
 ================================================================*/
 .carousel {
     position: absolute;
@@ -250,60 +251,106 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 20px;
+    gap: var(--thumbnail-gap);
     z-index: 20;
-    padding: 20px 0;
-    overflow-y: auto;
+    padding: 0;
+    overflow: hidden; /* Scroll olmaması üçün */
 }
 
+/* Professional 3D effektli thumbnail itemlar */
 .carousel .thumbnail .item {
     width: 100%;
-    height: 160px;
-    border-radius: 10px;
+    height: var(--thumbnail-height);
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s ease;
-    opacity: 0.6;
+    transition: all 0.35s ease;
+    opacity: 0.65;
     position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border: 2px solid transparent;
+    /* 3D kölgələr və kənarlar */
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(77, 240, 255, 0.1);
+    border: 1px solid rgba(77, 240, 255, 0.2);
+    /* Daha professional 3D transform */
+    transform: perspective(800px) translateZ(0) scale(0.95);
 }
 
+/* Parlaq kənar effekti */
+.carousel .thumbnail .item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, 
+                rgba(77, 240, 255, 0.4) 0%, 
+                transparent 50%, 
+                rgba(77, 240, 255, 0.1) 100%);
+    opacity: 0.3;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Hover effekti */
 .carousel .thumbnail .item:hover {
-    opacity: 1;
-    transform: translateX(-5px);
+    opacity: 0.9;
+    transform: perspective(800px) translateZ(10px) scale(1.02);
+    box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(77, 240, 255, 0.2);
+    border-color: rgba(77, 240, 255, 0.4);
 }
 
+.carousel .thumbnail .item:hover::before {
+    opacity: 0.5;
+}
+
+/* Aktiv element */
 .carousel .thumbnail .item.active {
     opacity: 1;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 20px var(--primary-glow);
+    transform: perspective(800px) translateZ(20px) scale(1.05);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(77, 240, 255, 0.3);
+    border: 2px solid rgba(77, 240, 255, 0.6);
+}
+
+.carousel .thumbnail .item.active::before {
+    opacity: 0.7;
 }
 
 .carousel .thumbnail .item video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    position: relative;
+    z-index: 1;
 }
 
-/* Thumbnail-lərin alt məzmunu (başlıq) */
+/* Yazı */
 .carousel .thumbnail .item .content {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     color: #fff;
-    font-size: .9em;
+    font-size: 0.9em;
     font-weight: 500;
-    text-shadow: 0 2px 5px rgba(0,0,0,.7);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    z-index: 3;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 15px 10px 8px;
+    border-radius: 0 0 10px 10px;
 }
 
 /* ───────────────  N A V I G A T I O N  A R R O W S  ─────────────── */
 .carousel .arrows {
     position: absolute;
-    bottom: 80px;
+    bottom: 30px; /* Sliderin altında */
     right: 50px;
     display: flex;
+    flex-direction: row;
     gap: 15px;
     z-index: 30;
     width: var(--thumbnail-width);
@@ -314,23 +361,53 @@ html {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(77,240,255,.2);
-    border: 1px solid var(--primary-color);
-    color: #fff;
+    background: rgba(6, 9, 15, 0.7);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
     font-size: 18px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(77, 240, 255, 0.2);
+}
+
+/* Oxların parlaq effekti */
+.carousel .arrows button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, 
+                rgba(77, 240, 255, 0.3) 0%, 
+                transparent 70%);
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.3s ease;
+}
+
+.carousel .arrows button i {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 5px rgba(77, 240, 255, 0.5));
 }
 
 .carousel .arrows button:hover,
 .carousel .arrows button:focus-visible {
     background: var(--primary-color);
     color: var(--dark-bg);
-    box-shadow: 0 0 20px var(--primary-glow);
     transform: translateY(-5px);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(77, 240, 255, 0.4);
+}
+
+.carousel .arrows button:hover::before,
+.carousel .arrows button:focus-visible::before {
+    opacity: 0.8;
 }
 
 /* ───────────────  P R O G R E S S  B A R  ─────────────── */
@@ -362,7 +439,7 @@ html {
     to { transform: rotate(360deg); }
 }
 
-/* Az hərəkət (accessibility) */
+/* Az hərəkət (accessibility) */
 @media (prefers-reduced-motion: reduce) {
     * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
@@ -373,7 +450,11 @@ html {
 }
 
 @media (max-width: 1200px) {
-    :root { --content-width: 50%; --thumbnail-width: 280px; }
+    :root { 
+        --content-width: 50%; 
+        --thumbnail-width: 280px;
+        --thumbnail-height: 120px;
+    }
     .carousel .list .item .content { left: 8%; }
     .carousel .list .item .content .title { font-size: 3.5em; }
     .carousel .thumbnail { right: 30px; }
@@ -381,34 +462,43 @@ html {
 }
 
 @media (max-width: 992px) {
-    :root { --content-width: 60%; --thumbnail-width: 240px; }
+    :root { 
+        --content-width: 60%; 
+        --thumbnail-width: 240px;
+        --thumbnail-height: 110px;
+    }
     .carousel .list .item .content { left: 5%; }
     .carousel .list .item .content .title { font-size: 3em; }
     .carousel .thumbnail { right: 20px; }
-    .carousel .thumbnail .item { height: 140px; }
-    .carousel .arrows { right: 20px; }
+    .carousel .arrows { right: 20px; bottom: 30px; }
 }
 
 @media (max-width: 768px) {
-    :root { --content-width: 70%; --thumbnail-width: 200px; }
+    :root { 
+        --content-width: 70%; 
+        --thumbnail-width: 200px;
+        --thumbnail-height: 100px;
+    }
     .carousel .list .item .content { left: 5%; }
     .carousel .list .item .content .title { font-size: 2.5em; }
     .carousel .list .item .content .author { font-size: 1em; letter-spacing: 5px; }
     .carousel .list .item .content .des { font-size: 1em; }
     .carousel .thumbnail { right: 15px; }
-    .carousel .thumbnail .item { height: 120px; }
-    .carousel .arrows { right: 15px; bottom: 60px; }
+    .carousel .arrows { right: 15px; bottom: 25px; }
     .carousel .arrows button { width: 45px; height: 45px; }
 }
 
 @media (max-width: 576px) {
-    :root { --content-width: 85%; --thumbnail-width: 160px; }
+    :root { 
+        --content-width: 85%; 
+        --thumbnail-width: 160px;
+        --thumbnail-height: 80px;
+    }
     .carousel .list .item .content { left: 5%; padding-right: 10px; }
     .carousel .list .item .content .title { font-size: 2em; }
     .carousel .list .item .content .buttons { flex-direction: column; width: 140px; }
     .carousel .list .item .content .buttons button { padding: 10px; }
     .carousel .thumbnail { right: 10px; }
-    .carousel .thumbnail .item { height: 90px; }
-    .carousel .arrows { right: 10px; bottom: 50px; }
+    .carousel .arrows { right: 10px; bottom: 20px; }
     .carousel .arrows button { width: 40px; height: 40px; font-size: 16px; }
 }
