@@ -1,8 +1,7 @@
 /*================================================================
   static/css/video-slider.css – Holovera Landing Page
   ----------------------------------------------------------------
-  FULL FILE  (v4 – 22 Apr 2025)
-  Tam professional versiya: böyük thumbnails, daha yaxşı 3D, düzgün oxlar
+  ENHANCED FUTURISTIC VERSION with layered thumbnails and animations
 ================================================================*/
 
 /*---------------------------------------------------------------
@@ -10,23 +9,29 @@
 ----------------------------------------------------------------*/
 :root {
     --primary-color: #4DF0FF;
+    --primary-dark: #0a6e7a;
     --primary-glow: rgba(77, 240, 255, 0.5);
+    --primary-light-glow: rgba(77, 240, 255, 0.2);
+    --accent-color: #FF4D88;
+    --accent-glow: rgba(255, 77, 136, 0.5);
     --dark-bg: #06090f;
     --header-height: 70px;
     --slider-bg: rgba(6, 9, 15, 0.8);
     --content-width: 50%;
     --thumbnail-width: 320px;
-    --thumbnail-height: 140px; /* Bölmələri böyütdüm */
-    --thumbnail-gap: 15px;
+    --thumbnail-height: 160px; /* Increased thumbnail height */
+    --thumbnail-gap: 10px; /* Reduced gap for staggered effect */
     --overlay-bg: rgba(6, 9, 15, 0.7);
     --overlay-blur: blur(2px);
     --transition-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 html {
     scroll-behavior: smooth;
     background: var(--dark-bg);
     -webkit-tap-highlight-color: transparent;
+    scroll-padding-top: var(--header-height);
 }
 
 /*================================================================
@@ -40,6 +45,7 @@ html {
     left: 0;
     overflow: hidden;
     z-index: 1;
+    max-height: 100vh;
 }
 
 /*---------------------------------------------------------------
@@ -56,7 +62,7 @@ html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 950;
+    z-index: 1002;
     transition: opacity 0.8s ease;
     backdrop-filter: var(--overlay-blur);
 }
@@ -103,7 +109,7 @@ html {
     opacity: 0;
     overflow: hidden;
     pointer-events: none;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 1.2s var(--transition-smooth);
     background: var(--dark-bg);
 }
 
@@ -113,16 +119,18 @@ html {
 }
 
 /*---------------------------------------------------------------
-  2.1  VIDEO BACKGROUND – object‑fit:contain
+  2.1  VIDEO BACKGROUND – object‑fit:cover to fill viewport
 ----------------------------------------------------------------*/
 .carousel .list .item .main-video {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
     height: auto;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center center;
     filter: brightness(0.7);
     transition: transform 1s ease;
@@ -223,7 +231,7 @@ html {
 }
 
 .carousel .list .item .content .buttons button:nth-child(1) {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: var(--dark-bg);
     box-shadow: 0 0 15px rgba(77, 240, 255, 0.3);
 }
@@ -232,6 +240,24 @@ html {
     background: transparent;
     border: 1px solid var(--primary-color);
     color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Button hover glow effect */
+.carousel .list .item .content .buttons button:nth-child(2)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(77, 240, 255, 0.3), transparent);
+    transition: left 0.7s ease;
+}
+
+.carousel .list .item .content .buttons button:nth-child(2):hover::before {
+    left: 100%;
 }
 
 .carousel .list .item .content .buttons button:hover {
@@ -240,7 +266,7 @@ html {
 }
 
 /*================================================================
-  4. THUMBNAILS & ARROWS
+  4. ENHANCED FUTURISTIC THUMBNAILS
 ================================================================*/
 .carousel .thumbnail {
     position: absolute;
@@ -254,29 +280,71 @@ html {
     gap: var(--thumbnail-gap);
     z-index: 20;
     padding: 0;
-    overflow: hidden; /* Scroll olmaması üçün */
+    overflow: visible; /* Allow items to overflow for 3D effect */
+    perspective: 1200px; /* Enhanced 3D perspective */
+    transform-style: preserve-3d;
 }
 
-/* Professional 3D effektli thumbnail itemlar */
+/* Redesigned futuristic thumbnail style with staggered effect */
 .carousel .thumbnail .item {
     width: 100%;
     height: var(--thumbnail-height);
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.35s ease;
+    transition: all 0.5s var(--transition-bounce);
     opacity: 0.65;
     position: relative;
-    /* 3D kölgələr və kənarlar */
+    transform: perspective(1200px) 
+               translateZ(0) 
+               scale(0.95)
+               translateX(0);
+    transform-origin: right center;
     box-shadow: 
         0 10px 20px rgba(0, 0, 0, 0.4),
-        0 0 30px rgba(77, 240, 255, 0.1);
-    border: 1px solid rgba(77, 240, 255, 0.2);
-    /* Daha professional 3D transform */
-    transform: perspective(800px) translateZ(0) scale(0.95);
+        0 0 30px rgba(77, 240, 255, 0.1),
+        5px 5px 0 rgba(77, 240, 255, 0.1); /* 3D side effect */
+    border: 5px solid rgba(77, 240, 255, 0.3);
+    /* Apply staggered effect to items */
+    margin-left: 0;
 }
 
-/* Parlaq kənar effekti */
+.carousel .thumbnail .item::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    width: 7px; /* Width of the side edge */
+    transform: translateX(100%);
+    background: linear-gradient(to right, rgba(77, 240, 255, 0.2), transparent);
+    border-left: 1px solid rgba(77, 240, 255, 0.3);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.carousel .thumbnail .item > div:after {
+    content: '';
+    position: absolute;
+    left: 7px; /* Offset to align with side edge */
+    right: 1px;
+    bottom: 1px;
+    height: 7px; /* Height of bottom edge */
+    transform: translateY(100%);
+    background: linear-gradient(to bottom, rgba(77, 240, 255, 0.2), transparent);
+    border-top: 1px solid rgba(77, 240, 255, 0.3);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Apply staggered effect to each item */
+.carousel .thumbnail .item:nth-child(1) { transform: perspective(1200px) translateZ(0) scale(0.95) translateX(0); }
+.carousel .thumbnail .item:nth-child(2) { transform: perspective(1200px) translateZ(-10px) scale(0.92) translateX(10px); }
+.carousel .thumbnail .item:nth-child(3) { transform: perspective(1200px) translateZ(-20px) scale(0.89) translateX(20px); }
+.carousel .thumbnail .item:nth-child(4) { transform: perspective(1200px) translateZ(-30px) scale(0.86) translateX(30px); }
+.carousel .thumbnail .item:nth-child(5) { transform: perspective(1200px) translateZ(-40px) scale(0.83) translateX(40px); }
+
+/* Enhanced glow border effect */
 .carousel .thumbnail .item::before {
     content: '';
     position: absolute;
@@ -289,35 +357,57 @@ html {
     opacity: 0.3;
     z-index: 2;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Hover effekti */
+/* Improved futuristic hover effect */
 .carousel .thumbnail .item:hover {
     opacity: 0.9;
-    transform: perspective(800px) translateZ(10px) scale(1.02);
+    transform: perspective(1200px) translateZ(20px) scale(1.01) translateX(-5px) !important;
     box-shadow: 
         0 15px 30px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(77, 240, 255, 0.2);
-    border-color: rgba(77, 240, 255, 0.4);
+        0 0 30px rgba(77, 240, 255, 0.3);
+    border-color: rgba(77, 240, 255, 0.6);
+    z-index: 25;
 }
 
 .carousel .thumbnail .item:hover::before {
-    opacity: 0.5;
+    opacity: 0.6;
+    transform: scale(1.05);
 }
 
-/* Aktiv element */
+/* Enhanced active element with dramatic scaling and glow */
 .carousel .thumbnail .item.active {
     opacity: 1;
-    transform: perspective(800px) translateZ(20px) scale(1.05);
+    transform: perspective(1200px) translateZ(40px) scale(1.08) translateX(-20px) !important;
     box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.5),
-        0 0 40px rgba(77, 240, 255, 0.3);
-    border: 2px solid rgba(77, 240, 255, 0.6);
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(77, 240, 255, 0.4),
+        0 0 15px rgba(77, 240, 255, 0.6) inset;
+    border: 2px solid rgba(77, 240, 255, 0.8);
+    z-index: 30; /* Higher z-index to ensure it's in front */
+    /* Increase duration from 0.6s to 1.2s to slow down animation */
+    animation: activateThumbnail 1.2s var(--transition-bounce) forwards;
+}
+
+@keyframes activateThumbnail {
+    0% { transform: perspective(1200px) translateZ(0) scale(0.95) translateX(0); }
+    50% { transform: perspective(1200px) translateZ(60px) scale(1.12) translateX(-25px); }
+    100% { transform: perspective(1200px) translateZ(40px) scale(1.08) translateX(-20px); }
 }
 
 .carousel .thumbnail .item.active::before {
-    opacity: 0.7;
+    opacity: 0.8;
+    background: linear-gradient(135deg, 
+                rgba(77, 240, 255, 0.6) 0%, 
+                transparent 60%, 
+                rgba(77, 240, 255, 0.3) 100%);
+    animation: pulseBorder 2s infinite alternate;
+}
+
+@keyframes pulseBorder {
+    0% { opacity: 0.8; }
+    100% { opacity: 0.4; }
 }
 
 .carousel .thumbnail .item video {
@@ -328,7 +418,7 @@ html {
     z-index: 1;
 }
 
-/* Yazı */
+/* Enhanced caption style */
 .carousel .thumbnail .item .content {
     position: absolute;
     bottom: 0;
@@ -339,15 +429,23 @@ html {
     font-weight: 500;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
     z-index: 3;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    padding: 15px 10px 8px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    padding: 20px 15px 10px;
     border-radius: 0 0 10px 10px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.carousel .thumbnail .item:hover .content,
+.carousel .thumbnail .item.active .content {
+    transform: translateY(0);
 }
 
 /* ───────────────  N A V I G A T I O N  A R R O W S  ─────────────── */
+/* Using top-based positioning with adjusted value */
 .carousel .arrows {
     position: absolute;
-    bottom: 30px; /* Sliderin altında */
+    top: calc(100vh - 100px);
     right: 50px;
     display: flex;
     flex-direction: row;
@@ -357,7 +455,9 @@ html {
     justify-content: center;
 }
 
+/* Futuristic arrow buttons */
 .carousel .arrows button {
+    position: relative;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -373,9 +473,25 @@ html {
     box-shadow: 
         0 5px 15px rgba(0, 0, 0, 0.3),
         0 0 10px rgba(77, 240, 255, 0.2);
+    overflow: visible;
 }
 
-/* Oxların parlaq effekti */
+/* Outer ring glow */
+.carousel .arrows button::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    border: 1px solid rgba(77, 240, 255, 0.3);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Inner glow effect */
 .carousel .arrows button::before {
     content: '';
     position: absolute;
@@ -386,28 +502,44 @@ html {
                 transparent 70%);
     opacity: 0;
     z-index: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .carousel .arrows button i {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     filter: drop-shadow(0 0 5px rgba(77, 240, 255, 0.5));
 }
 
+/* Enhanced hover effects for arrows */
 .carousel .arrows button:hover,
 .carousel .arrows button:focus-visible {
     background: var(--primary-color);
     color: var(--dark-bg);
-    transform: translateY(-5px);
+    transform: translateY(-5px) scale(1.1);
     box-shadow: 
         0 10px 20px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(77, 240, 255, 0.4);
+        0 0 20px rgba(77, 240, 255, 0.5);
 }
 
 .carousel .arrows button:hover::before,
 .carousel .arrows button:focus-visible::before {
     opacity: 0.8;
+}
+
+.carousel .arrows button:hover::after,
+.carousel .arrows button:focus-visible::after {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Explicitly target each button for hover effects */
+.carousel .arrows button:first-child:hover,
+.carousel .arrows button:last-child:hover {
+    transform: translateY(-5px) scale(1.1);
+    background: var(--primary-color);
+    color: var(--dark-bg);
 }
 
 /* ───────────────  P R O G R E S S  B A R  ─────────────── */
@@ -424,9 +556,24 @@ html {
 .carousel .time-progress {
     height: 100%;
     width: 0;
-    background: var(--primary-color);
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
     box-shadow: 0 0 10px var(--primary-glow);
     transition: width 7s linear;
+    position: relative;
+}
+
+/* Add glowing dot at the end of progress */
+.carousel .time-progress::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow);
 }
 
 /* ───────────────  A N I M A T I O N S  ─────────────── */
@@ -437,6 +584,12 @@ html {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
 }
 
 /* Az hərəkət (accessibility) */
@@ -453,38 +606,47 @@ html {
     :root { 
         --content-width: 50%; 
         --thumbnail-width: 280px;
-        --thumbnail-height: 120px;
+        --thumbnail-height: 140px;
     }
     .carousel .list .item .content { left: 8%; }
     .carousel .list .item .content .title { font-size: 3.5em; }
     .carousel .thumbnail { right: 30px; }
-    .carousel .arrows { right: 30px; }
+    .carousel .arrows { 
+        right: 30px; 
+        top: calc(100vh - 100px);
+    }
 }
 
 @media (max-width: 992px) {
     :root { 
         --content-width: 60%; 
         --thumbnail-width: 240px;
-        --thumbnail-height: 110px;
+        --thumbnail-height: 130px;
     }
     .carousel .list .item .content { left: 5%; }
     .carousel .list .item .content .title { font-size: 3em; }
     .carousel .thumbnail { right: 20px; }
-    .carousel .arrows { right: 20px; bottom: 30px; }
+    .carousel .arrows { 
+        right: 20px; 
+        top: calc(100vh - 100px);
+    }
 }
 
 @media (max-width: 768px) {
     :root { 
         --content-width: 70%; 
         --thumbnail-width: 200px;
-        --thumbnail-height: 100px;
+        --thumbnail-height: 120px;
     }
     .carousel .list .item .content { left: 5%; }
     .carousel .list .item .content .title { font-size: 2.5em; }
     .carousel .list .item .content .author { font-size: 1em; letter-spacing: 5px; }
     .carousel .list .item .content .des { font-size: 1em; }
     .carousel .thumbnail { right: 15px; }
-    .carousel .arrows { right: 15px; bottom: 25px; }
+    .carousel .arrows { 
+        right: 15px; 
+        top: calc(100vh - 100px);
+    }
     .carousel .arrows button { width: 45px; height: 45px; }
 }
 
@@ -492,13 +654,16 @@ html {
     :root { 
         --content-width: 85%; 
         --thumbnail-width: 160px;
-        --thumbnail-height: 80px;
+        --thumbnail-height: 100px;
     }
     .carousel .list .item .content { left: 5%; padding-right: 10px; }
     .carousel .list .item .content .title { font-size: 2em; }
     .carousel .list .item .content .buttons { flex-direction: column; width: 140px; }
     .carousel .list .item .content .buttons button { padding: 10px; }
     .carousel .thumbnail { right: 10px; }
-    .carousel .arrows { right: 10px; bottom: 20px; }
+    .carousel .arrows { 
+        right: 10px; 
+        top: calc(100vh - 100px);
+    }
     .carousel .arrows button { width: 40px; height: 40px; font-size: 16px; }
 }

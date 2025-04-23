@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
         startVideoPlayback();
         resetTimeBar();
         startAutoRotation();
+        
+        // Ensure first slide's content is visible
+        animateContentElements(items[currentIndex], true);
     }
     
     // Create thumbnail items
@@ -131,60 +134,150 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // New function to control content animation
+    function animateContentElements(item, show) {
+        // Get content elements that need animation
+        const author = item.querySelector('.author');
+        const title = item.querySelector('.title');
+        const description = item.querySelector('.des');
+        const buttons = item.querySelector('.buttons');
+        
+        // Elements array to handle together
+        const elements = [author, title, description, buttons];
+        
+        // Reset animation properties
+        elements.forEach(el => {
+            if (!el) return;
+            
+            // Clear existing animation
+            el.style.animation = 'none';
+            el.style.opacity = show ? '0' : '1';
+            
+            // Force reflow to ensure animation reset
+            el.offsetHeight;
+        });
+        
+        if (show) {
+            // Set up animations with staggered delays
+            setTimeout(() => {
+                if (author) {
+                    author.style.animation = 'fadeIn 0.8s forwards';
+                    author.style.animationDelay = '0.2s';
+                }
+                
+                if (title) {
+                    title.style.animation = 'fadeIn 0.8s forwards';
+                    title.style.animationDelay = '0.4s';
+                }
+                
+                if (description) {
+                    description.style.animation = 'fadeIn 0.8s forwards';
+                    description.style.animationDelay = '0.6s';
+                }
+                
+                if (buttons) {
+                    buttons.style.animation = 'fadeIn 0.8s forwards';
+                    buttons.style.animationDelay = '0.8s';
+                }
+            }, 500); // Delay content animation by 1 second after video transition
+        } else {
+            // Fade out animation
+            elements.forEach(el => {
+                if (!el) return;
+                el.style.animation = 'fadeOut 0.5s forwards';
+            });
+        }
+    }
+    
+    // Add fadeOut animation if it doesn't exist in your CSS
+    if (!document.getElementById('fadeOutAnimation')) {
+        const style = document.createElement('style');
+        style.id = 'fadeOutAnimation';
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
     // Switch to a specific video
     function switchToVideo(index) {
         if (isTransitioning || index === currentIndex) return;
         
         isTransitioning = true;
         
-        // Update current index
-        const previousIndex = currentIndex;
-        currentIndex = index;
+        // First, hide current content
+        animateContentElements(items[currentIndex], false);
         
-        // Get videos
-        const currentVideo = items[currentIndex].querySelector('video');
-        const previousVideo = items[previousIndex].querySelector('video');
-        
-        // Reset time bar
-        resetTimeBar();
-        
-        // Play the new video
-        if (currentVideo) {
-            currentVideo.currentTime = 0;
-            currentVideo.play().catch(e => {
-                console.log('Video play error:', e);
-            });
-        }
-        
-        // Update thumbnail active state
-        updateThumbnailActiveState();
-        
-        // Switch videos with fade transition
-        setTimeout(function() {
-            // Show the new video
-            items.forEach((item, i) => {
-                item.style.opacity = i === currentIndex ? '1' : '0';
-                item.style.pointerEvents = i === currentIndex ? 'auto' : 'none';
-            });
+        // Wait briefly for content to fade out
+        setTimeout(() => {
+            // Update current index
+            const previousIndex = currentIndex;
+            currentIndex = index;
             
-            // Reset the transitioning state
-            isTransitioning = false;
+            // Get videos
+            const currentVideo = items[currentIndex].querySelector('video');
+            const previousVideo = items[previousIndex].querySelector('video');
             
-            // Restart auto-rotation
-            startAutoRotation();
-        }, 500);
+            // Reset time bar
+            resetTimeBar();
+            
+            // Play the new video
+            if (currentVideo) {
+                currentVideo.currentTime = 0;
+                currentVideo.play().catch(e => {
+                    console.log('Video play error:', e);
+                });
+            }
+            
+            // Update thumbnail active state with improved animation
+            updateThumbnailActiveState();
+            
+            // Switch videos with fade transition
+            setTimeout(function() {
+                // Show the new video
+                items.forEach((item, i) => {
+                    item.style.opacity = i === currentIndex ? '1' : '0';
+                    item.style.pointerEvents = i === currentIndex ? 'auto' : 'none';
+                    
+                    // If this is the new active item, get ready to animate its content
+                    if (i === currentIndex) {
+                        // Animate content separately after video appears
+                        animateContentElements(item, true);
+                    }
+                });
+                
+                // Reset the transitioning state
+                isTransitioning = false;
+                
+                // Restart auto-rotation
+                startAutoRotation();
+            }, 500);
+        }, 300); // Wait for content to fade out
     }
     
     // Update the active state of thumbnails
     function updateThumbnailActiveState() {
         const thumbnails = document.querySelectorAll('.thumbnail .item');
-        thumbnails.forEach((thumbnail, i) => {
-            if (i === currentIndex) {
-                thumbnail.classList.add('active');
-            } else {
-                thumbnail.classList.remove('active');
-            }
+        
+        // First remove active class from all thumbnails
+        thumbnails.forEach(thumbnail => {
+            thumbnail.classList.remove('active');
         });
+        
+        // Force browser reflow to ensure animation triggers
+        thumbnails[0].offsetWidth;
+        
+        // Add active class with slight delay
+        setTimeout(() => {
+            thumbnails.forEach((thumbnail, i) => {
+                if (i === currentIndex) {
+                    thumbnail.classList.add('active');
+                }
+            });
+        }, 50);
     }
     
     // Reset and start the time bar animation

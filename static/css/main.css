@@ -19,7 +19,7 @@
     /* Z-index layers */
     --z-base: 1;
     --z-content: 10;
-    --z-header: 1000;
+    --z-header: 1001; /* Increased z-index to ensure header stays on top */
     --z-popup: 2000;
   }
   
@@ -29,6 +29,14 @@
     background-color: var(--dark-bg);
     color: var(--text-color);
     overflow-x: hidden;
+    /* Removing any default top padding */
+    padding-top: 0;
+    margin: 0;
+  }
+  
+  html {
+    /* Add scroll padding to account for fixed header */
+    scroll-padding-top: var(--header-height);
   }
   
   a {
@@ -43,7 +51,7 @@
     width: 100%;
   }
   
-  /* Header Styles - Updated with transparency */
+  /* Header Styles - Updated with transparency and higher z-index */
   #site-header {
     position: fixed;
     top: 0;
@@ -273,7 +281,16 @@
     position: relative;
     width: 100%;
     min-height: 100vh;
-    padding-top: var(--header-height); /* Add padding to prevent content from being hidden under header */
+    padding-top: 0; /* Changed from header-height to fix the scrolling issue */
+  }
+  
+  /* Hero section - ensure it takes the full height of the viewport */
+  .hero-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    max-height: 100vh;
   }
   
   /* Flash Messages */
