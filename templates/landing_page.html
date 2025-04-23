@@ -54,7 +54,7 @@
     }
 
     /* First section transition */
-    .about-section::before {
+    .audience-section::before {
         content: '';
         position: absolute;
         top: -50px;
@@ -63,6 +63,17 @@
         height: 50px;
         background: linear-gradient(to bottom, transparent, var(--dark-bg));
         z-index: 5;
+    }
+
+    /* Back to top button - always visible after first section */
+    .back-to-top {
+        opacity: 0;
+        visibility: hidden;
+    }
+    
+    .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
     }
 </style>
 {% endblock %}
@@ -185,60 +196,79 @@
 
 <!-- Main landing sections after the video slider -->
 <div class="landing-sections">
-    <!-- About Section -->
-    <section id="about" class="section about-section">
+    <!-- Section Divider - New element -->
+    <div class="section-divider"></div>
+
+    <!-- REARRANGED: Audience Section (Who is it for) -->
+    <section id="audience" class="section audience-section">
+        <div class="section-edge section-edge-top"></div>
         <div class="section-container">
             <div class="section-title-container">
-                <h2 class="section-title">{% trans "Haqqımızda" %}</h2>
-                <p class="section-subtitle">{% trans "Holovera ilə yaradıcılığınızı və hisslərinizi ifadə edin. 3D buket dizayn platforması ilə unudulmaz anlar yaradın." %}</p>
+                <h2 class="section-title">{% trans "Kimin üçündür" %}</h2>
+                <p class="section-subtitle">{% trans "Holovera platforması müxtəlif istifadəçilər üçün geniş imkanlar yaradır. Siz də öz məqsədinizə uyğun olaraq platformadan faydalana bilərsiniz." %}</p>
             </div>
             
-            <div class="about-content">
-                <div class="about-text">
-                    <div class="about-feature">
-                        <h3 class="about-feature-title">
-                            <i class="fas fa-magic"></i>
-                            {% trans "İnnovativ Dizayn" %}
-                        </h3>
-                        <p class="about-feature-text">
-                            {% trans "Holovera platforması ilə interaktiv 3D dizayn interfeysi vasitəsilə sıfırdan öz unikal buketlərinizi yarada bilərsiniz. Bitkini, rəngi və aksesuarlarını seçin - hər şey sizin zövqünüzdən asılıdır." %}
-                        </p>
+            <div class="audience-cards">
+                <div class="audience-card">
+                    <div class="audience-card-image">
+                        <img src="{% static 'images/audience-artisans.jpg' %}" alt="Sənətkarlar">
                     </div>
-                    
-                    <div class="about-feature">
-                        <h3 class="about-feature-title">
-                            <i class="fas fa-qrcode"></i>
-                            {% trans "Gizli Mesajlar" %}
-                        </h3>
-                        <p class="about-feature-text">
-                            {% trans "Holovera buketi sadəcə gözəl görünmür - o həm də xüsusi mesajlarınızı daşıyır. QR texnologiyası ilə buketinizə gizli mesaj, foto və ya video əlavə edə bilərsiniz ki, yalnız həmin şəxs bunu görsün." %}
-                        </p>
+                    <div class="audience-card-icon">
+                        <i class="fas fa-paint-brush"></i>
                     </div>
-                    
-                    <div class="about-feature">
-                        <h3 class="about-feature-title">
-                            <i class="fas fa-handshake"></i>
-                            {% trans "İstedadları Dəstəkləyirik" %}
-                        </h3>
-                        <p class="about-feature-text">
-                            {% trans "Holovera ilə əl işi yaradan sənətkarlar və yaradıcı dizaynerlər öz istedadlarını bütün dünyaya göstərə bilərlər. Platformamız vasitəsilə öz yaradıcılığınızı gəlirə çevirə bilərsiniz." %}
+                    <div class="audience-card-content">
+                        <h3 class="audience-card-title">{% trans "Sənətkarlar" %}</h3>
+                        <p class="audience-card-text">
+                            {% trans "Əl işlərini və yaratdığı məhsulları platformada sata bilən sənətkarlar üçün yeni bir bazar. Öz yaradıcılığınızı bütün dünya ilə paylaşın və bunu pula çevirin." %}
                         </p>
+                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
                     </div>
                 </div>
                 
-                <div class="about-image">
-                    <div class="about-image-container">
-                        <img src="{% static 'images/about-3d-bouquet.jpg' %}" alt="3D Buket Dizayn">
+                <div class="audience-card">
+                    <div class="audience-card-image">
+                        <img src="{% static 'images/audience-designers.jpg' %}" alt="Dizaynerlər">
+                    </div>
+                    <div class="audience-card-icon">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <div class="audience-card-content">
+                        <h3 class="audience-card-title">{% trans "Dizaynerlər" %}</h3>
+                        <p class="audience-card-text">
+                            {% trans "Sizin yaradıcı təxəyyülünüz buketlərə həyat verə bilər. Platformada hazır məhsulları birləşdirərək öz dizaynlarınızı yaradın və hər satışdan qazanc əldə edin." %}
+                        </p>
+                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
+                    </div>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-card-image">
+                        <img src="{% static 'images/audience-customers.jpg' %}" alt="Müştərilər">
+                    </div>
+                    <div class="audience-card-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="audience-card-content">
+                        <h3 class="audience-card-title">{% trans "Müştərilər" %}</h3>
+                        <p class="audience-card-text">
+                            {% trans "Ənənəvi hədiyyələrdən fərqli, tam şəxsi və unikal hədiyyə vermək istəyənlər üçün. Hədiyyənizə məxsusi məna və hiss qatın." %}
+                        </p>
+                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="about-bg"></div>
+        <div class="section-edge section-edge-bottom"></div>
     </section>
     
-    <!-- How It Works Section -->
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="divider-animation"></div>
+    </div>
+    
+    <!-- KEPT: How It Works Section -->
     <section id="how" class="section how-section">
+        <div class="section-edge section-edge-top"></div>
         <div class="section-container">
             <div class="section-title-container">
                 <h2 class="section-title">{% trans "Necə İşləyir" %}</h2>
@@ -299,72 +329,18 @@
                 </div>
             </div>
         </div>
-        
         <div class="how-bg"></div>
+        <div class="section-edge section-edge-bottom"></div>
     </section>
     
-    <!-- Audience Section -->
-    <section id="audience" class="section audience-section">
-        <div class="section-container">
-            <div class="section-title-container">
-                <h2 class="section-title">{% trans "Kimin üçündür" %}</h2>
-                <p class="section-subtitle">{% trans "Holovera platforması müxtəlif istifadəçilər üçün geniş imkanlar yaradır. Siz də öz məqsədinizə uyğun olaraq platformadan faydalana bilərsiniz." %}</p>
-            </div>
-            
-            <div class="audience-cards">
-                <div class="audience-card">
-                    <div class="audience-card-image">
-                        <img src="{% static 'images/audience-artisans.jpg' %}" alt="Sənətkarlar">
-                    </div>
-                    <div class="audience-card-icon">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <div class="audience-card-content">
-                        <h3 class="audience-card-title">{% trans "Sənətkarlar" %}</h3>
-                        <p class="audience-card-text">
-                            {% trans "Əl işlərini və yaratdığı məhsulları platformada sata bilən sənətkarlar üçün yeni bir bazar. Öz yaradıcılığınızı bütün dünya ilə paylaşın və bunu pula çevirin." %}
-                        </p>
-                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
-                    </div>
-                </div>
-                
-                <div class="audience-card">
-                    <div class="audience-card-image">
-                        <img src="{% static 'images/audience-designers.jpg' %}" alt="Dizaynerlər">
-                    </div>
-                    <div class="audience-card-icon">
-                        <i class="fas fa-pen-fancy"></i>
-                    </div>
-                    <div class="audience-card-content">
-                        <h3 class="audience-card-title">{% trans "Dizaynerlər" %}</h3>
-                        <p class="audience-card-text">
-                            {% trans "Sizin yaradıcı təxəyyülünüz buketlərə həyat verə bilər. Platformada hazır məhsulları birləşdirərək öz dizaynlarınızı yaradın və hər satışdan qazanc əldə edin." %}
-                        </p>
-                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
-                    </div>
-                </div>
-                
-                <div class="audience-card">
-                    <div class="audience-card-image">
-                        <img src="{% static 'images/audience-customers.jpg' %}" alt="Müştərilər">
-                    </div>
-                    <div class="audience-card-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="audience-card-content">
-                        <h3 class="audience-card-title">{% trans "Müştərilər" %}</h3>
-                        <p class="audience-card-text">
-                            {% trans "Ənənəvi hədiyyələrdən fərqli, tam şəxsi və unikal hədiyyə vermək istəyənlər üçün. Hədiyyənizə məxsusi məna və hiss qatın." %}
-                        </p>
-                        <a href="#" class="btn btn-secondary">{% trans "Ətraflı" %}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="divider-animation"></div>
+    </div>
     
-    <!-- Showcase Section -->
+    <!-- KEPT: Showcase Section (Examples) -->
     <section id="showcase" class="section showcase-section">
+        <div class="section-edge section-edge-top"></div>
         <div class="section-container">
             <div class="section-title-container">
                 <h2 class="section-title">{% trans "Nümunələr" %}</h2>
@@ -430,10 +406,17 @@
         </div>
         
         <div class="showcase-bg"></div>
+        <div class="section-edge section-edge-bottom"></div>
     </section>
     
-    <!-- Testimonials Section -->
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="divider-animation"></div>
+    </div>
+    
+    <!-- KEPT: Testimonials Section (Customer reviews) -->
     <section id="testimonials" class="section testimonials-section">
+        <div class="section-edge section-edge-top"></div>
         <div class="section-container">
             <div class="section-title-container">
                 <h2 class="section-title">{% trans "Müştəri rəyləri" %}</h2>
@@ -507,10 +490,76 @@
                 </div>
             </div>
         </div>
+        <div class="section-edge section-edge-bottom"></div>
     </section>
     
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="divider-animation"></div>
+    </div>
+    
+    <!-- MOVED: About Section -->
+    <section id="about" class="section about-section">
+        <div class="section-edge section-edge-top"></div>
+        <div class="section-container">
+            <div class="section-title-container">
+                <h2 class="section-title">{% trans "Haqqımızda" %}</h2>
+                <p class="section-subtitle">{% trans "Holovera ilə yaradıcılığınızı və hisslərinizi ifadə edin. 3D buket dizayn platforması ilə unudulmaz anlar yaradın." %}</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="about-feature">
+                        <h3 class="about-feature-title">
+                            <i class="fas fa-magic"></i>
+                            {% trans "İnnovativ Dizayn" %}
+                        </h3>
+                        <p class="about-feature-text">
+                            {% trans "Holovera platforması ilə interaktiv 3D dizayn interfeysi vasitəsilə sıfırdan öz unikal buketlərinizi yarada bilərsiniz. Bitkini, rəngi və aksesuarlarını seçin - hər şey sizin zövqünüzdən asılıdır." %}
+                        </p>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <h3 class="about-feature-title">
+                            <i class="fas fa-qrcode"></i>
+                            {% trans "Gizli Mesajlar" %}
+                        </h3>
+                        <p class="about-feature-text">
+                            {% trans "Holovera buketi sadəcə gözəl görünmür - o həm də xüsusi mesajlarınızı daşıyır. QR texnologiyası ilə buketinizə gizli mesaj, foto və ya video əlavə edə bilərsiniz ki, yalnız həmin şəxs bunu görsün." %}
+                        </p>
+                    </div>
+                    
+                    <div class="about-feature">
+                        <h3 class="about-feature-title">
+                            <i class="fas fa-handshake"></i>
+                            {% trans "İstedadları Dəstəkləyirik" %}
+                        </h3>
+                        <p class="about-feature-text">
+                            {% trans "Holovera ilə əl işi yaradan sənətkarlar və yaradıcı dizaynerlər öz istedadlarını bütün dünyaya göstərə bilərlər. Platformamız vasitəsilə öz yaradıcılığınızı gəlirə çevirə bilərsiniz." %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="about-image">
+                    <div class="about-image-container">
+                        <img src="{% static 'images/about-3d-bouquet.jpg' %}" alt="3D Buket Dizayn">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="about-bg"></div>
+        <div class="section-edge section-edge-bottom"></div>
+    </section>
+    
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="divider-animation"></div>
+    </div>
+
     <!-- Contact Section -->
     <section id="contact" class="section contact-section">
+        <div class="section-edge section-edge-top"></div>
         <div class="section-container">
             <div class="section-title-container">
                 <h2 class="section-title">{% trans "Əlaqə" %}</h2>
@@ -601,6 +650,7 @@
                 </div>
             </div>
         </div>
+        <div class="section-edge section-edge-bottom"></div>
     </section>
     
     <!-- Footer -->
@@ -628,11 +678,11 @@
                 <div class="footer-col">
                     <h3 class="footer-title">{% trans "Platformamız" %}</h3>
                     <ul class="footer-links">
-                        <li><a href="#about"><i class="fas fa-angle-right"></i> {% trans "Haqqımızda" %}</a></li>
-                        <li><a href="#how"><i class="fas fa-angle-right"></i> {% trans "Necə İşləyir" %}</a></li>
                         <li><a href="#audience"><i class="fas fa-angle-right"></i> {% trans "Kimin üçündür" %}</a></li>
+                        <li><a href="#how"><i class="fas fa-angle-right"></i> {% trans "Necə İşləyir" %}</a></li>
                         <li><a href="#showcase"><i class="fas fa-angle-right"></i> {% trans "Nümunələr" %}</a></li>
                         <li><a href="#testimonials"><i class="fas fa-angle-right"></i> {% trans "Müştəri rəyləri" %}</a></li>
+                        <li><a href="#about"><i class="fas fa-angle-right"></i> {% trans "Haqqımızda" %}</a></li>
                         <li><a href="#contact"><i class="fas fa-angle-right"></i> {% trans "Əlaqə" %}</a></li>
                     </ul>
                 </div>
@@ -679,6 +729,7 @@
     
     <!-- Back to Top Button -->
     <div class="back-to-top">
+        <div class="arrow-glow"></div>
         <i class="fas fa-chevron-up"></i>
     </div>
 </div>
@@ -688,5 +739,5 @@
 <!-- Font Awesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script src="{% static 'js/video-slider.js' %}"></script>
-<!-- <script src="{% static 'js/landing_animations.js' %}"></script> -->
+<script src="{% static 'js/landing_animations.js' %}"></script>
 {% endblock %}
