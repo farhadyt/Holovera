@@ -19,15 +19,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Tüm içeriği görünür yap
 function forceAllContentVisible() {
-    // Tüm içerik öğelerini görünür yap
-    document.querySelectorAll('.section-container, .audience-card, .showcase-item, .about-feature, .step-item, .testimonial-item, .section-title, .section-subtitle, .fade-in, .slide-in, .scale-in, img').forEach(item => {
-        if (item) {
-            item.style.opacity = '1';
-            item.style.visibility = 'visible';
-            item.style.transform = 'none';
-        }
+    const elements = document.querySelectorAll(
+        '.section-container, ' +
+        '.audience-card, ' +
+        '.showcase-item, ' +
+        '.about-feature, ' +
+        '.step-item, ' +
+        '.testimonial-item, ' +
+        '.section-title, ' +
+        '.section-subtitle, ' +
+        '.fade-in, ' +
+        '.slide-in, ' +
+        '.scale-in, ' +
+        'img'
+    );
+    elements.forEach(item => {
+        item.style.opacity    = '1';
+        item.style.visibility = 'visible';
+        item.style.transform  = 'none';
     });
 }
+
 
 // Statik bölüm ayırıcıları oluştur - ANİMASYONSUZ
 function createStaticDividers() {
