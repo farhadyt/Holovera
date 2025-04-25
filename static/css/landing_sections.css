@@ -51,9 +51,9 @@ html {
   --border-color: rgba(77, 240, 255, 0.3);
   --border-width: 1px;
   --border-radius: 12px;
-  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 30px rgba(77, 240, 255, 0.15);
   --transition-slow: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-medium: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 30px rgba(77, 240, 255, 0.3);
+  --transition-medium: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   --transition-fast: all 0.2s ease;
   --section-padding: 100px 0;
   --container-width: 1200px;
@@ -239,6 +239,8 @@ html {
   position: relative;
   min-width: 300px;
   height: 400px;
+  perspective: 1500px; /* 3D effekti üçün perspektiv artırıldı */
+  z-index: 3;
 }
 
 .about-image-container {
@@ -246,27 +248,108 @@ html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--box-shadow);
-  transform: perspective(1000px) rotateY(-15deg);
-  transition: var(--transition-medium);
+  border-radius: 20px; /* Daha yumru künclər */
+  background: rgba(6, 9, 15, 0.6); /* Yarı-şəffaf arxa fon */
+  backdrop-filter: blur(5px); /* Şüşə effekti */
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateY(-15deg) translateZ(20px);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* Gözəl neon kənar */
+  box-shadow: 
+    0 0 15px rgba(77, 240, 255, 0.5),
+    0 0 30px rgba(77, 240, 255, 0.2),
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    inset 0 0 15px rgba(77, 240, 255, 0.3);
+  
+  /* Şüşə qalınlığını əlavə etmək üçün çərçivə */
+  border: 1px solid rgba(77, 240, 255, 0.3);
+  
+  /* Kənar işıq effekti */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(77, 240, 255, 0.3) 0%, 
+      transparent 50%, 
+      rgba(77, 240, 255, 0.1) 100%);
+    z-index: 2;
+    border-radius: 20px;
+    pointer-events: none;
+  }
+  
+  /* Alt kənar glow effekti */
+  &::after {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 40px;
+    left: 10%;
+    bottom: -20px;
+    background: rgba(77, 240, 255, 0.3);
+    filter: blur(20px);
+    border-radius: 50%;
+    z-index: 1;
+  }
 }
 
+/* Hover animasiyası (yumru fırlanma effekti) */
 .about-image-container:hover {
-  transform: perspective(1000px) rotateY(0deg);
+  transform: perspective(1000px) rotateY(5deg) translateZ(30px);
+  box-shadow: 
+    0 0 20px rgba(77, 240, 255, 0.7),
+    0 0 40px rgba(77, 240, 255, 0.3),
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 20px rgba(77, 240, 255, 0.4);
 }
 
+/* Şəklin özünün stilistikası */
 .about-image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transform: scale(1.05);
-  transition: var(--transition-medium);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 18px; /* Çərçivə ilə üst-üstə düşməməsi üçün kiçik radius */
+  filter: brightness(1.1) contrast(1.1); /* Şəkili daha canlı etmək üçün */
 }
 
 .about-image-container:hover img {
   transform: scale(1);
+  filter: brightness(1.2) contrast(1.2);
+}
+
+/* Işıq əksi effekti */
+.about-image::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50%;
+  height: 30%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+  transform: rotate(-45deg) translateZ(10px);
+  filter: blur(5px);
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.6;
+  animation: lightReflection 8s infinite alternate;
+}
+
+/* Işıq əksi animasiyası */
+@keyframes lightReflection {
+  0% {
+    opacity: 0.4;
+    transform: rotate(-45deg) translateX(-5%) translateZ(10px);
+  }
+  100% {
+    opacity: 0.7;
+    transform: rotate(-45deg) translateX(5%) translateZ(10px);
+  }
 }
 
 .about-feature {

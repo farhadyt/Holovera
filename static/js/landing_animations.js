@@ -1,19 +1,19 @@
-// static/js/landing_animations.js - Statik versiyon, animasyonsuz
+// static/js/landing_animations.js
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Landing animations başlatılıyor - yüksek performans statik modu");
     
     // Tüm içeriği görünür hale getir
     forceAllContentVisible();
     
-    // Statik bölüm ayırıcıları oluştur (animasyonsuz)
+    // Statik bölüm ayırıcıları oluştur
     createStaticDividers();
     
-    // Back to Top butonu oluştur (kesin çalışan versiyon)
-    createBackToTopButton();
+    // Back to Top butonu oluştur
+    setupBackToTopButton();
     
     // Temel işlevler
     initShowcaseFilter();
-    initSimpleTestimonialSlider();
+    initTestimonialSlider();
     initSmoothScrolling();
 });
 
@@ -40,8 +40,7 @@ function forceAllContentVisible() {
     });
 }
 
-
-// Statik bölüm ayırıcıları oluştur - ANİMASYONSUZ
+// Statik bölüm ayırıcıları oluştur
 function createStaticDividers() {
     // Tüm bölüm ayırıcılarını bul ve içeriğini temizle
     document.querySelectorAll('.section-divider').forEach(divider => {
@@ -57,34 +56,32 @@ function createStaticDividers() {
         centerLine.className = 'static-center-line';
         dividerContent.appendChild(centerLine);
         
-        // Futuristik grid çizgileri (statik)
-        const gridLines = document.createElement('div');
-        gridLines.className = 'static-grid-lines';
-        dividerContent.appendChild(gridLines);
-        
         divider.appendChild(dividerContent);
     });
 }
 
-// BACK TO TOP BUTONU - KESİN ÇALIŞAN VERSİYON
-function createBackToTopButton() {
-    // Önce varolan butonu kaldır
-    let existingButton = document.querySelector('.back-to-top');
-    if (existingButton) {
-        existingButton.remove();
+// Back to Top butonu ayarla
+function setupBackToTopButton() {
+    console.log("Back to Top düyməsi quraşdırılır...");
+    
+    // HTML-də düyməni yarat
+    let backToTop = document.querySelector('.back-to-top');
+    
+    // Əgər düymə yoxdursa, əlavə et
+    if (!backToTop) {
+        console.log("Back to Top düyməsi HTML-də yoxdur, əlavə edilir...");
+        
+        backToTop = document.createElement('div');
+        backToTop.className = 'back-to-top';
+        backToTop.innerHTML = '<i class="fas fa-chevron-up"></i>';
+        document.body.appendChild(backToTop);
+        
+        console.log("Back to Top düyməsi HTML-ə əlavə edildi");
+    } else {
+        console.log("Mövcud Back to Top düyməsi tapıldı");
     }
     
-    // Yeni buton oluştur
-    const backToTop = document.createElement('div');
-    backToTop.className = 'back-to-top';
-    backToTop.id = 'backToTopBtn';
-    
-    // Ok ikonu
-    const arrowIcon = document.createElement('i');
-    arrowIcon.className = 'fas fa-chevron-up';
-    backToTop.appendChild(arrowIcon);
-    
-    // CSS ekle (inline stil olarak)
+    // Xüsusi stillər əlavə et
     backToTop.style.position = 'fixed';
     backToTop.style.bottom = '30px';
     backToTop.style.right = '30px';
@@ -102,23 +99,17 @@ function createBackToTopButton() {
     backToTop.style.boxShadow = '0 0 20px rgba(77, 240, 255, 0.4)';
     backToTop.style.opacity = '0';
     backToTop.style.visibility = 'hidden';
-    backToTop.style.transition = 'opacity 0.3s, visibility 0.3s';
     
-    // Body'ye ekle
-    document.body.appendChild(backToTop);
-    
-    // Kaydırma olayı dinleyicisi
+    // Scroll hadisəsi
     window.addEventListener('scroll', function() {
         if (window.pageYOffset > 300) {
-            backToTop.style.opacity = '1';
-            backToTop.style.visibility = 'visible';
+            backToTop.classList.add('visible');
         } else {
-            backToTop.style.opacity = '0';
-            backToTop.style.visibility = 'hidden';
+            backToTop.classList.remove('visible');
         }
     });
     
-    // Tıklama olayı
+    // Kliklənmə hadisəsi
     backToTop.addEventListener('click', function() {
         window.scrollTo({
             top: 0,
@@ -126,16 +117,15 @@ function createBackToTopButton() {
         });
     });
     
-    // Sayfa yüklendikten sonra scroll pozisyonunu kontrol et
+    // Səhifə yükləndikdən sonra scroll yoxla
     if (window.pageYOffset > 300) {
-        backToTop.style.opacity = '1';
-        backToTop.style.visibility = 'visible';
+        backToTop.classList.add('visible');
     }
     
-    console.log('Back to Top butonu oluşturuldu ve doküman gövdesine eklendi.');
+    console.log("Back to Top düyməsi funksionallığı əlavə edildi");
 }
 
-// Showcase filtresi (basit versiyon)
+// Showcase filtresi
 function initShowcaseFilter() {
     const tabs = document.querySelectorAll('.showcase-tab');
     const items = document.querySelectorAll('.showcase-item');
@@ -171,38 +161,57 @@ function initShowcaseFilter() {
     }
 }
 
-// Basit testimonial slider (minimum animasyon)
-function initSimpleTestimonialSlider() {
+// Müştəri rəyləri slider funksiyası
+function initTestimonialSlider() {
+    console.log("Müştəri rəyləri slayderi inisializasiya olunur...");
+    
     const testimonialItems = document.querySelectorAll('.testimonial-item');
     const testimonialsList = document.querySelector('.testimonials-list');
     const prevBtn = document.querySelector('.testimonial-btn.prev');
     const nextBtn = document.querySelector('.testimonial-btn.next');
     
-    if (!testimonialItems.length || !testimonialsList || !prevBtn || !nextBtn) return;
+    if (!testimonialItems.length || !testimonialsList || !prevBtn || !nextBtn) {
+        console.error("Müştəri rəyləri elementləri tapılmadı");
+        return;
+    }
     
     let currentIndex = 0;
     
-    // İlk testimonial'ı göster
+    // İlk rəyi aktivləşdir
     testimonialItems[0].classList.add('active');
     
-    // Önceki testimonial'a geç
-    prevBtn.addEventListener('click', () => {
+    // Transformation əlavə et
+    testimonialItems.forEach((item, index) => {
+        item.style.transform = `translateX(${index * 100}%)`;
+    });
+    
+    // Əvvəlki rəyə keç
+    prevBtn.addEventListener('click', function() {
         testimonialItems[currentIndex].classList.remove('active');
         currentIndex = (currentIndex - 1 + testimonialItems.length) % testimonialItems.length;
         testimonialItems[currentIndex].classList.add('active');
-        testimonialsList.style.transform = `translateX(-${currentIndex * 100}%)`;
+        updateSliderPosition();
+        console.log(`Əvvəlki rəyə keçid: indeks ${currentIndex}`);
     });
     
-    // Sonraki testimonial'a geç
-    nextBtn.addEventListener('click', () => {
+    // Sonrakı rəyə keç
+    nextBtn.addEventListener('click', function() {
         testimonialItems[currentIndex].classList.remove('active');
         currentIndex = (currentIndex + 1) % testimonialItems.length;
         testimonialItems[currentIndex].classList.add('active');
-        testimonialsList.style.transform = `translateX(-${currentIndex * 100}%)`;
+        updateSliderPosition();
+        console.log(`Sonrakı rəyə keçid: indeks ${currentIndex}`);
     });
+    
+    // Slayderi yenilə
+    function updateSliderPosition() {
+        testimonialsList.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+    
+    console.log(`${testimonialItems.length} müştəri rəyi tapıldı və slider inisializasiya olundu`);
 }
 
-// Sayfa içi bağlantılar için yumuşak kaydırma
+// Səhifə içi bağlantılar üçün yumşaq sürüşmə
 function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
