@@ -416,86 +416,97 @@
         <div class="divider-animation"></div>
     </div>
     
-    <!-- KEPT: Testimonials Section (Customer reviews) -->
-    <section id="testimonials" class="section testimonials-section">
-        <div class="section-edge section-edge-top"></div>
-        <div class="section-container">
-            <div class="section-title-container">
-                <h2 class="section-title">{% trans "Müştəri rəyləri" %}</h2>
-                <p class="section-subtitle">{% trans "Platformamızdan istifadə edən müştərilərimizin fikirləri ilə tanış olun." %}</p>
+    
+<!-- Testimonials Section - Yenilənmiş struktur -->
+<section id="testimonials" class="section testimonials-section">
+    <div class="section-edge section-edge-top"></div>
+    <div class="section-container">
+        <div class="section-title-container">
+            <h2 class="section-title">{% trans "Müştəri rəyləri" %}</h2>
+            <p class="section-subtitle">{% trans "Platformamızdan istifadə edən müştərilərimizin fikirləri ilə tanış olun." %}</p>
+        </div>
+        
+        <div class="testimonials-container">
+            <div class="testimonials-list">
+                <!-- 1-ci müştəri rəyi -->
+                <div class="testimonial-item">
+                    <div class="testimonial-content">
+                        <div class="testimonial-quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-quote">
+                            {% trans "Holovera ilə həyat yoldaşıma ad günü hədiyyəsi hazırladım. QR kod vasitəsilə əlavə etdiyim video mesajı açanda üzündəki təəccübü və sevinci görmək ən dəyərli anlardan biri idi. Təşəkkürlər Holovera!" %}
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="{% static 'images/testimonial-1.jpg' %}" alt="Rəşad Əlizadə">
+                        </div>
+                        <h4 class="testimonial-name">{% trans "Rəşad Əlizadə" %}</h4>
+                        <p class="testimonial-position">{% trans "Bakı, Azərbaycan" %}</p>
+                    </div>
+                </div>
+                
+                <!-- 2-ci müştəri rəyi -->
+                <div class="testimonial-item">
+                    <div class="testimonial-content">
+                        <div class="testimonial-quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-quote">
+                            {% trans "Mən sənətkar olaraq əl işlərimi satmaq üçün bir kanal axtarırdım. Holovera mənə sadəcə məhsullarımı satmaq imkanı deyil, həm də onları 3D formatında təqdim etmək şansı verdi. İndi müştərilərim məhsulları hər tərəfdən görə bilirlər və satışlarım 3 dəfə artıb!" %}
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="{% static 'images/testimonial-2.jpg' %}" alt="Günay Məmmədli">
+                        </div>
+                        <h4 class="testimonial-name">{% trans "Günay Məmmədli" %}</h4>
+                        <p class="testimonial-position">{% trans "Əl işləri ustası" %}</p>
+                    </div>
+                </div>
+                
+                <!-- 3-cü müştəri rəyi -->
+                <div class="testimonial-item">
+                    <div class="testimonial-content">
+                        <div class="testimonial-quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-quote">
+                            {% trans "Dizayner olaraq Holovera mənim yaradıcılığımı yeni səviyyəyə qaldırdı. Platformada hazır elementlərdən istifadə edərək unikal kompozisiyalar yaradıram və bundan gəlir əldə edirəm. Həm yaradıcılıq, həm də qazanc - bunlar mənim üçün çox vacibdir və Holovera ikisini də təmin edir." %}
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="{% static 'images/testimonial-3.jpg' %}" alt="Elvin Həsənov">
+                        </div>
+                        <h4 class="testimonial-name">{% trans "Elvin Həsənov" %}</h4>
+                        <p class="testimonial-position">{% trans "Sərbəst dizayner" %}</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="testimonials-container">
-
-                <div class="testimonials-list">
-                    <div class="testimonial-item">
-                        <div class="testimonial-content">
-                            <div class="testimonial-quote-icon">
-                                <i class="fas fa-quote-left"></i>
-                            </div>
-                            <p class="testimonial-quote">
-                                {% trans "Holovera ilə həyat yoldaşıma ad günü hədiyyəsi hazırladım. QR kod vasitəsilə əlavə etdiyim video mesajı açanda üzündəki təəccübü və sevinci görmək ən dəyərli anlardan biri idi. Təşəkkürlər Holovera!" %}
-                            </p>
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="testimonial-avatar">
-                                <img src="{% static 'images/testimonial-1.jpg' %}" alt="Testimonial 1">
-                            </div>
-                            <h4 class="testimonial-name">{% trans "Rəşad Əlizadə" %}</h4>
-                            <p class="testimonial-position">{% trans "Bakı, Azərbaycan" %}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="testimonial-item">
-                        <div class="testimonial-content">
-                            <div class="testimonial-quote-icon">
-                                <i class="fas fa-quote-left"></i>
-                            </div>
-                            <p class="testimonial-quote">
-                                {% trans "Mən sənətkar olaraq əl işlərimi satmaq üçün bir kanal axtarırdım. Holovera mənə sadəcə məhsullarımı satmaq imkanı deyil, həm də onları 3D formatında təqdim etmək şansı verdi. İndi müştərilərim məhsulları hər tərəfdən görə bilirlər!" %}
-                            </p>
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="testimonial-avatar">
-                                <img src="{% static 'images/testimonial-2.jpg' %}" alt="Testimonial 2">
-                            </div>
-                            <h4 class="testimonial-name">{% trans "Günay Məmmədli" %}</h4>
-                            <p class="testimonial-position">{% trans "Əl işləri ustası" %}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="testimonial-item">
-                        <div class="testimonial-content">
-                            <div class="testimonial-quote-icon">
-                                <i class="fas fa-quote-left"></i>
-                            </div>
-                            <p class="testimonial-quote">
-                                {% trans "Dizayner olaraq Holovera mənim yaradıcılığımı yeni səviyyəyə qaldırdı. Platformada hazır elementlərdən istifadə edərək unikal kompozisiyalar yaradıram və bundan gəlir əldə edirəm. Həm yaradıcılıq, həm də qazanc - daha nə istəyə bilərəm?" %}
-                            </p>
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="testimonial-avatar">
-                                <img src="{% static 'images/testimonial-3.jpg' %}" alt="Testimonial 3">
-                            </div>
-                            <h4 class="testimonial-name">{% trans "Elvin Həsənov" %}</h4>
-                            <p class="testimonial-position">{% trans "Sərbəst dizayner" %}</p>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- Birləşdirilmiş naviqasiya - oxlar və nöqtələr bir xətdə -->
+            <div class="testimonial-navigation">
+                <button class="testimonial-btn prev" aria-label="Əvvəlki">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
                 
-                <div class="testimonial-nav">
-                    <div class="testimonial-btn prev">
-                        <i class="fas fa-chevron-left"></i>
-                    </div>
-                    <div class="testimonial-btn next">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
+                <!-- Oxların arasında nöqtələr -->
+                <div class="testimonial-dots">
+                    <span class="testimonial-dot active" data-index="0"></span>
+                    <span class="testimonial-dot" data-index="1"></span>
+                    <span class="testimonial-dot" data-index="2"></span>
                 </div>
+                
+                <button class="testimonial-btn next" aria-label="Sonrakı">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
-        <div class="section-edge section-edge-bottom"></div>
-    </section>
+    </div>
+    <div class="section-edge section-edge-bottom"></div>
+</section>
     
     <!-- Section Divider -->
     <div class="section-divider">

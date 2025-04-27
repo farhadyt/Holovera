@@ -413,7 +413,7 @@ html {
   flex: 1;
   min-width: 250px;
   text-align: center;
-  padding: 0 20px;
+  padding: 0 30px;
   position: relative;
   margin-bottom: 40px;
 }
@@ -441,10 +441,46 @@ html {
   border-radius: var(--border-radius);
   padding: 40px 30px 30px;
   margin-top: -30px;
-  border: var(--border-width) solid var(--border-color);
+  border: 1px solid rgba(77, 240, 255, 0.3);
   transition: var(--transition-medium);
   position: relative;
   z-index: 1;
+  box-shadow: 
+      0 0 10px rgba(77, 240, 255, 0.5),
+      0 0 20px rgba(77, 240, 255, 0.2),
+      0 10px 25px rgba(0, 0, 0, 0.5),
+      inset 0 0 10px rgba(77, 240, 255, 0.3);
+}
+
+/* Yeni əlavə - kənar işıq effekti */
+.step-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+      rgba(77, 240, 255, 0.3) 0%, 
+      transparent 50%, 
+      rgba(77, 240, 255, 0.1) 100%);
+  z-index: -1;
+  pointer-events: none;
+  border-radius: var(--border-radius);
+}
+
+/* Yeni əlavə - alt kənar glow effekti */
+.step-content::after {
+  content: '';
+  position: absolute;
+  width: 80%;
+  height: 40px;
+  left: 10%;
+  bottom: -20px;
+  background: rgba(77, 240, 255, 0.3);
+  filter: blur(20px);
+  border-radius: 50%;
+  z-index: -2;
 }
 
 .step-item:hover .step-content {
@@ -502,7 +538,7 @@ html {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px;
+  gap: 50px;
   margin-top: 60px;
 }
 
@@ -517,7 +553,47 @@ html {
   border: var(--border-width) solid var(--border-color);
   transition: var(--transition-medium);
   position: relative;
+  
+  /* Yeni əlavə olunan stillər */
+  box-shadow: 
+      0 0 10px rgba(77, 240, 255, 0.5),
+      0 0 15px rgba(77, 240, 255, 0.2),
+      0 10px 25px rgba(0, 0, 0, 0.5),
+      inset 0 0 15px rgba(77, 240, 255, 0.3);
+  border: 1px solid rgba(77, 240, 255, 0.3);
 }
+
+/* Yeni əlavə - kənar işıq effekti */
+.audience-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+      rgba(77, 240, 255, 0.3) 0%, 
+      transparent 50%, 
+      rgba(77, 240, 255, 0.1) 100%);
+  z-index: 2;
+  pointer-events: none;
+  border-radius: var(--border-radius);
+}
+
+/* Yeni əlavə - alt kənar glow effekti */
+.audience-card::after {
+  content: '';
+  position: absolute;
+  width: 80%;
+  height: 40px;
+  left: 10%;
+  bottom: -20px;
+  background: rgba(77, 240, 255, 0.3);
+  filter: blur(20px);
+  border-radius: 50%;
+  z-index: 1;
+}
+
 
 .audience-card:hover {
   transform: translateY(-15px);
@@ -617,7 +693,7 @@ html {
 .showcase-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
+  gap: 40px;
 }
 
 .showcase-item {
@@ -625,10 +701,46 @@ html {
   border-radius: var(--border-radius);
   overflow: hidden;
   aspect-ratio: 1;
-  box-shadow: var(--box-shadow);
+  box-shadow: 
+      0 0 15px rgba(77, 240, 255, 0.5),
+      0 0 30px rgba(77, 240, 255, 0.2),
+      0 15px 35px rgba(0, 0, 0, 0.5),
+      inset 0 0 15px rgba(77, 240, 255, 0.3);
   cursor: pointer;
   transform: scale(1);
   transition: var(--transition-medium);
+  border: 1px solid rgba(77, 240, 255, 0.3);
+}
+
+/* Yeni əlavə - kənar işıq effekti */
+.showcase-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+      rgba(77, 240, 255, 0.3) 0%, 
+      transparent 50%, 
+      rgba(77, 240, 255, 0.1) 100%);
+  z-index: 2;
+  pointer-events: none;
+  border-radius: var(--border-radius);
+}
+
+/* Yeni əlavə - alt kənar glow effekti */
+.showcase-item::after {
+  content: '';
+  position: absolute;
+  width: 80%;
+  height: 40px;
+  left: 10%;
+  bottom: -20px;
+  background: rgba(77, 240, 255, 0.3);
+  filter: blur(20px);
+  border-radius: 50%;
+  z-index: 1;
 }
 
 .showcase-item:hover {
@@ -731,60 +843,129 @@ html {
 /* ===== TESTIMONIALS SECTION ===== */
 .testimonials-section {
   background-color: var(--dark-bg);
+  position: relative;
+  padding: var(--section-padding);
 }
 
 .testimonials-container {
-  max-width: 1000px;
+  max-width: 1300px; /* 1200px yerinə daha geniş */
   margin: 0 auto;
   position: relative;
+  height: 550px;
+  overflow: visible;
 }
 
+/* Slayder konteyner */
 .testimonials-list {
-  display: flex;
-  overflow: hidden;
-  margin: 0 50px;
-}
-
-.testimonial-item {
-  min-width: 100%;
-  padding: 0 50px;
   position: relative;
-  transition: var(--transition-medium);
-  opacity: 0.3;
-  transform: scale(0.8);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Bütün rəylər */
+.testimonial-item {
+  position: absolute;
+  width: 70%;
+  max-width: 800px;
+  transition: all 0.5s cubic-bezier(0.43, 0.41, 0.22, 0.91);
+  opacity: 0;
+  visibility: hidden;
+  padding: 0 20px;
+  box-sizing: border-box;
+  pointer-events: none; /* İnteraktivliyi deaktiv edir */
+}
+
+/* Aktiv rəy (ortadakı) */
 .testimonial-item.active {
   opacity: 1;
-  transform: scale(1);
+  visibility: visible;
+  transform: scale(1) translateX(0);
+  z-index: 3;
+  pointer-events: auto; /* İnteraktivliyi aktiv edir */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 
+/* Sol köməkçi rəy */
+.testimonial-item.prev {
+  margin: -25%;
+  transform: scale(0.7) translateX(-90%); /* -60% yerinə -90% */
+  opacity: 0.35; /* Daha az görünən */
+  visibility: visible;
+  z-index: 2;
+  filter: blur(1px) brightness(0.8);
+  left: 0;
+}
+
+/* Sağ köməkçi rəy */
+.testimonial-item.next {
+  margin: -25%;
+  transform: scale(0.7) translateX(90%); /* 60% yerinə 90% */
+  opacity: 0.35; /* Daha az görünən */
+  visibility: visible;
+  z-index: 2;
+  filter: blur(1px) brightness(0.8);
+  right: 0;
+}
+
+/* Rəy məzmunu */
 .testimonial-content {
   background: rgba(12, 20, 35, 0.7);
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
   padding: 40px;
-  border: var(--border-width) solid var(--border-color);
-  position: relative;
+  border: 1px solid rgba(77, 240, 255, 0.3);
   margin-bottom: 30px;
   text-align: center;
+  position: relative;
+  box-shadow: 
+    0 0 15px rgba(77, 240, 255, 0.5),
+    0 0 30px rgba(77, 240, 255, 0.2),
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    inset 0 0 15px rgba(77, 240, 255, 0.3);
 }
 
+/* Kənar glow effekti */
+.testimonial-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(77, 240, 255, 0.3) 0%, 
+    transparent 50%, 
+    rgba(77, 240, 255, 0.1) 100%);
+  z-index: 0;
+  pointer-events: none;
+  border-radius: var(--border-radius);
+}
+
+/* Aşağı ox üçün üçbucaq */
 .testimonial-content::after {
   content: '';
   position: absolute;
   bottom: -20px;
   left: 50%;
-  transform: translateX(-50%);
-  border-width: 20px 20px 0;
-  border-style: solid;
-  border-color: rgba(12, 20, 35, 0.7) transparent transparent;
+  transform: translateX(-50%) rotate(45deg);
+  width: 40px;
+  height: 40px;
+  background: rgba(12, 20, 35, 0.7);
+  border-right: 1px solid rgba(77, 240, 255, 0.3);
+  border-bottom: 1px solid rgba(77, 240, 255, 0.3);
 }
 
 .testimonial-quote {
   font-size: 1.2rem;
   color: var(--text-secondary);
   line-height: 1.8;
+  position: relative;
+  z-index: 1;
 }
 
 .testimonial-quote-icon {
@@ -792,6 +973,8 @@ html {
   color: var(--primary-color);
   opacity: 0.5;
   margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .testimonial-author {
@@ -799,22 +982,51 @@ html {
   flex-direction: column;
   align-items: center;
   margin-top: 30px;
+  position: relative;
 }
 
 .testimonial-avatar {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 15px;
   border: 3px solid var(--primary-color);
   box-shadow: 0 0 15px var(--primary-glow);
+  position: relative;
 }
 
 .testimonial-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.testimonial-avatar::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(77, 240, 255, 0.3);
+  animation: pulseAvatar 3s infinite;
+}
+
+@keyframes pulseAvatar {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
 }
 
 .testimonial-name {
@@ -829,42 +1041,221 @@ html {
   color: var(--primary-color);
 }
 
-.testimonial-nav {
-  position: absolute;
-  top: 50%;
+/* Yeni birləşdirilmiş naviqasiya konteyner */
+.testimonial-navigation {
+  position: relative;
   width: 100%;
-  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  z-index: 10;
 }
 
+/* Naviqasiya düymələri */
 .testimonial-btn {
-  position: absolute;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: rgba(77, 240, 255, 0.1);
-  border: 1px solid var(--primary-color);
+  background: rgba(12, 20, 35, 0.7);
+  border: 1px solid rgba(77, 240, 255, 0.3);
   color: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: var(--transition-fast);
-  z-index: 2;
+  transition: all 0.3s ease;
+  z-index: 5;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0; /* Kiçik ekranlarda yığılmağın qarşısını alır */
 }
 
 .testimonial-btn:hover {
   background: var(--primary-color);
   color: var(--dark-bg);
   box-shadow: 0 0 15px var(--primary-glow);
+  transform: translateY(-3px);
 }
 
-.testimonial-btn.prev {
-  left: 0;
+/* Qarışdırıcı indikatörlar - oxların arasında */
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 20px; /* Oxlar və nöqtələr arasında məsafə */
+  align-items: center;
 }
 
-.testimonial-btn.next {
-  right: 0;
+.testimonial-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(77, 240, 255, 0.2);
+  border: 1px solid rgba(77, 240, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0; /* Kiçik ekranlarda yığılmağın qarşısını alır */
 }
+
+.testimonial-dot.active {
+  background: var(--primary-color);
+  box-shadow: 0 0 10px var(--primary-glow);
+  transform: scale(1.2);
+}
+
+.testimonial-dot:hover {
+  background: rgba(77, 240, 255, 0.4);
+  transform: scale(1.1);
+}
+
+/* Responsive ayarlamalar */
+@media (max-width: 1200px) {
+  .testimonials-container {
+    height: 580px;
+  }
+  
+  .testimonial-item {
+    width: 75%;
+  }
+  
+  /* Köməkçi rəylər daha yaxın */
+  .testimonial-item.prev {
+    transform: scale(0.65) translateX(-75%); 
+  }
+  
+  .testimonial-item.next {
+    transform: scale(0.65) translateX(75%);
+  }
+}
+
+@media (max-width: 992px) {
+  .testimonials-container {
+    height: 600px;
+  }
+  
+  .testimonial-item {
+    width: 85%;
+  }
+  
+  .testimonial-quote {
+    font-size: 1.1rem;
+  }
+  
+  .testimonial-content {
+    padding: 30px 25px;
+  }
+  
+  /* Köməkçi rəylər daha az görünür */
+  .testimonial-item.prev {
+    transform: scale(0.6) translateX(-60%);
+    opacity: 0.3;
+  }
+  
+  .testimonial-item.next {
+    transform: scale(0.6) translateX(60%);
+    opacity: 0.3;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials-container {
+    height: 620px;
+  }
+  
+  .testimonial-item {
+    width: 90%;
+    padding: 0 15px;
+  }
+  
+  .testimonial-content {
+    padding: 25px 20px;
+  }
+  
+  .testimonial-quote {
+    font-size: 1rem;
+  }
+  
+  .testimonial-avatar {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .testimonial-navigation {
+    margin-top: 25px;
+  }
+  
+  .testimonial-btn {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .testimonial-dot {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* Köməkçi rəylər mobil ekranlarda gizlənir */
+  .testimonial-item.prev,
+  .testimonial-item.next {
+    opacity: 0.2;
+    transform: scale(0.6) translateX(-30%);
+  }
+  
+  .testimonial-item.next {
+    transform: scale(0.6) translateX(30%);
+  }
+}
+
+@media (max-width: 576px) {
+  .testimonials-container {
+    height: 650px;
+  }
+  
+  .testimonial-item {
+    width: 95%;
+    padding: 0 10px;
+  }
+  
+  .testimonial-content {
+    padding: 20px 15px;
+  }
+  
+  .testimonial-quote {
+    font-size: 0.95rem;
+  }
+  
+  .testimonial-avatar {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .testimonial-navigation {
+    margin-top: 20px;
+  }
+  
+  .testimonial-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .testimonial-dot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .testimonial-dots {
+    margin: 0 10px;
+    gap: 8px;
+  }
+  
+  /* Köməkçi rəylər tamamilə gizlənir */
+  .testimonial-item.prev,
+  .testimonial-item.next {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 
 /* ===== CONTACT SECTION ===== */
 .contact-section {
@@ -875,7 +1266,7 @@ html {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 30px;
+  gap: 50px;
 }
 
 .contact-info {

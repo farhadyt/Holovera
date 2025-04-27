@@ -1,0 +1,309 @@
+/* Search Overlay Styles */
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 9, 15, 0.65);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.search-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.search-overlay-content {
+    width: 80%;
+    max-width: 1000px;
+    background: rgba(12, 18, 30, 0.8);
+    border-radius: 15px;
+    border: 1px solid rgba(77, 240, 255, 0.25);
+    padding: 40px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(77, 240, 255, 0.15);
+    transform: translateY(30px);
+    transition: all 0.5s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.search-overlay.active .search-overlay-content {
+    transform: translateY(0);
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.search-header h2 {
+    color: #4DF0FF;
+    font-size: 32px;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(77, 240, 255, 0.5);
+}
+
+.search-close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(12, 18, 30, 0.8);
+    border: 1px solid rgba(77, 240, 255, 0.25);
+    color: #4DF0FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-close-btn:hover {
+    background: #4DF0FF;
+    color: #06090f;
+    transform: rotate(90deg);
+}
+
+.search-form-container {
+    margin-bottom: 40px;
+}
+
+.search-form {
+    width: 100%;
+}
+
+.search-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Tam genişlik təmin edir */
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%; /* Vertical mərkəzləşdirmə üçün */
+    transform: translateY(-50%); /* Vertical mərkəzləşdirmə üçün */
+    color: #4DF0FF;
+    font-size: 20px;
+    pointer-events: none; /* Klik hadisələrinə müdaxilə etməməsi üçün */
+    z-index: 2; /* İnputun üzərində görünməsi üçün */
+}
+
+.search-input {
+    flex: 1;
+    background: rgba(6, 9, 15, 0.8);
+    border: 1px solid rgba(77, 240, 255, 0.25);
+    border-radius: 30px;
+    padding: 18px 30px 18px 60px;
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4DF0FF;
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(77, 240, 255, 0.3);
+}
+
+.search-submit-btn {
+    background: linear-gradient(45deg, #1E3A5A, #4DF0FF);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(77, 240, 255, 0.3);
+}
+
+.search-submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(77, 240, 255, 0.5);
+}
+
+.popular-searches,
+.recent-searches {
+    margin-bottom: 30px;
+}
+
+.popular-searches h3,
+.recent-searches h3 {
+    color: white;
+    font-size: 22px;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.popular-searches h3::after,
+.recent-searches h3::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4DF0FF, transparent);
+    box-shadow: 0 0 10px rgba(77, 240, 255, 0.5);
+}
+
+.popular-searches-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-tag {
+    background: rgba(12, 18, 30, 0.8);
+    border: 1px solid rgba(77, 240, 255, 0.25);
+    border-radius: 30px;
+    padding: 8px 20px;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.search-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(77, 240, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+.search-tag:hover {
+    background: rgba(77, 240, 255, 0.1);
+    border-color: #4DF0FF;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(77, 240, 255, 0.3);
+}
+
+.search-tag:hover::before {
+    left: 100%;
+}
+
+.recent-searches-list {
+    color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    background: rgba(6, 9, 15, 0.5);
+    border-radius: 10px;
+}
+
+/* Cursor animation */
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.input-cursor {
+    display: none;
+    animation: cursorBlink 1.5s infinite;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .search-overlay-content {
+        width: 90%;
+        padding: 30px;
+    }
+    
+    .search-header h2 {
+        font-size: 28px;
+    }
+    
+    .search-input {
+        padding: 15px 25px 15px 50px;
+        font-size: 16px;
+    }
+    
+    .search-submit-btn {
+        padding: 12px 25px;
+    }
+}
+
+/* Responsive üçün düzəlişlər */
+@media (max-width: 768px) {
+    .search-overlay-content {
+        width: 95%;
+        padding: 25px;
+    }
+    
+    .search-header h2 {
+        font-size: 24px;
+    }
+    
+    .search-input-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-input {
+        border-radius: 15px;
+        margin-bottom: 15px;
+        padding-left: 50px; /* İkon üçün yer saxlayın */
+        width: 100%; /* Tam genişlik */
+        box-sizing: border-box; /* Border və padding daxil genişlik */
+    }
+    
+    .search-icon {
+        left: 15px; /* Kiçik ekranlarda sol məsafəni azaldırıq */
+        top: 18px; /* Mobillərdə sabit top pozisiya */
+        transform: none; /* Top pozisiyasını sabitləşdirmək üçün transform ləğv edildi */
+    }
+    
+    .search-submit-btn {
+        margin-left: 0;
+        border-radius: 15px;
+        width: 100%; /* Tam genişlik */
+    }
+}
+
+/* Daha kiçik ekranlar üçün */
+@media (max-width: 480px) {
+    .search-overlay-content {
+        padding: 20px 15px;
+    }
+    
+    .search-icon {
+        font-size: 18px; /* Daha kiçik ikon */
+        left: 12px; /* Daha az sol məsafə */
+    }
+    
+    .search-input {
+        padding: 12px 12px 12px 40px; /* Sol padding azaldılıb */
+        font-size: 15px;
+    }
+    
+    .popular-searches-tags {
+        gap: 8px;
+    }
+    
+    .search-tag {
+        padding: 6px 15px;
+        font-size: 13px;
+    }
+}

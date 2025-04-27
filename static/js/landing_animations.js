@@ -161,55 +161,197 @@ function initShowcaseFilter() {
     }
 }
 
-// Müştəri rəyləri slider funksiyası
+// Müştəri rəyləri slider funksiyası - tam yenilənmiş
 function initTestimonialSlider() {
     console.log("Müştəri rəyləri slayderi inisializasiya olunur...");
     
-    const testimonialItems = document.querySelectorAll('.testimonial-item');
     const testimonialsList = document.querySelector('.testimonials-list');
+    const testimonialItems = document.querySelectorAll('.testimonial-item');
     const prevBtn = document.querySelector('.testimonial-btn.prev');
     const nextBtn = document.querySelector('.testimonial-btn.next');
+    const dots = document.querySelectorAll('.testimonial-dot');
     
-    if (!testimonialItems.length || !testimonialsList || !prevBtn || !nextBtn) {
+    if (!testimonialsList || !testimonialItems.length || !prevBtn || !nextBtn) {
         console.error("Müştəri rəyləri elementləri tapılmadı");
         return;
     }
     
     let currentIndex = 0;
+    let isAnimating = false;
+    const animationDuration = 600;
+    const totalItems = testimonialItems.length;
     
-    // İlk rəyi aktivləşdir
-    testimonialItems[0].classList.add('active');
-    
-    // Transformation əlavə et
+    // Bütün elementləri gizlət
     testimonialItems.forEach((item, index) => {
-        item.style.transform = `translateX(${index * 100}%)`;
+        item.classList.remove('active', 'prev', 'next');
+        item.style.opacity = '0';
     });
     
-    // Əvvəlki rəyə keç
-    prevBtn.addEventListener('click', function() {
-        testimonialItems[currentIndex].classList.remove('active');
-        currentIndex = (currentIndex - 1 + testimonialItems.length) % testimonialItems.length;
+    // İlkin vəziyyəti təyin et
+    function setInitialState() {
+        // Aktiv element
         testimonialItems[currentIndex].classList.add('active');
-        updateSliderPosition();
-        console.log(`Əvvəlki rəyə keçid: indeks ${currentIndex}`);
-    });
-    
-    // Sonrakı rəyə keç
-    nextBtn.addEventListener('click', function() {
-        testimonialItems[currentIndex].classList.remove('active');
-        currentIndex = (currentIndex + 1) % testimonialItems.length;
-        testimonialItems[currentIndex].classList.add('active');
-        updateSliderPosition();
-        console.log(`Sonrakı rəyə keçid: indeks ${currentIndex}`);
-    });
-    
-    // Slayderi yenilə
-    function updateSliderPosition() {
-        testimonialsList.style.transform = `translateX(-${currentIndex * 100}%)`;
+        testimonialItems[currentIndex].style.opacity = '1';
+        
+        // Əvvəlki element
+        const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
+        testimonialItems[prevIndex].classList.add('prev');
+        testimonialItems[prevIndex].style.opacity = '0.5';
+        
+        // Sonrakı element
+        const nextIndex = (currentIndex + 1) % totalItems;
+        testimonialItems[nextIndex].classList.add('next');
+        testimonialItems[nextIndex].style.opacity = '0.5';
+        
+        // Aktiv nöqtə
+        if (dots && dots.length) {
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
     }
+    
+    // Slaydı dəyiş
+    function changeSlide(newIndex) {
+        if (isAnimating || newIndex === currentIndex) return;
+        
+        isAnimating = true;
+        
+        // Əvvəlki statusları sıfırla
+        const prevItem = document.querySelector('.testimonial-item.prev');
+        const activeItem = document.querySelector('.testimonial-item.active');
+        const nextItem = document.querySelector('.testimonial-item.next');
+        
+        if (prevItem) prevItem.classList.remove('prev');
+        if (activeItem) activeItem.classList.remove('active');
+        if (nextItem) nextItem.classList.remove('next');
+        
+        // İndeksi yenilə
+        currentIndex = newIndex;
+        
+        // Yeni statusları təyin et
+        const newPrevIndex = (currentIndex - 1 + totalItems) % totalItems;
+        const newNextIndex = (currentIndex + 1) % totalItems;
+        
+        // Keçid zamanı kiçik gecikmə 
+        setTimeout(() => {
+            // Əvvəlki element
+            testimonialItems[newPrevIndex].classList.add('prev');
+            testimonialItems[newPrevIndex].style.opacity = '0.5';
+            
+            // Aktiv element
+            testimonialItems[currentIndex].classList.add('active');
+            testimonialItems[currentIndex].style.opacity = '1';
+            
+            // Sonrakı element
+            testimonialItems[newNextIndex].classList.add('next');
+            testimonialItems[newNextIndex].style.opacity = '0.5';
+            
+            // Digər bütün elementləri gizlət
+            testimonialItems.forEach((item, index) => {
+                if (index !== currentIndex && index !== newPrevIndex && index !== newNextIndex) {
+                    item.classList.remove('active', 'prev', 'next');
+                    item.style.opacity = '0';
+                }
+            });
+            
+            // Nöqtələri yenilə
+            if (dots && dots.length) {
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+            }
+            
+            // Animasiya tamamlandı
+            setTimeout(() => {
+                isAnimating = false;
+            }, animationDuration);
+        }, 50);
+    }
+    
+    // Əvvəlki slayd düyməsi
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            const newIndex = (currentIndex - 1 + totalItems) % totalItems;
+            changeSlide(newIndex);
+        });
+    }
+    
+    // Sonrakı slayd düyməsi
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const newIndex = (currentIndex + 1) % totalItems;
+            changeSlide(newIndex);
+        });
+    }
+    
+    // Nöqtə indikatorları
+    if (dots && dots.length) {
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                changeSlide(index);
+            });
+        });
+    }
+    
+    // Touch hadisələri üçün dəstək
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    // Touch başlanğıcı
+    testimonialsList.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    // Touch sonu
+    testimonialsList.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+    
+    // Swipe istiqamətini müəyyən et
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Sola swipe - növbəti elementa keç
+            const newIndex = (currentIndex + 1) % totalItems;
+            changeSlide(newIndex);
+        } 
+        else if (touchEndX > touchStartX + swipeThreshold) {
+            // Sağa swipe - əvvəlki elementa keç
+            const newIndex = (currentIndex - 1 + totalItems) % totalItems;
+            changeSlide(newIndex);
+        }
+    }
+    
+    // İlkin vəziyyəti təyin et
+    setInitialState();
+    
+    // Avtomatik slayd dəyişimi
+    let autoSlideInterval;
+    
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(() => {
+            const newIndex = (currentIndex + 1) % totalItems;
+            changeSlide(newIndex);
+        }, 5000);
+    }
+    
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+    
+    // Hover zamanı avto dəyişimi dayandır
+    testimonialsList.addEventListener('mouseenter', stopAutoSlide);
+    testimonialsList.addEventListener('mouseleave', startAutoSlide);
+    
+    // Avtomatik dəyişimi başlat
+    startAutoSlide();
     
     console.log(`${testimonialItems.length} müştəri rəyi tapıldı və slider inisializasiya olundu`);
 }
+
 
 // Səhifə içi bağlantılar üçün yumşaq sürüşmə
 function initSmoothScrolling() {
