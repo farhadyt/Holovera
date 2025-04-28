@@ -630,8 +630,8 @@ a {
 .header-controls .icon-btn.search-btn,
 .auth-controls .icon-btn.search-btn {
     position: relative;
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: rgba(6, 9, 15, 0.7);
     border: 2px solid var(--primary-color);
@@ -714,6 +714,93 @@ a {
 .auth-controls .icon-btn.search-btn .btn-glow {
     display: none;
 }
+
+/* Login Button Styling - Matches Search Button */
+.header-controls .icon-btn.login-btn,
+.auth-controls .icon-btn.login-btn {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(6, 9, 15, 0.7);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(77, 240, 255, 0.2);
+    overflow: visible;
+    z-index: 2001;
+    margin-left: 10px;
+}
+
+/* Outer ring glow effect */
+.header-controls .icon-btn.login-btn::after,
+.auth-controls .icon-btn.login-btn::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    border: 1px solid rgba(77, 240, 255, 0.3);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Inner glow effect */
+.header-controls .icon-btn.login-btn::before,
+.auth-controls .icon-btn.login-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, 
+                rgba(77, 240, 255, 0.3) 0%, 
+                transparent 70%);
+    opacity: 0;
+    z-index: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.header-controls .icon-btn.login-btn i,
+.auth-controls .icon-btn.login-btn i {
+    position: relative;
+    z-index: 3;
+    filter: drop-shadow(0 0 5px rgba(77, 240, 255, 0.5));
+    font-size: 18px;
+}
+
+/* Enhanced hover effects for login button */
+.header-controls .icon-btn.login-btn:hover,
+.auth-controls .icon-btn.login-btn:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(77, 240, 255, 0.5);
+}
+
+.header-controls .icon-btn.login-btn:hover::before,
+.auth-controls .icon-btn.login-btn:hover::before {
+    opacity: 0.8;
+}
+
+.header-controls .icon-btn.login-btn:hover::after,
+.auth-controls .icon-btn.login-btn:hover::after {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+
+
 /* ==================== END SEARCH BUTTON STYLING ==================== */
   
 /* Responsive Styles */
@@ -795,5 +882,216 @@ a {
     .auth-controls .icon-btn.search-btn {
         width: 36px;
         height: 36px;
+    }
+}
+
+/* Auth dropdown styles - add at the end of the file */
+.auth-dropdown {
+    position: relative;
+    z-index: 2001;
+    margin: 0 10px;
+}
+
+.auth-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(6, 9, 15, 0.7);
+    border: 2px solid var(--accent-color, #FF4D88);
+    border-radius: 10px;
+    padding: 8px 15px;
+    height: 40px;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(255, 77, 136, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Inner glow effect */
+.auth-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, 
+                rgba(255, 77, 136, 0.3) 0%, 
+                transparent 60%, 
+                rgba(255, 77, 136, 0.1) 100%);
+    opacity: 0;
+    z-index: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Outer ring glow effect */
+.auth-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 77, 136, 0.3);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.auth-btn .fa-chevron-down {
+    color: var(--accent-color, #FF4D88);
+    font-size: 12px;
+    filter: drop-shadow(0 0 5px rgba(255, 77, 136, 0.5));
+    position: relative;
+    z-index: 2;
+}
+
+/* Enhanced hover effect */
+.auth-btn:hover {
+    background: rgba(255, 77, 136, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 77, 136, 0.5);
+}
+
+.auth-btn:hover::before {
+    opacity: 0.8;
+}
+
+.auth-btn:hover::after {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* User avatar/icon styles */
+.user-avatar, .user-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 77, 136, 0.2);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-avatar i, .user-icon i {
+    color: var(--accent-color, #FF4D88);
+    font-size: 16px;
+    filter: drop-shadow(0 0 5px rgba(255, 77, 136, 0.5));
+}
+
+.current-user, .login-text {
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+/* Dropdown styling */
+.auth-options {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    background: rgba(6, 9, 15, 0.9);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 77, 136, 0.3);
+    border-radius: 12px;
+    width: 180px;
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(255, 77, 136, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: var(--z-popup);
+    overflow: hidden;
+}
+
+/* Dropdown arrow indicator */
+.auth-options::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    background: rgba(6, 9, 15, 0.9);
+    border-left: 2px solid rgba(255, 77, 136, 0.3);
+    border-top: 2px solid rgba(255, 77, 136, 0.3);
+    transform: rotate(45deg);
+    z-index: 1;
+}
+
+.auth-dropdown:hover .auth-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.auth-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-option:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 77, 136, 0.1);
+}
+
+.auth-option:hover {
+    background: rgba(255, 77, 136, 0.15);
+    padding-left: 20px;
+}
+
+.auth-option i {
+    color: var(--accent-color, #FF4D88);
+    font-size: 16px;
+}
+
+/* For the case when screen is small */
+@media (max-width: 768px) {
+    .auth-btn {
+        width: 35px;
+        height: 35px;
+        padding: 0;
+        border-radius: 50%;
+        justify-content: center;
+    }
+    
+    .auth-btn .login-text,
+    .auth-btn .current-user,
+    .auth-btn .fa-chevron-down {
+        display: none;
+    }
+    
+    .user-avatar, .user-icon {
+        width: 18px;
+        height: 18px;
     }
 }

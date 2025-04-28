@@ -1,9 +1,213 @@
 {% extends 'auth_base.html' %}
 {% load static %}
 {% load i18n %}
-{% load crispy_forms_tags %}
 
 {% block title %}{% trans "Qeydiyyat" %} - Holovera{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+<style>
+    /* User type selection styles */
+    .user-type-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .user-type-option {
+        flex: 1;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .user-type-option input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .user-type-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
+        border: 2px solid rgba(77, 240, 255, 0.25);
+        background: rgba(12, 18, 30, 0.8);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    
+    .user-type-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+    
+    .user-type-name {
+        font-weight: 600;
+    }
+    
+    .user-type-desc {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 5px;
+    }
+    
+    .user-type-option input:checked + .user-type-label {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 15px rgba(77, 240, 255, 0.5);
+        background: rgba(77, 240, 255, 0.1);
+    }
+    
+    /* Age range select */
+    .age-range-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .age-range-option {
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .age-range-option input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .age-range-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(77, 240, 255, 0.3);
+        background: rgba(12, 18, 30, 0.8);
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .age-range-option input:checked + .age-range-label {
+        border-color: var(--primary-color);
+        background: rgba(77, 240, 255, 0.2);
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    /* Gender styles */
+    .gender-container {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .gender-option {
+        flex: 1;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .gender-option input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .gender-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(77, 240, 255, 0.3);
+        background: rgba(12, 18, 30, 0.8);
+        transition: all 0.3s ease;
+    }
+    
+    .gender-option input:checked + .gender-label {
+        border-color: var(--primary-color);
+        background: rgba(77, 240, 255, 0.2);
+    }
+    
+    .gender-icon {
+        margin-right: 8px;
+        color: var(--primary-color);
+    }
+    
+    /* Phone input */
+    .iti {
+        width: 100%;
+    }
+    
+    /* Verification code section */
+    .verification-section {
+        display: none;
+    }
+    
+    .verification-section.active {
+        display: block;
+        animation: fadeIn 0.4s ease;
+    }
+    
+    #recaptcha-container {
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .verification-code-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+    
+    .code-input {
+        width: 45px;
+        height: 55px;
+        border-radius: 8px;
+        border: 1px solid rgba(77, 240, 255, 0.3);
+        background: rgba(12, 18, 30, 0.8);
+        font-size: 24px;
+        text-align: center;
+        margin: 0 5px;
+    }
+    
+    .verification-timer {
+        text-align: center;
+        margin: 20px 0;
+        color: var(--text-secondary);
+    }
+    
+    #timer {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    #resend-code-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    
+    #resend-code-btn:disabled {
+        color: var(--text-secondary);
+        text-decoration: none;
+        cursor: default;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="auth-scene">
@@ -19,64 +223,156 @@
             </div>
             
             <div class="auth-form">
+                <!-- Main Registration Form -->
                 <form method="post" action="{% url 'register' %}" id="register-form">
                     {% csrf_token %}
                     
-                    <div class="form-group">
-                        <label for="id_name">{% trans "Tam ad" %}</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" name="name" id="id_name" class="form-control" placeholder="{% trans 'Tam adınız' %}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-phone"></i>
-                            <input type="tel" name="phone_number" id="id_phone_number" class="form-control" placeholder="+994501234567" required>
-                        </div>
-                    </div>
-                    
-                    <!-- Telefon doğrulama kodu alanı (gizli başlar) -->
-                    <div id="verification-code-container" class="form-group" style="display:none">
-                        <label for="id_verification_code">{% trans "Doğrulama kodu" %}</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-key"></i>
-                            <input type="text" id="id_verification_code" class="form-control" placeholder="{% trans 'SMS ilə gələn kod' %}">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="id_age">{% trans "Yaş" %}</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-birthday-cake"></i>
-                                <input type="number" name="age" id="id_age" class="form-control" placeholder="{% trans 'Yaşınız' %}" required>
+                    <!-- Step 1: User Information -->
+                    <div id="registration-section" class="registration-section">
+                        <!-- User Type Selection -->
+                        <div class="form-group">
+                            <label>{% trans "Hansı kimi qoşulmaq istəyirsiniz?" %}</label>
+                            <div class="user-type-container">
+                                <label class="user-type-option">
+                                    <input type="radio" name="user_type" value="product_owner" required>
+                                    <div class="user-type-label">
+                                        <i class="fas fa-paint-brush user-type-icon"></i>
+                                        <span class="user-type-name">{% trans "Məhsul sahibi" %}</span>
+                                        <span class="user-type-desc">{% trans "Əl işlərini sat" %}</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="user-type-option">
+                                    <input type="radio" name="user_type" value="designer" required>
+                                    <div class="user-type-label">
+                                        <i class="fas fa-palette user-type-icon"></i>
+                                        <span class="user-type-name">{% trans "Dizayner" %}</span>
+                                        <span class="user-type-desc">{% trans "Kompozisiyalar hazırla" %}</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="user-type-option">
+                                    <input type="radio" name="user_type" value="customer" required>
+                                    <div class="user-type-label">
+                                        <i class="fas fa-gift user-type-icon"></i>
+                                        <span class="user-type-name">{% trans "Müştəri" %}</span>
+                                        <span class="user-type-desc">{% trans "Hədiyyələr sifariş et" %}</span>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                         
-                        <div class="form-group col-md-6">
-                            <label for="id_gender">{% trans "Cins" %}</label>
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label for="id_name">{% trans "Tam ad" %}</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-venus-mars"></i>
-                                <select name="gender" id="id_gender" class="form-control" required>
-                                    <option value="M">{% trans 'Kişi' %}</option>
-                                    <option value="F">{% trans 'Qadın' %}</option>
-                                    <option value="O">{% trans 'Digər' %}</option>
-                                </select>
+                                <i class="fas fa-user"></i>
+                                <input type="text" name="name" id="id_name" class="form-control" placeholder="{% trans 'Tam adınız' %}" required>
                             </div>
                         </div>
+                        
+                        <!-- Phone Number with Country Code -->
+                        <div class="form-group">
+                            <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
+                            <input type="tel" name="phone_number" id="id_phone_number" class="form-control" required>
+                        </div>
+                        
+                        <!-- Gender Selection -->
+                        <div class="form-group">
+                            <label>{% trans "Cins" %}</label>
+                            <div class="gender-container">
+                                <label class="gender-option">
+                                    <input type="radio" name="gender" value="M" required>
+                                    <div class="gender-label">
+                                        <i class="fas fa-mars gender-icon"></i>
+                                        {% trans "Kişi" %}
+                                    </div>
+                                </label>
+                                
+                                <label class="gender-option">
+                                    <input type="radio" name="gender" value="F" required>
+                                    <div class="gender-label">
+                                        <i class="fas fa-venus gender-icon"></i>
+                                        {% trans "Qadın" %}
+                                    </div>
+                                </label>
+                                
+                                <label class="gender-option">
+                                    <input type="radio" name="gender" value="O" required>
+                                    <div class="gender-label">
+                                        <i class="fas fa-genderless gender-icon"></i>
+                                        {% trans "Digər" %}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Age Range Selection -->
+                        <div class="form-group">
+                            <label>{% trans "Yaş aralığı" %}</label>
+                            <div class="age-range-container">
+                                <label class="age-range-option">
+                                    <input type="radio" name="age_range" value="16-25" required>
+                                    <div class="age-range-label">16-25</div>
+                                </label>
+                                
+                                <label class="age-range-option">
+                                    <input type="radio" name="age_range" value="25-42" required>
+                                    <div class="age-range-label">25-42</div>
+                                </label>
+                                
+                                <label class="age-range-option">
+                                    <input type="radio" name="age_range" value="42-60" required>
+                                    <div class="age-range-label">42-60</div>
+                                </label>
+                                
+                                <label class="age-range-option">
+                                    <input type="radio" name="age_range" value="60+" required>
+                                    <div class="age-range-label">60+</div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button to Proceed to Verification -->
+                        <button type="button" id="send-code-btn" class="auth-button login-btn">{% trans "SMS kodu göndər" %}</button>
+                        
+                        <!-- Hidden fields for Firebase info -->
+                        <input type="hidden" name="firebase_uid" id="firebase_uid">
+                        <input type="hidden" name="is_verified" id="is_verified" value="false">
                     </div>
                     
-                    <!-- Qeydiyyat və telefon doğrulama düymələri -->
-                    <button type="button" id="send-code-btn" class="auth-button login-btn">{% trans "SMS kodu göndər" %}</button>
-                    <button type="button" id="verify-code-btn" style="display:none" class="auth-button register-btn">{% trans "Kodu doğrula və qeydiyyatdan keç" %}</button>
-                    
-                    <div class="login-link">
-                        <p>{% trans "Artıq hesabınız var?" %} <a href="{% url 'login' %}">{% trans "Daxil olun" %}</a></p>
+                    <!-- Step 2: Phone Verification -->
+                    <div id="verification-section" class="verification-section">
+                        <div class="verification-header">
+                            <h3>{% trans "Telefon nömrənizi təsdiqləyin" %}</h3>
+                            <p>{% trans "Aşağıdakı nömrəyə göndərilən 6 rəqəmli kodu daxil edin" %}: <strong id="confirm-phone"></strong></p>
+                        </div>
+                        
+                        <div id="recaptcha-container"></div>
+                        
+                        <div class="verification-code-container">
+                            <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                        </div>
+                        
+                        <div class="verification-timer">
+                            {% trans "Kodu almadınız?" %} <span id="timer">01:30</span> {% trans "sonra" %}
+                            <button type="button" id="resend-code-btn" disabled>{% trans "Yenidən göndər" %}</button>
+                        </div>
+                        
+                        <button type="button" id="verify-code-btn" class="auth-button login-btn">{% trans "Kodu doğrula və qeydiyyatdan keç" %}</button>
+                        
+                        <button type="button" id="back-btn" class="auth-button secondary-btn">{% trans "Geri qayıt" %}</button>
                     </div>
                 </form>
+                
+                <div class="login-link">
+                    <p>{% trans "Artıq hesabınız var?" %} <a href="{% url 'login' %}">{% trans "Daxil olun" %}</a></p>
+                </div>
             </div>
         </div>
     </div>
@@ -84,97 +380,230 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
 <script>
-    // Firebase telefon autentifikasiyasını quraşdıraq
     document.addEventListener('DOMContentLoaded', function() {
-        // Firebase quraşdırması
+        // Initialize the phone input plugin
+        const phoneInput = window.intlTelInput(document.querySelector("#id_phone_number"), {
+            preferredCountries: ["az", "tr", "ru", "us"],
+            separateDialCode: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
+        });
+        
+        // Form sections
+        const registrationSection = document.getElementById('registration-section');
+        const verificationSection = document.getElementById('verification-section');
+        
+        // Verification code inputs
+        const codeInputs = document.querySelectorAll('.code-input');
+        
+        // Make the verification code inputs work better
+        codeInputs.forEach((input, index) => {
+            // Auto-focus next input
+            input.addEventListener('input', function() {
+                if (this.value && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+            
+            // Handle backspace
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+        });
+        
+        // Send verification code button
+        const sendCodeBtn = document.getElementById('send-code-btn');
+        const verifyCodeBtn = document.getElementById('verify-code-btn');
+        const backBtn = document.getElementById('back-btn');
+        const resendCodeBtn = document.getElementById('resend-code-btn');
+        const timerElement = document.getElementById('timer');
+        
+        // Back button functionality
+        backBtn.addEventListener('click', function() {
+            verificationSection.classList.remove('active');
+            registrationSection.style.display = 'block';
+        });
+        
+        // Firebase Authentication
         if (typeof firebase !== 'undefined' && firebase.auth) {
-            console.log("Firebase telefon autentifikasiyası hazırlanır");
+            let confirmationResult = null;
+            let resendTimer = null;
             
-            let verificationId = null;
-            
-            // Telefon nömrəsinə kod göndərmə
-            document.getElementById('send-code-btn').addEventListener('click', function() {
-                const phoneNumber = document.getElementById('id_phone_number').value;
+            // Send verification code
+            sendCodeBtn.addEventListener('click', function() {
+                // Validate form
+                const form = document.getElementById('register-form');
+                const userTypeSelected = form.querySelector('input[name="user_type"]:checked');
+                const nameField = document.getElementById('id_name');
+                const genderSelected = form.querySelector('input[name="gender"]:checked');
+                const ageRangeSelected = form.querySelector('input[name="age_range"]:checked');
                 
-                if (!phoneNumber || phoneNumber.length < 10) {
-                    alert("{% trans 'Xahiş edirik düzgün telefon nömrəsi daxil edin' %}");
+                // Check if all required fields are filled
+                if (!userTypeSelected || !nameField.value.trim() || !phoneInput.isValidNumber() || !genderSelected || !ageRangeSelected) {
+                    alert("{% trans 'Zəhmət olmasa bütün sahələri düzgün doldurun' %}");
                     return;
                 }
                 
-                // reCAPTCHA mühitini təyin et
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-code-btn', {
-                    'size': 'invisible',
-                    'callback': function(response) {
-                        // reCAPTCHA doğrulandı
-                        console.log("reCAPTCHA doğrulandı");
-                    }
-                });
+                // Get full phone number with country code
+                const phoneNumber = phoneInput.getNumber();
                 
-                // Telefon nömrəsinə kod göndər
+                // Show phone number in verification section
+                document.getElementById('confirm-phone').textContent = phoneNumber;
+                
+                // Initialize reCAPTCHA verifier
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'normal',
+                        'callback': function(response) {
+                            // reCAPTCHA verified
+                            sendCodeBtn.removeAttribute('disabled');
+                        }
+                    });
+                    
+                    window.recaptchaVerifier.render().then(function(widgetId) {
+                        window.recaptchaWidgetId = widgetId;
+                    });
+                }
+                
+                // Disable button and show loading
+                sendCodeBtn.setAttribute('disabled', 'disabled');
+                sendCodeBtn.innerHTML = '{% trans "Göndərilir..." %}';
+                
+                // Send verification code using Firebase
                 firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-                    .then(function(confirmationResult) {
-                        // SMS göndərildi
-                        console.log("SMS kodu göndərildi");
-                        window.confirmationResult = confirmationResult;
-                        verificationId = confirmationResult.verificationId;
+                    .then(function(result) {
+                        // SMS sent successfully
+                        confirmationResult = result;
                         
-                        // Kod sahəsini və doğrulama düyməsini göstər
-                        document.getElementById('verification-code-container').style.display = 'block';
-                        document.getElementById('verify-code-btn').style.display = 'block';
-                        document.getElementById('send-code-btn').style.display = 'none';
+                        // Show verification section
+                        registrationSection.style.display = 'none';
+                        verificationSection.classList.add('active');
                         
-                        // Telefon sahəsini deaktiv et
-                        document.getElementById('id_phone_number').disabled = true;
+                        // Start countdown timer
+                        startResendTimer();
+                        
+                        // Focus on first code input
+                        codeInputs[0].focus();
+                        
+                        // Reset send button
+                        sendCodeBtn.removeAttribute('disabled');
+                        sendCodeBtn.innerHTML = '{% trans "SMS kodu göndər" %}';
                     })
                     .catch(function(error) {
-                        console.error("SMS göndərmə xətası:", error);
+                        console.error("SMS error:", error);
                         alert("{% trans 'SMS kodu göndərmə xətası:' %} " + error.message);
                         
-                        // reCAPTCHA'nı sıfırla
-                        window.recaptchaVerifier.render().then(function(widgetId) {
-                            grecaptcha.reset(widgetId);
-                        });
+                        // Reset button
+                        sendCodeBtn.removeAttribute('disabled');
+                        sendCodeBtn.innerHTML = '{% trans "SMS kodu göndər" %}';
+                        
+                        // Reset reCAPTCHA
+                        if (window.recaptchaWidgetId) {
+                            grecaptcha.reset(window.recaptchaWidgetId);
+                        }
                     });
             });
             
-            // Kodu doğrulama və qeydiyyatı tamamlama
-            document.getElementById('verify-code-btn').addEventListener('click', function() {
-                const code = document.getElementById('id_verification_code').value;
+            // Verify code button
+            verifyCodeBtn.addEventListener('click', function() {
+                // Get verification code from inputs
+                let verificationCode = '';
+                let isValid = true;
                 
-                if (!code || code.length < 4) {
-                    alert("{% trans 'Xahiş edirik düzgün doğrulama kodu daxil edin' %}");
+                codeInputs.forEach(input => {
+                    if (!input.value) {
+                        isValid = false;
+                    }
+                    verificationCode += input.value;
+                });
+                
+                if (!isValid) {
+                    alert("{% trans 'Xahiş edirik bütün rəqəmləri daxil edin' %}");
                     return;
                 }
                 
-                // Doğrulama kodunu təsdiqlə
-                window.confirmationResult.confirm(code)
+                // Disable button and show loading
+                verifyCodeBtn.setAttribute('disabled', 'disabled');
+                verifyCodeBtn.innerHTML = '{% trans "Doğrulanır..." %}';
+                
+                // Verify code with Firebase
+                confirmationResult.confirm(verificationCode)
                     .then(function(result) {
-                        // Doğrulama uğurlu
-                        console.log("Telefon nömrəsi doğrulandı!");
+                        // Code verified successfully
                         const user = result.user;
                         
-                        // Django servere telefon doğrulamasını göndər
-                        const form = document.getElementById('register-form');
+                        // Set hidden fields for Firebase info
+                        document.getElementById('firebase_uid').value = user.uid;
+                        document.getElementById('is_verified').value = 'true';
                         
-                        // Firebase UID-ni gizli sahə kimi əlavə et
-                        const uidField = document.createElement('input');
-                        uidField.type = 'hidden';
-                        uidField.name = 'firebase_uid';
-                        uidField.value = user.uid;
-                        form.appendChild(uidField);
-                        
-                        // Formu göndər
-                        form.submit();
+                        // Submit form to complete registration
+                        document.getElementById('register-form').submit();
                     })
                     .catch(function(error) {
-                        console.error("Doğrulama kodu xətası:", error);
+                        console.error("Verification error:", error);
                         alert("{% trans 'Doğrulama kodu xətası:' %} " + error.message);
+                        
+                        // Reset button
+                        verifyCodeBtn.removeAttribute('disabled');
+                        verifyCodeBtn.innerHTML = '{% trans "Kodu doğrula və qeydiyyatdan keç" %}';
                     });
             });
+            
+            // Resend code button
+            resendCodeBtn.addEventListener('click', function() {
+                // Reset code inputs
+                codeInputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                // Reset and go back to first step
+                verificationSection.classList.remove('active');
+                registrationSection.style.display = 'block';
+                
+                // Reset reCAPTCHA
+                if (window.recaptchaWidgetId) {
+                    grecaptcha.reset(window.recaptchaWidgetId);
+                }
+            });
+            
+            // Timer function for resend button
+            function startResendTimer() {
+                // Reset previous timer
+                if (resendTimer) {
+                    clearInterval(resendTimer);
+                }
+                
+                // Enable timer for 90 seconds
+                let secondsLeft = 90;
+                resendCodeBtn.setAttribute('disabled', 'disabled');
+                
+                // Update timer display
+                function updateTimer() {
+                    const minutes = Math.floor(secondsLeft / 60);
+                    const seconds = secondsLeft % 60;
+                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                // Initial update
+                updateTimer();
+                
+                // Start countdown
+                resendTimer = setInterval(function() {
+                    secondsLeft -= 1;
+                    updateTimer();
+                    
+                    if (secondsLeft <= 0) {
+                        clearInterval(resendTimer);
+                        resendCodeBtn.removeAttribute('disabled');
+                    }
+                }, 1000);
+            }
         } else {
             console.error("Firebase auth yüklənmədi");
             alert("{% trans 'Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin' %}");

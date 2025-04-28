@@ -35,9 +35,14 @@
                         <div class="logo-glow"></div>
                     </a>
                 </div>
-                
+                       
                 <!-- Right Controls -->
                 <div class="header-controls">
+                                        <!-- Search button -->
+                                        <a href="#" class="icon-btn search-btn">
+                                            <i class="fas fa-search"></i>
+                                            <span class="btn-glow"></span>
+                                        </a>
                     <!-- Language Dropdown -->
                     <div class="language-dropdown">
                         <button class="lang-btn">
@@ -64,11 +69,45 @@
                         </div>
                     </div>
                     
-                    <!-- Search button -->
-                    <a href="#" class="icon-btn search-btn">
-                        <i class="fas fa-search"></i>
-                        <span class="btn-glow"></span>
-                    </a>
+                    <!-- User authentication button -->
+<div class="auth-dropdown">
+    {% if user.is_authenticated %}
+        <button class="auth-btn">
+            <div class="user-avatar">
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" alt="{{ user.name }}">
+                {% else %}
+                    <i class="fas fa-user-circle"></i>
+                {% endif %}
+            </div>
+            <span class="current-user">{{ user.name|truncatechars:15 }}</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="auth-options">
+            <a href="#" class="auth-option">
+                <i class="fas fa-user"></i>
+                <span class="auth-option-name">{% trans "Profilim" %}</span>
+            </a>
+            <a href="#" class="auth-option">
+                <i class="fas fa-cog"></i>
+                <span class="auth-option-name">{% trans "Tənzimləmələr" %}</span>
+            </a>
+            <a href="{% url 'logout' %}" class="auth-option">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="auth-option-name">{% trans "Çıxış" %}</span>
+            </a>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}" class="auth-btn">
+            <div class="user-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <span class="login-text">{% trans "Daxil ol" %}</span>
+        </a>
+    {% endif %}
+</div>
+
+
                 </div>
             </div>
         </header>
