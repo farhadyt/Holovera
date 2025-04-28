@@ -144,7 +144,7 @@ LOCALE_PATHS = [
 # Dəstəklənən dillər
 from django.utils.translation import gettext_lazy as _
 LANGUAGES = [
-    ('az', _('Azərbaycan dili')),
+    ('az', _('Azərbaycan')),
     ('en', _('English')),
     ('ru', _('Русский')),
     ('tr', _('Türkçe')),

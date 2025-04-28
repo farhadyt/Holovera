@@ -34,16 +34,13 @@
             <!-- Dil seçimi dropdown -->
             <div class="language-dropdown">
                 <button class="lang-btn">
-                    <i class="fas fa-globe"></i>
-                    <span class="current-lang">
-                        {% get_current_language as CURRENT_LANGUAGE %}
-                        {% for lang_code, lang_name in LANGUAGES %}
-                            {% if lang_code == CURRENT_LANGUAGE %}
-                                <span class="lang-flag flag-{{ lang_code }}"></span>
-                                {{ lang_name }}
-                            {% endif %}
-                        {% endfor %}
-                    </span>
+                    {% get_current_language as CURRENT_LANGUAGE %}
+                    {% for lang_code, lang_name in LANGUAGES %}
+                        {% if lang_code == CURRENT_LANGUAGE %}
+                            <div class="lang-flag flag-{{ lang_code }}"></div>
+                            <span class="current-lang">{{ lang_name }}</span>
+                        {% endif %}
+                    {% endfor %}
                     <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="language-options">

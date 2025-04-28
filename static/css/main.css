@@ -8,7 +8,7 @@
     --primary-glow-strong: rgba(77, 240, 255, 0.7);
     --dark-bg: #06090f;
     --dark-bg-transparent: rgba(6, 9, 15, 0.85);
-    --header-bg: rgba(6, 9, 15, 0.75); /* Semi-transparent header background */
+    --header-bg: rgba(6, 9, 15, 0.25); /* Semi-transparent header background */
     --text-color: #FFFFFF;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --border-color: rgba(77, 240, 255, 0.3);
@@ -64,7 +64,7 @@ a {
     z-index: var(--z-header);
     transition: all 0.3s ease;
     background-color: var(--header-bg);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px); /* Increased from 8px to 10px for better readability */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
   
@@ -140,58 +140,147 @@ a {
 /* Language Dropdown */
 .language-dropdown {
     position: relative;
+    z-index: 2001;
 }
   
 .lang-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(30, 40, 60, 0.5);
-    border: 1px solid rgba(77, 240, 255, 0.3);
-    border-radius: 8px;
+    background: rgba(6, 9, 15, 0.7);
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
     padding: 8px 15px;
     color: var(--text-color);
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(77, 240, 255, 0.2);
+    position: relative;
+    overflow: hidden;
 }
-  
-.lang-btn i {
+
+/* Inner glow effect */
+.lang-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, 
+                rgba(77, 240, 255, 0.3) 0%, 
+                transparent 60%, 
+                rgba(77, 240, 255, 0.1) 100%);
+    opacity: 0;
+    z-index: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Outer ring glow effect */
+.lang-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 12px;
+    border: 1px solid rgba(77, 240, 255, 0.3);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Style only for the chevron down icon, not the globe */
+.lang-btn .fa-chevron-down {
     color: var(--primary-color);
-    font-size: 16px;
+    font-size: 12px;
+    filter: drop-shadow(0 0 5px rgba(77, 240, 255, 0.5));
+    position: relative;
+    z-index: 2;
 }
   
+/* Enhanced hover effect */
 .lang-btn:hover {
-    background: rgba(77, 240, 255, 0.1);
-    box-shadow: 0 0 15px rgba(77, 240, 255, 0.2);
+    background: rgba(77, 240, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(77, 240, 255, 0.5);
+}
+
+.lang-btn:hover::before {
+    opacity: 0.8;
+}
+
+.lang-btn:hover::after {
+    opacity: 1;
+    transform: scale(1.05);
 }
   
 .current-lang {
     font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+/* Ensuring flag in button is properly styled */
+.lang-btn .lang-flag {
+    width: 24px;
+    height: 16px;
+    display: block !important;
+    flex-shrink: 0;
+    border-radius: 3px;
+    background-size: cover !important;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(77, 240, 255, 0.3);
+    position: relative;
+    z-index: 2;
+    margin-right: 3px;
 }
   
+/* Dropdown styling */
 .language-options {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 15px);
     right: 0;
-    background: rgba(14, 21, 37, 0.95);
+    background: rgba(6, 9, 15, 0.9);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(77, 240, 255, 0.3);
-    border-radius: 8px;
+    border: 2px solid rgba(77, 240, 255, 0.3);
+    border-radius: 12px;
     width: 180px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(77, 240, 255, 0.3);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: var(--z-popup);
     overflow: hidden;
+}
+
+/* Dropdown arrow indicator */
+.language-options::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    background: rgba(6, 9, 15, 0.9);
+    border-left: 2px solid rgba(77, 240, 255, 0.3);
+    border-top: 2px solid rgba(77, 240, 255, 0.3);
+    transform: rotate(45deg);
+    z-index: 1;
 }
   
 .language-options.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
   
 .lang-option {
@@ -205,19 +294,31 @@ a {
     width: 100%;
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.lang-option:not(:last-child) {
+    border-bottom: 1px solid rgba(77, 240, 255, 0.1);
 }
   
 .lang-option:hover, .lang-option.active {
-    background: rgba(77, 240, 255, 0.1);
+    background: rgba(77, 240, 255, 0.15);
+    padding-left: 20px;
+}
+
+.lang-option.active {
+    background: rgba(77, 240, 255, 0.2);
 }
   
 .lang-flag {
     width: 24px;
     height: 16px;
-    border-radius: 2px;
+    border-radius: 3px;
     background-size: cover;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(77, 240, 255, 0.3);
 }
   
 .flag-az {
@@ -523,6 +624,97 @@ a {
 }
 
 /* ==================== END NEW ADDITIONS ==================== */
+
+/* ==================== SEARCH BUTTON STYLING TO MATCH SLIDER ARROWS ==================== */
+/* Search button styling to match slider arrows */
+.header-controls .icon-btn.search-btn,
+.auth-controls .icon-btn.search-btn {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(6, 9, 15, 0.7);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(77, 240, 255, 0.2);
+    overflow: visible;
+    z-index: 2001;
+}
+
+/* Outer ring glow effect */
+.header-controls .icon-btn.search-btn::after,
+.auth-controls .icon-btn.search-btn::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    border: 1px solid rgba(77, 240, 255, 0.3);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Inner glow effect */
+.header-controls .icon-btn.search-btn::before,
+.auth-controls .icon-btn.search-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, 
+                rgba(77, 240, 255, 0.3) 0%, 
+                transparent 70%);
+    opacity: 0;
+    z-index: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.header-controls .icon-btn.search-btn i,
+.auth-controls .icon-btn.search-btn i {
+    position: relative;
+    z-index: 3;
+    filter: drop-shadow(0 0 5px rgba(77, 240, 255, 0.5));
+    font-size: 18px;
+}
+
+/* Enhanced hover effects for search button */
+.header-controls .icon-btn.search-btn:hover,
+.auth-controls .icon-btn.search-btn:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(77, 240, 255, 0.5);
+}
+
+.header-controls .icon-btn.search-btn:hover::before,
+.auth-controls .icon-btn.search-btn:hover::before {
+    opacity: 0.8;
+}
+
+.header-controls .icon-btn.search-btn:hover::after,
+.auth-controls .icon-btn.search-btn:hover::after {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Hide the existing btn-glow as we now use pseudo-elements for glow effects */
+.header-controls .icon-btn.search-btn .btn-glow,
+.auth-controls .icon-btn.search-btn .btn-glow {
+    display: none;
+}
+/* ==================== END SEARCH BUTTON STYLING ==================== */
   
 /* Responsive Styles */
 @media (max-width: 1200px) {
@@ -569,6 +761,12 @@ a {
         width: 50px;
         height: 50px;
     }
+    
+    .header-controls .icon-btn.search-btn,
+    .auth-controls .icon-btn.search-btn {
+        width: 40px;
+        height: 40px;
+    }
 }
   
 @media (max-width: 576px) {
@@ -591,5 +789,11 @@ a {
     
     .section-edge {
         height: 3px;
+    }
+    
+    .header-controls .icon-btn.search-btn,
+    .auth-controls .icon-btn.search-btn {
+        width: 36px;
+        height: 36px;
     }
 }
