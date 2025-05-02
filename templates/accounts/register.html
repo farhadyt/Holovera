@@ -7,10 +7,10 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 <style>
-    /* User type selection styles */
+    /* User type selection styles - improved */
     .user-type-container {
         display: flex;
-        gap: 10px;
+        gap: 15px;
         margin-bottom: 30px;
     }
     
@@ -31,46 +31,61 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 15px;
-        border-radius: 10px;
+        padding: 20px;
+        border-radius: 12px;
         border: 2px solid rgba(77, 240, 255, 0.25);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
         text-align: center;
+        height: 100%;
     }
     
     .user-type-icon {
-        font-size: 30px;
-        margin-bottom: 10px;
+        font-size: 36px;
+        margin-bottom: 15px;
         color: var(--primary-color);
+        transition: all 0.3s ease;
     }
     
     .user-type-name {
         font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: white;
     }
     
     .user-type-desc {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--text-secondary);
-        margin-top: 5px;
+        line-height: 1.4;
     }
     
     .user-type-option input:checked + .user-type-label {
         border-color: var(--primary-color);
-        box-shadow: 0 0 15px rgba(77, 240, 255, 0.5);
-        background: rgba(77, 240, 255, 0.1);
+        box-shadow: 0 0 20px rgba(77, 240, 255, 0.5);
+        background: rgba(77, 240, 255, 0.15);
+        transform: translateY(-5px);
     }
     
-    /* Age range select */
+    .user-type-option input:checked + .user-type-label .user-type-icon {
+        transform: scale(1.2);
+        color: white;
+        text-shadow: 0 0 10px rgba(77, 240, 255, 0.8);
+    }
+    
+    /* Age range select - improved */
     .age-range-container {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        margin-top: 10px;
     }
     
     .age-range-option {
         position: relative;
         cursor: pointer;
+        flex-grow: 1;
+        min-width: 80px;
     }
     
     .age-range-option input {
@@ -84,25 +99,31 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 10px 15px;
-        border-radius: 8px;
-        border: 1px solid rgba(77, 240, 255, 0.3);
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 2px solid rgba(77, 240, 255, 0.3);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
-        font-size: 14px;
+        font-size: 16px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
     }
     
     .age-range-option input:checked + .age-range-label {
         border-color: var(--primary-color);
         background: rgba(77, 240, 255, 0.2);
-        color: var(--primary-color);
+        color: white;
         font-weight: 600;
+        box-shadow: 0 0 15px rgba(77, 240, 255, 0.4);
+        transform: translateY(-3px);
     }
     
-    /* Gender styles */
+    /* Gender styles - improved */
     .gender-container {
         display: flex;
-        gap: 10px;
+        gap: 15px;
+        margin-top: 10px;
     }
     
     .gender-option {
@@ -122,26 +143,63 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid rgba(77, 240, 255, 0.3);
+        padding: 15px;
+        border-radius: 10px;
+        border: 2px solid rgba(77, 240, 255, 0.3);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.9);
     }
     
     .gender-option input:checked + .gender-label {
         border-color: var(--primary-color);
         background: rgba(77, 240, 255, 0.2);
+        color: white;
+        box-shadow: 0 0 15px rgba(77, 240, 255, 0.4);
+        transform: translateY(-3px);
     }
     
     .gender-icon {
-        margin-right: 8px;
+        margin-right: 10px;
         color: var(--primary-color);
+        font-size: 18px;
+        transition: all 0.3s ease;
     }
     
-    /* Phone input */
+    .gender-option input:checked + .gender-label .gender-icon {
+        color: white;
+    }
+    
+    /* Phone input - improved */
     .iti {
         width: 100%;
+    }
+    
+    /* Fix country code dropdown text color */
+    .iti__country-list {
+        background-color: rgba(15, 25, 40, 0.95);
+        border: 1px solid rgba(77, 240, 255, 0.3);
+    }
+    
+    .iti__country {
+        color: white;
+        padding: 10px 15px;
+        transition: all 0.2s ease;
+    }
+    
+    .iti__country:hover {
+        background-color: rgba(77, 240, 255, 0.2);
+    }
+    
+    .iti__country-name, 
+    .iti__dial-code {
+        color: white;
+    }
+    
+    .iti__selected-flag {
+        background-color: rgba(12, 18, 30, 0.6);
+        border-radius: 5px 0 0 5px;
     }
     
     /* Verification code section */
@@ -175,6 +233,7 @@
         font-size: 24px;
         text-align: center;
         margin: 0 5px;
+        color: white;
     }
     
     .verification-timer {
@@ -202,6 +261,7 @@
         cursor: default;
     }
     
+    /* Animation */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -231,34 +291,28 @@
                     <div id="registration-section" class="registration-section">
                         <!-- User Type Selection -->
                         <div class="form-group">
-                            <label>{% trans "Hansı kimi qoşulmaq istəyirsiniz?" %}</label>
+                            <label>{% trans "Siz kimsiz?" %}</label>
                             <div class="user-type-container">
-                                <label class="user-type-option">
-                                    <input type="radio" name="user_type" value="product_owner" required>
-                                    <div class="user-type-label">
-                                        <i class="fas fa-paint-brush user-type-icon"></i>
-                                        <span class="user-type-name">{% trans "Məhsul sahibi" %}</span>
-                                        <span class="user-type-desc">{% trans "Əl işlərini sat" %}</span>
-                                    </div>
-                                </label>
-                                
-                                <label class="user-type-option">
-                                    <input type="radio" name="user_type" value="designer" required>
-                                    <div class="user-type-label">
-                                        <i class="fas fa-palette user-type-icon"></i>
-                                        <span class="user-type-name">{% trans "Dizayner" %}</span>
-                                        <span class="user-type-desc">{% trans "Kompozisiyalar hazırla" %}</span>
-                                    </div>
-                                </label>
-                                
-                                <label class="user-type-option">
-                                    <input type="radio" name="user_type" value="customer" required>
-                                    <div class="user-type-label">
-                                        <i class="fas fa-gift user-type-icon"></i>
-                                        <span class="user-type-name">{% trans "Müştəri" %}</span>
-                                        <span class="user-type-desc">{% trans "Hədiyyələr sifariş et" %}</span>
-                                    </div>
-                                </label>
+                                {% for choice in form.user_type %}
+                                    <label class="user-type-option">
+                                        {{ choice.tag }}
+                                        <div class="user-type-label">
+                                            <i class="fas 
+                                                {% if 'product_owner' in choice.choice_value %}fa-paint-brush
+                                                {% elif 'designer' in choice.choice_value %}fa-palette
+                                                {% else %}fa-shopping-bag{% endif %} 
+                                                user-type-icon"></i>
+                                            <span class="user-type-name">{{ choice.choice_label }}</span>
+                                            <span class="user-type-desc">
+                                                {% for user_type in form.fields.user_type.queryset %}
+                                                    {% if user_type.id|stringformat:"s" == choice.choice_value %}
+                                                        {{ user_type.description }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </span>
+                                        </div>
+                                    </label>
+                                {% endfor %}
                             </div>
                         </div>
                         
@@ -267,43 +321,32 @@
                             <label for="id_name">{% trans "Tam ad" %}</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" name="name" id="id_name" class="form-control" placeholder="{% trans 'Tam adınız' %}" required>
+                                {{ form.name }}
                             </div>
                         </div>
                         
                         <!-- Phone Number with Country Code -->
                         <div class="form-group">
                             <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
-                            <input type="tel" name="phone_number" id="id_phone_number" class="form-control" required>
+                            {{ form.phone_number }}
                         </div>
                         
                         <!-- Gender Selection -->
                         <div class="form-group">
                             <label>{% trans "Cins" %}</label>
                             <div class="gender-container">
-                                <label class="gender-option">
-                                    <input type="radio" name="gender" value="M" required>
-                                    <div class="gender-label">
-                                        <i class="fas fa-mars gender-icon"></i>
-                                        {% trans "Kişi" %}
-                                    </div>
-                                </label>
-                                
-                                <label class="gender-option">
-                                    <input type="radio" name="gender" value="F" required>
-                                    <div class="gender-label">
-                                        <i class="fas fa-venus gender-icon"></i>
-                                        {% trans "Qadın" %}
-                                    </div>
-                                </label>
-                                
-                                <label class="gender-option">
-                                    <input type="radio" name="gender" value="O" required>
-                                    <div class="gender-label">
-                                        <i class="fas fa-genderless gender-icon"></i>
-                                        {% trans "Digər" %}
-                                    </div>
-                                </label>
+                                {% for choice in form.gender %}
+                                    <label class="gender-option">
+                                        {{ choice.tag }}
+                                        <div class="gender-label">
+                                            <i class="fas 
+                                                {% if choice.choice_value == 'M' %}fa-mars
+                                                {% else %}fa-venus{% endif %} 
+                                                gender-icon"></i>
+                                            {{ choice.choice_label }}
+                                        </div>
+                                    </label>
+                                {% endfor %}
                             </div>
                         </div>
                         
@@ -311,34 +354,21 @@
                         <div class="form-group">
                             <label>{% trans "Yaş aralığı" %}</label>
                             <div class="age-range-container">
-                                <label class="age-range-option">
-                                    <input type="radio" name="age_range" value="16-25" required>
-                                    <div class="age-range-label">16-25</div>
-                                </label>
-                                
-                                <label class="age-range-option">
-                                    <input type="radio" name="age_range" value="25-42" required>
-                                    <div class="age-range-label">25-42</div>
-                                </label>
-                                
-                                <label class="age-range-option">
-                                    <input type="radio" name="age_range" value="42-60" required>
-                                    <div class="age-range-label">42-60</div>
-                                </label>
-                                
-                                <label class="age-range-option">
-                                    <input type="radio" name="age_range" value="60+" required>
-                                    <div class="age-range-label">60+</div>
-                                </label>
+                                {% for choice in form.age_range %}
+                                    <label class="age-range-option">
+                                        {{ choice.tag }}
+                                        <div class="age-range-label">{{ choice.choice_label }}</div>
+                                    </label>
+                                {% endfor %}
                             </div>
                         </div>
                         
+                        <!-- Hidden fields for Firebase info -->
+                        {{ form.firebase_uid }}
+                        {{ form.is_verified }}
+                        
                         <!-- Submit Button to Proceed to Verification -->
                         <button type="button" id="send-code-btn" class="auth-button login-btn">{% trans "SMS kodu göndər" %}</button>
-                        
-                        <!-- Hidden fields for Firebase info -->
-                        <input type="hidden" name="firebase_uid" id="firebase_uid">
-                        <input type="hidden" name="is_verified" id="is_verified" value="false">
                     </div>
                     
                     <!-- Step 2: Phone Verification -->
@@ -381,16 +411,19 @@
 
 {% block extra_js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize the phone input plugin
-        const phoneInput = window.intlTelInput(document.querySelector("#id_phone_number"), {
-            preferredCountries: ["az", "tr", "ru", "us"],
+        // Initialize the phone input plugin with improved styling
+        const phoneInputField = document.querySelector("#id_phone_number");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            preferredCountries: ["az", "tr", "ru", "gb", "us"],
             separateDialCode: true,
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
+            // Add custom styling
+            customContainer: "phone-input-container",
+            dropdownContainer: document.body
         });
         
         // Form sections
@@ -415,6 +448,14 @@
                     codeInputs[index - 1].focus();
                 }
             });
+            
+            // Only allow numbers
+            input.addEventListener('keypress', function(e) {
+                const charCode = (e.which) ? e.which : e.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    e.preventDefault();
+                }
+            });
         });
         
         // Send verification code button
@@ -430,23 +471,75 @@
             registrationSection.style.display = 'block';
         });
         
+        // Validate the registration form
+        function validateRegistrationForm() {
+            // Get form elements
+            const form = document.getElementById('register-form');
+            const userTypeSelected = form.querySelector('input[name="user_type"]:checked');
+            const nameField = document.getElementById('id_name');
+            const genderSelected = form.querySelector('input[name="gender"]:checked');
+            const ageRangeSelected = form.querySelector('input[name="age_range"]:checked');
+            
+            // Check if all required fields are filled
+            if (!userTypeSelected) {
+                alert("{% trans 'Zəhmət olmasa istifadəçi tipini seçin' %}");
+                return false;
+            }
+            
+            if (!nameField.value.trim()) {
+                alert("{% trans 'Zəhmət olmasa tam adınızı daxil edin' %}");
+                nameField.focus();
+                return false;
+            }
+            
+            if (!phoneInput.isValidNumber()) {
+                alert("{% trans 'Zəhmət olmasa düzgün telefon nömrəsi daxil edin' %}");
+                phoneInputField.focus();
+                return false;
+            }
+            
+            if (!genderSelected) {
+                alert("{% trans 'Zəhmət olmasa cinsinizi seçin' %}");
+                return false;
+            }
+            
+            if (!ageRangeSelected) {
+                alert("{% trans 'Zəhmət olmasa yaş aralığınızı seçin' %}");
+                return false;
+            }
+            
+            return true;
+        }
+        
         // Firebase Authentication
         if (typeof firebase !== 'undefined' && firebase.auth) {
-            let confirmationResult = null;
-            let resendTimer = null;
+    // Firebase confirmationResult
+    let confirmationResult = null;
+    let resendTimer = null;
+    
+    // Initialize Firebase with config from Django template - this is the fixed part
+    try {
+        // Use a JSON-safe approach to get the firebase config from Django
+        const firebaseConfigJSON = "{{ firebase_config|escapejs }}";
+        const firebaseConfig = firebaseConfigJSON ? JSON.parse(firebaseConfigJSON) : null;
+        
+        // Əgər Firebase-in tətbiqi hələ yaradılmayıbsa
+        if (firebaseConfig && !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase initialized successfully");
+        } else if (firebase.apps.length) {
+            console.log("Firebase app already exists");
+            // Əgər app artıq mövcuddursa, onu istifadə et
+            firebase.app();
+        }
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+    }
             
-            // Send verification code
+            // Send verification code button click handler
             sendCodeBtn.addEventListener('click', function() {
-                // Validate form
-                const form = document.getElementById('register-form');
-                const userTypeSelected = form.querySelector('input[name="user_type"]:checked');
-                const nameField = document.getElementById('id_name');
-                const genderSelected = form.querySelector('input[name="gender"]:checked');
-                const ageRangeSelected = form.querySelector('input[name="age_range"]:checked');
-                
-                // Check if all required fields are filled
-                if (!userTypeSelected || !nameField.value.trim() || !phoneInput.isValidNumber() || !genderSelected || !ageRangeSelected) {
-                    alert("{% trans 'Zəhmət olmasa bütün sahələri düzgün doldurun' %}");
+                // Validate form first
+                if (!validateRegistrationForm()) {
                     return;
                 }
                 
@@ -463,6 +556,13 @@
                         'callback': function(response) {
                             // reCAPTCHA verified
                             sendCodeBtn.removeAttribute('disabled');
+                        },
+                        'expired-callback': function() {
+                            // Reset reCAPTCHA
+                            alert("{% trans 'reCAPTCHA-nın vaxtı bitdi, zəhmət olmasa yenidən cəhd edin' %}");
+                            if (window.recaptchaWidgetId) {
+                                grecaptcha.reset(window.recaptchaWidgetId);
+                            }
                         }
                     });
                     
@@ -473,23 +573,29 @@
                 
                 // Disable button and show loading
                 sendCodeBtn.setAttribute('disabled', 'disabled');
-                sendCodeBtn.innerHTML = '{% trans "Göndərilir..." %}';
+                sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Göndərilir..." %}';
                 
                 // Send verification code using Firebase
                 firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
                     .then(function(result) {
                         // SMS sent successfully
                         confirmationResult = result;
+                        console.log("SMS code sent successfully");
                         
                         // Show verification section
                         registrationSection.style.display = 'none';
                         verificationSection.classList.add('active');
                         
-                        // Start countdown timer
-                        startResendTimer();
+                        // Clear verification code inputs
+                        codeInputs.forEach(input => {
+                            input.value = '';
+                        });
                         
                         // Focus on first code input
                         codeInputs[0].focus();
+                        
+                        // Start countdown timer
+                        startResendTimer();
                         
                         // Reset send button
                         sendCodeBtn.removeAttribute('disabled');
@@ -510,7 +616,7 @@
                     });
             });
             
-            // Verify code button
+            // Verify code button click handler
             verifyCodeBtn.addEventListener('click', function() {
                 // Get verification code from inputs
                 let verificationCode = '';
@@ -524,25 +630,26 @@
                 });
                 
                 if (!isValid) {
-                    alert("{% trans 'Xahiş edirik bütün rəqəmləri daxil edin' %}");
+                    alert("{% trans 'Zəhmət olmasa bütün rəqəmləri daxil edin' %}");
                     return;
                 }
                 
                 // Disable button and show loading
                 verifyCodeBtn.setAttribute('disabled', 'disabled');
-                verifyCodeBtn.innerHTML = '{% trans "Doğrulanır..." %}';
+                verifyCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Doğrulanır..." %}';
                 
                 // Verify code with Firebase
                 confirmationResult.confirm(verificationCode)
                     .then(function(result) {
                         // Code verified successfully
                         const user = result.user;
+                        console.log("Phone number verified successfully", user);
                         
                         // Set hidden fields for Firebase info
-                        document.getElementById('firebase_uid').value = user.uid;
-                        document.getElementById('is_verified').value = 'true';
+                        document.getElementById('id_firebase_uid').value = user.uid;
+                        document.getElementById('id_is_verified').checked = true;
                         
-                        // Submit form to complete registration
+                        // Form can be submitted now
                         document.getElementById('register-form').submit();
                     })
                     .catch(function(error) {
@@ -555,14 +662,9 @@
                     });
             });
             
-            // Resend code button
+            // Resend code button click handler
             resendCodeBtn.addEventListener('click', function() {
-                // Reset code inputs
-                codeInputs.forEach(input => {
-                    input.value = '';
-                });
-                
-                // Reset and go back to first step
+                // Go back to first step
                 verificationSection.classList.remove('active');
                 registrationSection.style.display = 'block';
                 
@@ -570,6 +672,11 @@
                 if (window.recaptchaWidgetId) {
                     grecaptcha.reset(window.recaptchaWidgetId);
                 }
+                
+                // Send code button click to trigger the process again
+                setTimeout(() => {
+                    sendCodeBtn.click();
+                }, 500);
             });
             
             // Timer function for resend button
@@ -605,7 +712,7 @@
                 }, 1000);
             }
         } else {
-            console.error("Firebase auth yüklənmədi");
+            console.error("Firebase auth not loaded");
             alert("{% trans 'Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin' %}");
         }
     });

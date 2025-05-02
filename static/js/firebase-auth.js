@@ -1,22 +1,13 @@
 // Firebase Auth JS - v8 API üçün
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Firebase auth.js yükləndi");
     
-    // Firebase başlatılıb mı? Xeyr isə gözlə
-    function checkFirebaseInit() {
-        if (window.firebaseInitialized === true) {
+    // Firebase başlatma işləmi tamamlandıqdan sonra çağır
+    setTimeout(function() {
+        // Firebase başladılıb mı? yoxla
+        if (firebase && firebase.apps && firebase.apps.length > 0) {
             console.log("Firebase başladıldığı təsdiq edildi, auth kodları işləyir");
-            initializeFirebaseAuth();
-        } else {
-            console.log("Firebase hələ başladılmayıb, 100ms sonra yenidən yoxlanacaq");
-            setTimeout(checkFirebaseInit, 100);
-        }
-    }
-    
-    // Firebase auth kodları
-    function initializeFirebaseAuth() {
-        if (typeof firebase !== 'undefined' && firebase.auth) {
-            console.log("Firebase auth moduluna erişildi");
             
             // Listen for auth state changes
             firebase.auth().onAuthStateChanged(function(user) {
@@ -33,12 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } else {
-            console.error("Firebase auth modulu tapılmadı!");
+            console.error("Firebase auth modulu tapılmadı veya başladılmadı!");
         }
-    }
-    
-    // Firebase başladılıb mı yoxla, sonra işlə
-    checkFirebaseInit();
+    }, 1000); // Gecikmə əlavə etdik
 });
 
 // Send ID token to the server

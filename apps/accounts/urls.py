@@ -8,4 +8,5 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('verify-firebase-token/', views.VerifyFirebaseTokenView.as_view(), name='verify_firebase_token'),
+    path('api/save-verification/', views.SaveVerificationView.as_view(), name='save_verification'),
 ]
