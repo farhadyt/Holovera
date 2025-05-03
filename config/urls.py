@@ -10,6 +10,8 @@ from apps.core.views import HomeView, LandingPageView  # LandingPageView əlavə
 urlpatterns = [
     # Non-i18n patterns
     path('i18n/', include('django.conf.urls.i18n')),
+    # API endpoint-ləri dil prefiksi olmadan
+    path('accounts/api/', include('apps.accounts.api_urls')),
     # Default redirect to landing page
     path('', RedirectView.as_view(url='/az/landing/', permanent=False)),
 ]

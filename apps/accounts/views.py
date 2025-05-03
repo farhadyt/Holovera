@@ -8,12 +8,120 @@ from django.utils.translation import gettext_lazy as _  # Tərcümə üçün
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.utils import timezone
-from datetime import timedelta
-from .models import SMSVerification
+import phonenumbers
+from .services import SMSService
 from django.http import JsonResponse
 import json
-
 from .forms import CustomLoginForm, CustomRegistrationForm
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class SendVerificationCodeView(View):
+    """Telefon nömrəsinə doğrulama kodu göndərir"""
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            # JSON verilərini alırıq
+            data = json.loads(request.body)
+            phone_number = data.get('phone_number')
+            
+            if not phone_number:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'Telefon nömrəsi təqdim edilməyib'
+                }, status=400)
+            
+            # Telefon nömrəsini beynəlxalq formata çevir
+            try:
+                parsed_number = phonenumbers.parse(phone_number, None)
+                if not phonenumbers.is_valid_number(parsed_number):
+                    return JsonResponse({
+                        'success': False, 
+                        'error': 'Yanlış telefon nömrəsi formatı'
+                    }, status=400)
+                
+                # Beynəlxalq formata çevir (E.164)
+                phone_number = phonenumbers.format_number(
+                    parsed_number, 
+                    phonenumbers.PhoneNumberFormat.E164
+                )
+            except Exception as e:
+                return JsonResponse({
+                    'success': False, 
+                    'error': f'Telefon nömrəsi formatı xətası: {str(e)}'
+                }, status=400)
+            
+            # SMS göndər
+            success, message = SMSService.send_verification_code(phone_number)
+            
+            if success:
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Doğrulama kodu göndərildi'
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': message
+                }, status=400)
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'error': str(e)
+            }, status=500)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class VerifyCodeView(View):
+    """Doğrulama kodunu yoxlayır"""
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            # JSON verilərini alırıq
+            data = json.loads(request.body)
+            phone_number = data.get('phone_number')
+            verification_code = data.get('verification_code')
+            
+            if not phone_number or not verification_code:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'Telefon nömrəsi və doğrulama kodu tələb olunur'
+                }, status=400)
+            
+            # Telefon nömrəsini beynəlxalq formata çevir
+            try:
+                parsed_number = phonenumbers.parse(phone_number, None)
+                phone_number = phonenumbers.format_number(
+                    parsed_number, 
+                    phonenumbers.PhoneNumberFormat.E164
+                )
+            except Exception:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'Yanlış telefon nömrəsi formatı'
+                }, status=400)
+            
+            # Kodu yoxla
+            success, message = SMSService.verify_code(phone_number, verification_code)
+            
+            if success:
+                return JsonResponse({
+                    'success': True,
+                    'message': message
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': message
+                }, status=400)
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'error': str(e)
+            }, status=500)
+
 
 class LoginView(FormView):
     template_name = 'accounts/login.html'
@@ -66,25 +174,16 @@ class RegisterView(CreateView):
             return redirect('home')
         return super().dispatch(request, *args, **kwargs)
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        from django.conf import settings
-        
-        # Firebase konfiqurasiyasını JSON formatında ötürmək
-        if hasattr(settings, 'FIREBASE_CONFIG') and settings.FIREBASE_CONFIG:
-            context['firebase_config'] = json.dumps(settings.FIREBASE_CONFIG)
-        return context
-    
     def form_valid(self, form):
         user = form.save(commit=False)
         
-        # Firebase UID və telefon nömrəsini formdan alırıq
-        firebase_uid = form.cleaned_data.get('firebase_uid')
+        # Telefon nömrəsini formdan alırıq
         phone_number = form.cleaned_data.get('phone_number')
         
         # İstifadəçi adını telefon nömrəsinə təyin edirik
         user.username = phone_number
-        user.firebase_uid = firebase_uid
+        
+        # SMS doğrulaması tamamlanmışsa, istifadəçini doğrulanmış kimi işarələ
         user.is_verified = form.cleaned_data.get('is_verified', False)
         
         # Seçilmiş yaş aralığını təyin edirik

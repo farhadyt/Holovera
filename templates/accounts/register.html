@@ -378,7 +378,9 @@
                             <p>{% trans "Aşağıdakı nömrəyə göndərilən 6 rəqəmli kodu daxil edin" %}: <strong id="confirm-phone"></strong></p>
                         </div>
                         
-                        <div id="recaptcha-container"></div>
+                        <div class="verification-info">
+                            <p>{% trans "Təhlükəsizlik üçün telefon nömrənizə bir doğrulama kodu göndəriləcək." %}</p>
+                        </div>
                         
                         <div class="verification-code-container">
                             <input type="text" class="code-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
@@ -414,307 +416,348 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize the phone input plugin with improved styling
-        const phoneInputField = document.querySelector("#id_phone_number");
-        const phoneInput = window.intlTelInput(phoneInputField, {
-            preferredCountries: ["az", "tr", "ru", "gb", "us"],
-            separateDialCode: true,
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
-            // Add custom styling
-            customContainer: "phone-input-container",
-            dropdownContainer: document.body
-        });
-        
-        // Form sections
-        const registrationSection = document.getElementById('registration-section');
-        const verificationSection = document.getElementById('verification-section');
-        
-        // Verification code inputs
-        const codeInputs = document.querySelectorAll('.code-input');
-        
-        // Make the verification code inputs work better
-        codeInputs.forEach((input, index) => {
-            // Auto-focus next input
-            input.addEventListener('input', function() {
-                if (this.value && index < codeInputs.length - 1) {
-                    codeInputs[index + 1].focus();
+document.addEventListener('DOMContentLoaded', function() {
+    // CSRF Token funksiyası
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
-            });
-            
-            // Handle backspace
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && !this.value && index > 0) {
-                    codeInputs[index - 1].focus();
-                }
-            });
-            
-            // Only allow numbers
-            input.addEventListener('keypress', function(e) {
-                const charCode = (e.which) ? e.which : e.keyCode;
-                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                    e.preventDefault();
-                }
-            });
-        });
-        
-        // Send verification code button
-        const sendCodeBtn = document.getElementById('send-code-btn');
-        const verifyCodeBtn = document.getElementById('verify-code-btn');
-        const backBtn = document.getElementById('back-btn');
-        const resendCodeBtn = document.getElementById('resend-code-btn');
-        const timerElement = document.getElementById('timer');
-        
-        // Back button functionality
-        backBtn.addEventListener('click', function() {
-            verificationSection.classList.remove('active');
-            registrationSection.style.display = 'block';
-        });
-        
-        // Validate the registration form
-        function validateRegistrationForm() {
-            // Get form elements
-            const form = document.getElementById('register-form');
-            const userTypeSelected = form.querySelector('input[name="user_type"]:checked');
-            const nameField = document.getElementById('id_name');
-            const genderSelected = form.querySelector('input[name="gender"]:checked');
-            const ageRangeSelected = form.querySelector('input[name="age_range"]:checked');
-            
-            // Check if all required fields are filled
-            if (!userTypeSelected) {
-                alert("{% trans 'Zəhmət olmasa istifadəçi tipini seçin' %}");
-                return false;
             }
-            
-            if (!nameField.value.trim()) {
-                alert("{% trans 'Zəhmət olmasa tam adınızı daxil edin' %}");
-                nameField.focus();
-                return false;
-            }
-            
-            if (!phoneInput.isValidNumber()) {
-                alert("{% trans 'Zəhmət olmasa düzgün telefon nömrəsi daxil edin' %}");
-                phoneInputField.focus();
-                return false;
-            }
-            
-            if (!genderSelected) {
-                alert("{% trans 'Zəhmət olmasa cinsinizi seçin' %}");
-                return false;
-            }
-            
-            if (!ageRangeSelected) {
-                alert("{% trans 'Zəhmət olmasa yaş aralığınızı seçin' %}");
-                return false;
-            }
-            
-            return true;
         }
-        
-        // Firebase Authentication
-        if (typeof firebase !== 'undefined' && firebase.auth) {
-    // Firebase confirmationResult
-    let confirmationResult = null;
-    let resendTimer = null;
-    
-    // Initialize Firebase with config from Django template - this is the fixed part
-    try {
-        // Use a JSON-safe approach to get the firebase config from Django
-        const firebaseConfigJSON = "{{ firebase_config|escapejs }}";
-        const firebaseConfig = firebaseConfigJSON ? JSON.parse(firebaseConfigJSON) : null;
-        
-        // Əgər Firebase-in tətbiqi hələ yaradılmayıbsa
-        if (firebaseConfig && !firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-            console.log("Firebase initialized successfully");
-        } else if (firebase.apps.length) {
-            console.log("Firebase app already exists");
-            // Əgər app artıq mövcuddursa, onu istifadə et
-            firebase.app();
-        }
-    } catch (error) {
-        console.error("Firebase initialization error:", error);
+        return cookieValue;
     }
+
+    // Telefon input inisializasiyası
+    const phoneInputField = document.querySelector("#id_phone_number");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        preferredCountries: ["az", "tr", "ru", "gb", "us"],
+        separateDialCode: true,
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
+        customContainer: "phone-input-container",
+        dropdownContainer: document.body
+    });
+
+    // Form bölmələri
+    const registrationSection = document.getElementById('registration-section');
+    const verificationSection = document.getElementById('verification-section');
+
+    // Doğrulama kodu inputları
+    const codeInputs = document.querySelectorAll('.code-input');
+
+    // Kod inputlarının funksionallığı
+    codeInputs.forEach((input, index) => {
+        // Avtomatik növbəti inputa keçid
+        input.addEventListener('input', function() {
+            if (this.value && index < codeInputs.length - 1) {
+                codeInputs[index + 1].focus();
+            }
             
-            // Send verification code button click handler
-            sendCodeBtn.addEventListener('click', function() {
-                // Validate form first
-                if (!validateRegistrationForm()) {
-                    return;
-                }
-                
-                // Get full phone number with country code
-                const phoneNumber = phoneInput.getNumber();
-                
-                // Show phone number in verification section
-                document.getElementById('confirm-phone').textContent = phoneNumber;
-                
-                // Initialize reCAPTCHA verifier
-                if (!window.recaptchaVerifier) {
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                        'size': 'normal',
-                        'callback': function(response) {
-                            // reCAPTCHA verified
-                            sendCodeBtn.removeAttribute('disabled');
-                        },
-                        'expired-callback': function() {
-                            // Reset reCAPTCHA
-                            alert("{% trans 'reCAPTCHA-nın vaxtı bitdi, zəhmət olmasa yenidən cəhd edin' %}");
-                            if (window.recaptchaWidgetId) {
-                                grecaptcha.reset(window.recaptchaWidgetId);
-                            }
-                        }
-                    });
-                    
-                    window.recaptchaVerifier.render().then(function(widgetId) {
-                        window.recaptchaWidgetId = widgetId;
-                    });
-                }
-                
-                // Disable button and show loading
-                sendCodeBtn.setAttribute('disabled', 'disabled');
-                sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Göndərilir..." %}';
-                
-                // Send verification code using Firebase
-                firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-                    .then(function(result) {
-                        // SMS sent successfully
-                        confirmationResult = result;
-                        console.log("SMS code sent successfully");
-                        
-                        // Show verification section
-                        registrationSection.style.display = 'none';
-                        verificationSection.classList.add('active');
-                        
-                        // Clear verification code inputs
-                        codeInputs.forEach(input => {
-                            input.value = '';
-                        });
-                        
-                        // Focus on first code input
-                        codeInputs[0].focus();
-                        
-                        // Start countdown timer
-                        startResendTimer();
-                        
-                        // Reset send button
-                        sendCodeBtn.removeAttribute('disabled');
-                        sendCodeBtn.innerHTML = '{% trans "SMS kodu göndər" %}';
-                    })
-                    .catch(function(error) {
-                        console.error("SMS error:", error);
-                        alert("{% trans 'SMS kodu göndərmə xətası:' %} " + error.message);
-                        
-                        // Reset button
-                        sendCodeBtn.removeAttribute('disabled');
-                        sendCodeBtn.innerHTML = '{% trans "SMS kodu göndər" %}';
-                        
-                        // Reset reCAPTCHA
-                        if (window.recaptchaWidgetId) {
-                            grecaptcha.reset(window.recaptchaWidgetId);
-                        }
-                    });
-            });
+            // Hamısı dolduruldusa, avtomatik doğrula
+            const allFilled = [...codeInputs].every(input => input.value.trim() !== '');
+            if (allFilled) {
+                setTimeout(() => {
+                    verifyCodeBtn.click();
+                }, 300);
+            }
+        });
+        
+        // Backspace düyməsinin işlənməsi
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && index > 0) {
+                codeInputs[index - 1].focus();
+            }
+        });
+        
+        // Yalnız rəqəm daxil edilə bilər
+        input.addEventListener('keypress', function(e) {
+            const charCode = (e.which) ? e.which : e.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Düymələr
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const verifyCodeBtn = document.getElementById('verify-code-btn');
+    const backBtn = document.getElementById('back-btn');
+    const resendCodeBtn = document.getElementById('resend-code-btn');
+    const timerElement = document.getElementById('timer');
+
+    // Geri düyməsinin funksionallığı
+    backBtn.addEventListener('click', function() {
+        verificationSection.classList.remove('active');
+        registrationSection.style.display = 'block';
+    });
+
+    // Form validasiyası
+    function validateRegistrationForm() {
+        const form = document.getElementById('register-form');
+        const userTypeSelected = form.querySelector('input[name="user_type"]:checked');
+        const nameField = document.getElementById('id_name');
+        const genderSelected = form.querySelector('input[name="gender"]:checked');
+        const ageRangeSelected = form.querySelector('input[name="age_range"]:checked');
+        
+        if (!userTypeSelected) {
+            alert("Zəhmət olmasa istifadəçi tipini seçin");
+            return false;
+        }
+        
+        if (!nameField.value.trim()) {
+            alert("Zəhmət olmasa tam adınızı daxil edin");
+            nameField.focus();
+            return false;
+        }
+        
+        if (!phoneInput.isValidNumber()) {
+            alert("Zəhmət olmasa düzgün telefon nömrəsi daxil edin");
+            phoneInputField.focus();
+            return false;
+        }
+        
+        if (!genderSelected) {
+            alert("Zəhmət olmasa cinsinizi seçin");
+            return false;
+        }
+        
+        if (!ageRangeSelected) {
+            alert("Zəhmət olmasa yaş aralığınızı seçin");
+            return false;
+        }
+        
+        return true;
+    }
+
+    // SMS kod göndərmə funksiyası
+    sendCodeBtn.addEventListener('click', function() {
+        // Form validasiyası
+        if (!validateRegistrationForm()) {
+            return;
+        }
+        
+        // Tam telefon nömrəsini al
+        const phoneNumber = phoneInput.getNumber();
+        
+        // Doğrulama bölməsində telefon nömrəsini göstər
+        document.getElementById('confirm-phone').textContent = phoneNumber;
+        
+        // Düyməni deaktiv et və yüklənmə göstər
+        sendCodeBtn.setAttribute('disabled', 'disabled');
+        sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Göndərilir...';
+        
+        // Server-ə sorğu göndər
+        fetch('/accounts/api/send-verification-code/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Düyməni aktiv et
+            sendCodeBtn.removeAttribute('disabled');
+            sendCodeBtn.innerHTML = 'SMS kodu göndər';
             
-            // Verify code button click handler
-            verifyCodeBtn.addEventListener('click', function() {
-                // Get verification code from inputs
-                let verificationCode = '';
-                let isValid = true;
+            if (data.success) {
+                // Doğrulama bölməsini göstər
+                registrationSection.style.display = 'none';
+                verificationSection.classList.add('active');
                 
+                // Kodları təmizlə
                 codeInputs.forEach(input => {
-                    if (!input.value) {
-                        isValid = false;
-                    }
-                    verificationCode += input.value;
+                    input.value = '';
                 });
                 
-                if (!isValid) {
-                    alert("{% trans 'Zəhmət olmasa bütün rəqəmləri daxil edin' %}");
-                    return;
-                }
+                // İlk kod inputuna fokusla
+                codeInputs[0].focus();
                 
-                // Disable button and show loading
-                verifyCodeBtn.setAttribute('disabled', 'disabled');
-                verifyCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Doğrulanır..." %}';
+                // Yenidən göndərmə müddəti başlat
+                startResendTimer();
                 
-                // Verify code with Firebase
-                confirmationResult.confirm(verificationCode)
-                    .then(function(result) {
-                        // Code verified successfully
-                        const user = result.user;
-                        console.log("Phone number verified successfully", user);
-                        
-                        // Set hidden fields for Firebase info
-                        document.getElementById('id_firebase_uid').value = user.uid;
-                        document.getElementById('id_is_verified').checked = true;
-                        
-                        // Form can be submitted now
-                        document.getElementById('register-form').submit();
-                    })
-                    .catch(function(error) {
-                        console.error("Verification error:", error);
-                        alert("{% trans 'Doğrulama kodu xətası:' %} " + error.message);
-                        
-                        // Reset button
-                        verifyCodeBtn.removeAttribute('disabled');
-                        verifyCodeBtn.innerHTML = '{% trans "Kodu doğrula və qeydiyyatdan keç" %}';
-                    });
-            });
-            
-            // Resend code button click handler
-            resendCodeBtn.addEventListener('click', function() {
-                // Go back to first step
-                verificationSection.classList.remove('active');
-                registrationSection.style.display = 'block';
-                
-                // Reset reCAPTCHA
-                if (window.recaptchaWidgetId) {
-                    grecaptcha.reset(window.recaptchaWidgetId);
-                }
-                
-                // Send code button click to trigger the process again
-                setTimeout(() => {
-                    sendCodeBtn.click();
-                }, 500);
-            });
-            
-            // Timer function for resend button
-            function startResendTimer() {
-                // Reset previous timer
-                if (resendTimer) {
-                    clearInterval(resendTimer);
-                }
-                
-                // Enable timer for 90 seconds
-                let secondsLeft = 90;
-                resendCodeBtn.setAttribute('disabled', 'disabled');
-                
-                // Update timer display
-                function updateTimer() {
-                    const minutes = Math.floor(secondsLeft / 60);
-                    const seconds = secondsLeft % 60;
-                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                }
-                
-                // Initial update
-                updateTimer();
-                
-                // Start countdown
-                resendTimer = setInterval(function() {
-                    secondsLeft -= 1;
-                    updateTimer();
-                    
-                    if (secondsLeft <= 0) {
-                        clearInterval(resendTimer);
-                        resendCodeBtn.removeAttribute('disabled');
-                    }
-                }, 1000);
+                // Uğurlu mesaj göstər
+                showMessage('success', 'Doğrulama kodu göndərildi!');
+            } else {
+                // Xəta mesajı göstər
+                showMessage('error', data.error || 'SMS göndərmə xətası');
             }
-        } else {
-            console.error("Firebase auth not loaded");
-            alert("{% trans 'Firebase autentifikasiyası yüklənmədi, xahiş edirik səhifəni yeniləyin' %}");
-        }
+        })
+        .catch(error => {
+            // Düyməni aktiv et
+            sendCodeBtn.removeAttribute('disabled');
+            sendCodeBtn.innerHTML = 'SMS kodu göndər';
+            
+            // Xəta mesajı göstər
+            showMessage('error', 'Server xətası: ' + error);
+            console.error('Error:', error);
+        });
     });
+
+    // Doğrulama kodunu yoxlama funksiyası
+    verifyCodeBtn.addEventListener('click', function() {
+        // Doğrulama kodunu al
+        let verificationCode = '';
+        let isValid = true;
+        
+        codeInputs.forEach(input => {
+            if (!input.value) {
+                isValid = false;
+            }
+            verificationCode += input.value;
+        });
+        
+        if (!isValid) {
+            alert("Zəhmət olmasa bütün rəqəmləri daxil edin");
+            return;
+        }
+        
+        // Düyməni deaktiv et və yüklənmə göstər
+        verifyCodeBtn.setAttribute('disabled', 'disabled');
+        verifyCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Doğrulanır...';
+        
+        // Telefon nömrəsini al
+        const phoneNumber = phoneInput.getNumber();
+        
+        // Server-ə sorğu göndər
+        fetch('/accounts/api/verify-code/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber,
+                verification_code: verificationCode
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Telefon nömrəsi doğrulandı
+                // Hidden field-i doldur və formu göndər
+                document.getElementById('id_is_verified').checked = true;
+                
+                // Formu göndər
+                document.getElementById('register-form').submit();
+            } else {
+                // Xəta mesajı göstər
+                showMessage('error', data.error || 'Doğrulama xətası');
+                
+                // Düyməni aktiv et
+                verifyCodeBtn.removeAttribute('disabled');
+                verifyCodeBtn.innerHTML = 'Kodu doğrula və qeydiyyatdan keç';
+                
+                // Kodları təmizlə
+                codeInputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                // İlk kod inputuna fokusla
+                codeInputs[0].focus();
+            }
+        })
+        .catch(error => {
+            // Düyməni aktiv et
+            verifyCodeBtn.removeAttribute('disabled');
+            verifyCodeBtn.innerHTML = 'Kodu doğrula və qeydiyyatdan keç';
+            
+            // Xəta mesajı göstər
+            showMessage('error', 'Server xətası: ' + error);
+            console.error('Error:', error);
+        });
+    });
+
+    // Yenidən kod göndərmə
+    resendCodeBtn.addEventListener('click', function() {
+        if (resendCodeBtn.hasAttribute('disabled')) {
+            return;
+        }
+        
+        // Əvvəlki bölməyə qayıt
+        verificationSection.classList.remove('active');
+        registrationSection.style.display = 'block';
+        
+        // Kodu yenidən göndər
+        setTimeout(() => {
+            sendCodeBtn.click();
+        }, 500);
+    });
+
+    // Kod göndərmə taymeri
+    function startResendTimer() {
+        // Əvvəlki taymeri sıfırla
+        if (resendTimer) {
+            clearInterval(resendTimer);
+        }
+        
+        // 90 saniyəlik taymer
+        let secondsLeft = 90;
+        resendCodeBtn.setAttribute('disabled', 'disabled');
+        
+        // Taymer görüntüsünü yenilə
+        function updateTimer() {
+            const minutes = Math.floor(secondsLeft / 60);
+            const seconds = secondsLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // İlk görüntüləmə
+        updateTimer();
+        
+        // Geri sayım başlat
+        resendTimer = setInterval(function() {
+            secondsLeft -= 1;
+            updateTimer();
+            
+            if (secondsLeft <= 0) {
+                clearInterval(resendTimer);
+                resendCodeBtn.removeAttribute('disabled');
+            }
+        }, 1000);
+    }
+
+    // Mesaj göstərmək funksiyası
+    function showMessage(type, text) {
+        // Mesaj elementi yaratma
+        const message = document.createElement('div');
+        message.className = `message ${type}`;
+        message.innerHTML = `
+            ${text}
+            <span class="close-message">&times;</span>
+        `;
+        
+        // Mesajı səhifəyə əlavə et
+        const messagesContainer = document.querySelector('.messages-container');
+        if (messagesContainer) {
+            messagesContainer.appendChild(message);
+            
+            // Bağlama düyməsinin işləməsi
+            const closeButton = message.querySelector('.close-message');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    message.remove();
+                });
+            }
+            
+            // 5 saniyə sonra avtomatik bağla
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        } else {
+            // Əgər mesaj konteyneri yoxdursa, alert göstər
+            alert(text);
+        }
+    }
+});
 </script>
 {% endblock %}

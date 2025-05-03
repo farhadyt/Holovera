@@ -7,6 +7,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('verify-firebase-token/', views.VerifyFirebaseTokenView.as_view(), name='verify_firebase_token'),
-    path('api/save-verification/', views.SaveVerificationView.as_view(), name='save_verification'),
+    path('api/send-verification-code/', views.SendVerificationCodeView.as_view(), name='send_verification_code'),
+    path('api/verify-code/', views.VerifyCodeView.as_view(), name='verify_code'),
 ]
