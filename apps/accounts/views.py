@@ -255,33 +255,3 @@ class VerifyFirebaseTokenView(View):
             return user
         except User.DoesNotExist:
             return None
-        
-
-@method_decorator(csrf_exempt, name='dispatch')
-class SaveVerificationView(View):
-    """SMS doğrulama məlumatlarını saxlayan API endpoint"""
-    
-    def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            phone_number = data.get('phone_number')
-            verification_code = data.get('verification_code')
-            
-            if not phone_number or not verification_code:
-                return JsonResponse({'success': False, 'error': _('Telefon nömrəsi və doğrulama kodu tələb olunur')})
-            
-            # Doğrulama məlumatlarını saxla
-            expires_at = timezone.now() + timedelta(minutes=10)  # 10 dəqiqə sonra vaxtı bitir
-            
-            sms_verification = SMSVerification(
-                phone_number=phone_number,
-                verification_code=verification_code,
-                expires_at=expires_at,
-                is_used=True  # Firebase tərəfindən doğrulanmış kodu "istifadə edilmiş" kimi qeyd edirik
-            )
-            sms_verification.save()
-            
-            return JsonResponse({'success': True})
-            
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
