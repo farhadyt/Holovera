@@ -4,6 +4,210 @@
 
 {% block title %}{% trans "Login" %} - Holovera{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* SMS doğrulama kodu alanı */
+    #verification-code-container {
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    
+    #verification-code-container.show {
+        max-height: 120px;
+        opacity: 1;
+        margin-bottom: 25px;
+    }
+    
+    /* Notification styles */
+    .notification {
+        position: fixed;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(12, 20, 35, 0.95);
+        backdrop-filter: blur(8px);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow);
+        border: 1px solid var(--primary-color);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    
+    .notification.show {
+        top: 100px;
+        opacity: 1;
+    }
+    
+    .notification-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #060914;
+        font-size: 16px;
+    }
+    
+    .notification-text {
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .notification-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: var(--primary-color);
+        width: 100%;
+        transform-origin: left;
+        animation: progress 5s linear forwards;
+    }
+    
+    @keyframes progress {
+        from { transform: scaleX(1); }
+        to { transform: scaleX(0); }
+    }
+    
+    /* Toggle password button */
+    .password-field {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+        z-index: 10;
+    }
+    
+    /* Login button states */
+    .login-btn {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+    
+    .login-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.7s;
+    }
+    
+    .login-btn:not(:disabled):hover::before {
+        left: 100%;
+    }
+    
+    .login-progress {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s infinite linear;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Success checkmark animation */
+    .success-checkmark {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        position: relative;
+        display: none;
+    }
+    
+    .success-checkmark .check-icon {
+        width: 80px;
+        height: 80px;
+        position: relative;
+        border-radius: 50%;
+        box-sizing: content-box;
+        border: 4px solid var(--primary-color);
+    }
+    
+    .success-checkmark .check-icon::before {
+        top: 3px;
+        left: -2px;
+        transform: rotate(45deg);
+        transform-origin: 100% 50%;
+        animation: checkmark-before 0.4s ease 0.4s forwards;
+    }
+    
+    .success-checkmark .check-icon::after {
+        top: 0;
+        left: 30px;
+        transform: rotate(-45deg);
+        transform-origin: 0% 50%;
+        animation: checkmark-after 0.4s ease 0.55s forwards;
+    }
+    
+    .success-checkmark .check-icon::before,
+    .success-checkmark .check-icon::after {
+        content: '';
+        height: 4px;
+        background-color: var(--primary-color);
+        display: block;
+        border-radius: 2px;
+        position: absolute;
+        opacity: 0;
+    }
+    
+    @keyframes checkmark-before {
+        0% { width: 0; opacity: 1; }
+        100% { width: 30px; opacity: 1; }
+    }
+    
+    @keyframes checkmark-after {
+        0% { width: 0; opacity: 1; }
+        100% { width: 50px; opacity: 1; }
+    }
+    
+    .glowing-border-animation {
+        animation: glowingBorder 1.5s infinite alternate;
+    }
+    
+    @keyframes glowingBorder {
+        from { box-shadow: 0 0 5px rgba(77, 240, 255, 0.3), 0 0 10px rgba(77, 240, 255, 0.2); }
+        to { box-shadow: 0 0 15px rgba(77, 240, 255, 0.5), 0 0 30px rgba(77, 240, 255, 0.3); }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="auth-scene">
     <!-- Optimizasiya olunmuş arxa fon -->
@@ -15,6 +219,11 @@
             <div class="auth-header">
                 <h2>{% trans "Hesabınıza daxil olun" %}</h2>
                 <div class="auth-divider"></div>
+                
+                <!-- Success animation (hidden by default) -->
+                <div class="success-checkmark">
+                    <div class="check-icon"></div>
+                </div>
             </div>
             
             <div class="auth-form">
@@ -29,8 +238,20 @@
                         </div>
                     </div>
                     
-                    <!-- Telefon doğrulama kodu alanı (gizli başlar) -->
-                    <div id="verification-code-container" class="form-group" style="display:none">
+                    <!-- Password field -->
+                    <div class="form-group">
+                        <label for="id_password">{% trans "Şifrə" %}</label>
+                        <div class="input-with-icon password-field">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" id="id_password" class="form-control" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Verification code container (hidden by default) -->
+                    <div id="verification-code-container" class="form-group">
                         <label for="id_verification_code">{% trans "Doğrulama kodu" %}</label>
                         <div class="input-with-icon">
                             <i class="fas fa-key"></i>
@@ -43,12 +264,15 @@
                             <input type="checkbox" id="remember-me" name="remember">
                             <label for="remember-me">{% trans "Məni xatırla" %}</label>
                         </div>
-                        <a href="#" class="forgot-password">{% trans "Nömrənizi unutmusunuz?" %}</a>
+                        <a href="#" class="forgot-password">{% trans "Şifrəni unutmusunuz?" %}</a>
                     </div>
                     
-                    <!-- Login düymələri -->
-                    <button type="button" id="send-code-btn" class="auth-button login-btn">{% trans "SMS kodu göndər" %}</button>
-                    <button type="button" id="verify-code-btn" style="display:none" class="auth-button login-btn">{% trans "Kodu doğrula və daxil ol" %}</button>
+                    <!-- Login button - Primary function -->
+                    <button type="button" id="login-btn" class="auth-button login-btn">{% trans "Daxil ol" %}</button>
+                    
+                    <!-- SMS verification button (initially hidden) -->
+                    <button type="button" id="send-code-btn" class="auth-button login-btn" style="display:none;">{% trans "SMS kodu göndər" %}</button>
+                    <button type="button" id="verify-code-btn" class="auth-button login-btn" style="display:none;">{% trans "Kodu doğrula və daxil ol" %}</button>
                     
                     <div class="register-link">
                         <p>{% trans "Hesabınız yoxdur?" %} <a href="{% url 'register' %}">{% trans "Qeydiyyatdan keçin" %}</a></p>
@@ -58,4 +282,369 @@
         </div>
     </div>
 </div>
+
+<!-- Notification container -->
+<div id="notification" class="notification">
+    <div class="notification-icon">
+        <i class="fas fa-check"></i>
+    </div>
+    <div class="notification-text"></div>
+    <div class="notification-progress"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form elements
+    const loginForm = document.getElementById('login-form');
+    const phoneNumberInput = document.getElementById('id_phone_number');
+    const passwordInput = document.getElementById('id_password');
+    const verificationCodeContainer = document.getElementById('verification-code-container');
+    const verificationCodeInput = document.getElementById('id_verification_code');
+    const loginBtn = document.getElementById('login-btn');
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const verifyCodeBtn = document.getElementById('verify-code-btn');
+    const togglePasswordBtn = document.querySelector('.toggle-password');
+    const notification = document.getElementById('notification');
+    const notificationText = notification.querySelector('.notification-text');
+    const notificationIcon = notification.querySelector('.notification-icon i');
+    const successCheckmark = document.querySelector('.success-checkmark');
+    
+    // Toggle password visibility
+    togglePasswordBtn.addEventListener('click', function() {
+        const passwordField = passwordInput;
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+    });
+    
+    // CSRF Token function
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Notification system
+    function showNotification(type, message) {
+        // Update icon
+        if (type === 'success') {
+            notificationIcon.className = 'fas fa-check';
+            notification.style.borderColor = '#4dff4d';
+        } else if (type === 'error') {
+            notificationIcon.className = 'fas fa-times';
+            notification.style.borderColor = '#ff4d4d';
+        } else if (type === 'info') {
+            notificationIcon.className = 'fas fa-info';
+            notification.style.borderColor = '#4d88ff';
+        } else if (type === 'warning') {
+            notificationIcon.className = 'fas fa-exclamation-triangle';
+            notification.style.borderColor = '#ffd24d';
+        }
+        
+        // Set message
+        notificationText.textContent = message;
+        
+        // Show notification
+        notification.classList.add('show');
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
+    }
+    
+    // Form validation
+    function validateLoginForm() {
+        if (!phoneNumberInput.value.trim()) {
+            showNotification('error', '{% trans "Zəhmət olmasa telefon nömrənizi daxil edin" %}');
+            phoneNumberInput.focus();
+            return false;
+        }
+        
+        if (!passwordInput.value) {
+            showNotification('error', '{% trans "Zəhmət olmasa şifrənizi daxil edin" %}');
+            passwordInput.focus();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Handle login attempt
+    loginBtn.addEventListener('click', function() {
+        if (!validateLoginForm()) {
+            return;
+        }
+        
+        // Show loading state
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
+        
+        // Format phone number (simple format for example)
+        let phoneNumber = phoneNumberInput.value.trim();
+        if (!phoneNumber.startsWith('+')) {
+            phoneNumber = '+' + phoneNumber;
+        }
+        
+        // Prepare login data
+        const loginData = {
+            phone_number: phoneNumber,
+            password: passwordInput.value,
+            remember: document.getElementById('remember-me').checked
+        };
+        
+        // Send login request
+        fetch('{% url "login" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(loginData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    // Incorrect credentials
+                    throw new Error('incorrect_credentials');
+                } else if (response.status === 403) {
+                    // Account not verified
+                    return response.json().then(data => {
+                        if (data.require_verification) {
+                            // Show SMS verification
+                            loginBtn.style.display = 'none';
+                            sendCodeBtn.style.display = 'block';
+                            // Highlight verification section
+                            setTimeout(() => {
+                                verificationCodeInput.classList.add('glowing-border-animation');
+                            }, 500);
+                            throw new Error('verification_required');
+                        } else {
+                            throw new Error(data.error || 'Forbidden');
+                        }
+                    });
+                }
+                throw new Error('server_error');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Success! Show animation
+            loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
+            showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
+            
+            // Show success checkmark
+            document.querySelector('.auth-header h2').style.display = 'none';
+            document.querySelector('.auth-divider').style.display = 'none';
+            successCheckmark.style.display = 'block';
+            
+            // Redirect after animation
+            setTimeout(() => {
+                window.location.href = data.redirect_url || '{% url "landing" %}';
+            }, 2000);
+        })
+        .catch(error => {
+            // Reset button
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '{% trans "Daxil ol" %}';
+            
+            // Handle specific errors
+            if (error.message === 'incorrect_credentials') {
+                showNotification('error', '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}');
+            } else if (error.message === 'verification_required') {
+                showNotification('info', '{% trans "Hesabınızı təsdiqləmək üçün SMS kodu göndərin" %}');
+            } else {
+                showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
+            }
+        });
+    });
+    
+    // Send verification code button
+    sendCodeBtn.addEventListener('click', function() {
+        // Show loading state
+        sendCodeBtn.disabled = true;
+        sendCodeBtn.innerHTML = '<span class="login-progress"></span>{% trans "Göndərilir..." %}';
+        
+        // Format phone number
+        let phoneNumber = phoneNumberInput.value.trim();
+        if (!phoneNumber.startsWith('+')) {
+            phoneNumber = '+' + phoneNumber;
+        }
+        
+        // Send verification code request
+        fetch('/accounts/api/send-verification-code/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            // Reset button
+            sendCodeBtn.disabled = false;
+            sendCodeBtn.innerHTML = '{% trans "SMS kodu göndər" %}';
+            
+            if (data.success) {
+                // Show success notification with animation
+                showNotification('success', '{% trans "Doğrulama kodu göndərildi!" %}');
+                
+                // Hide send code button, show verify code button
+                sendCodeBtn.style.display = 'none';
+                verifyCodeBtn.style.display = 'block';
+                
+                // Show verification code container with animation
+                verificationCodeContainer.classList.add('show');
+                
+                // Focus verification code input
+                setTimeout(() => {
+                    verificationCodeInput.focus();
+                }, 500);
+            } else {
+                showNotification('error', data.error || '{% trans "SMS kodu göndərmə xətası" %}');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            sendCodeBtn.disabled = false;
+            sendCodeBtn.innerHTML = '{% trans "SMS kodu göndər" %}';
+            showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
+        });
+    });
+    
+    // Verify code button
+    verifyCodeBtn.addEventListener('click', function() {
+        // Validate verification code
+        const verificationCode = verificationCodeInput.value.trim();
+        if (!verificationCode) {
+            showNotification('error', '{% trans "Zəhmət olmasa doğrulama kodunu daxil edin" %}');
+            verificationCodeInput.focus();
+            return;
+        }
+        
+        // Show loading state
+        verifyCodeBtn.disabled = true;
+        verifyCodeBtn.innerHTML = '<span class="login-progress"></span>{% trans "Doğrulanır..." %}';
+        
+        // Format phone number
+        let phoneNumber = phoneNumberInput.value.trim();
+        if (!phoneNumber.startsWith('+')) {
+            phoneNumber = '+' + phoneNumber;
+        }
+        
+        // Verify code API request
+        fetch('/accounts/api/verify-code/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber,
+                verification_code: verificationCode
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Now proceed with login using verified account
+                const loginData = {
+                    phone_number: phoneNumber,
+                    password: passwordInput.value,
+                    remember: document.getElementById('remember-me').checked,
+                    verified: true
+                };
+                
+                // Try login again
+                return fetch('{% url "login" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    body: JSON.stringify(loginData)
+                });
+            } else {
+                // Show error
+                showNotification('error', data.error || '{% trans "Yanlış doğrulama kodu" %}');
+                
+                // Reset button
+                verifyCodeBtn.disabled = false;
+                verifyCodeBtn.innerHTML = '{% trans "Kodu doğrula və daxil ol" %}';
+                
+                throw new Error('verification_failed');
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Login failed after verification');
+            return response.json();
+        })
+        .then(data => {
+            // Success! Show animation
+            verifyCodeBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
+            showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
+            
+            // Show success checkmark
+            document.querySelector('.auth-header h2').style.display = 'none';
+            document.querySelector('.auth-divider').style.display = 'none';
+            successCheckmark.style.display = 'block';
+            
+            // Redirect after animation
+            setTimeout(() => {
+                window.location.href = data.redirect_url || '{% url "landing" %}';
+            }, 2000);
+        })
+        .catch(error => {
+            if (error.message !== 'verification_failed') {
+                console.error('Error:', error);
+                verifyCodeBtn.disabled = false;
+                verifyCodeBtn.innerHTML = '{% trans "Kodu doğrula və daxil ol" %}';
+                showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
+            }
+        });
+    });
+    
+    // Handle Enter key press
+    loginForm.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            
+            if (verifyCodeBtn.style.display === 'block') {
+                verifyCodeBtn.click();
+            } else if (sendCodeBtn.style.display === 'block') {
+                sendCodeBtn.click();
+            } else {
+                loginBtn.click();
+            }
+        }
+    });
+    
+    // Handle form submission (prevent default)
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        loginBtn.click();
+    });
+});
+</script>
 {% endblock %}
