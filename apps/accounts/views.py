@@ -266,29 +266,18 @@ class LoginView(FormView):
                     user = User.objects.get(phone_number=phone_number)
                     print(f"User found: {user.username}, verified: {user.is_verified}")
                     
-                    # Force set is_verified flag to True if it's not set
-                    if not user.is_verified:
-                        user.is_verified = True
-                        user.save()
-                        print(f"User verification status updated to True")
-                    
                     # Authenticate
-                    user_auth = authenticate(username=user.username, password=password)
+                    user_auth = authenticate(request, username=user.username, password=password)
                     print(f"Authentication result: {user_auth is not None}")
                     
-                    # For debug purposes
-                    if user_auth is None:
-                        # Reset password to ensure consistent behavior
-                        from django.contrib.auth.hashers import make_password
-                        user.password = make_password(password)
-                        user.save()
-                        print(f"Reset password for user")
-                        
-                        # Try authenticate again
-                        user_auth = authenticate(username=user.username, password=password)
-                        print(f"Second auth attempt: {user_auth is not None}")
-                    
                     if user_auth is not None:
+                        # It's good practice to check if the user account is active.
+                        if not user_auth.is_active:
+                            return JsonResponse({
+                                'success': False,
+                                'error': _('Hesabınız aktiv deyil.')
+                            }, status=401)
+
                         login(request, user_auth)
                         
                         # Set session expiry if remember me is not checked

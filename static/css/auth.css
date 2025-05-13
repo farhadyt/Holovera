@@ -1162,3 +1162,25 @@ html, body {
         width: 40px;
     }
 }
+
+/* Şifrə xanası (input) üçün padding */
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"],
+.input-with-icon input[type="email"],
+.input-with-icon input[type="tel"] {
+    padding-right: 45px; /* Göz ikonasının yerləşməsi üçün sağdan boşluq */
+}
+
+/* Brauzerin daxili şifrə göstərmə ikonalarını gizlət */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+input[type="password"]::-webkit-reveal { /* Chrome/Safari/Edge (Chromium) üçün */
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}

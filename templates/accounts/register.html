@@ -264,6 +264,11 @@
         font-size: 16px;
         padding: 0;
         z-index: 10;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* Telefon input stilləri - yaxşılaşdırılmış */
@@ -632,7 +637,7 @@
                         <div class="form-group">
                             <label for="id_password">{% trans "Şifrə" %}</label>
                             <div class="input-with-icon password-field">
-                                <i class="fas fa-lock"></i>
+                                
                                 <input type="password" name="password" id="id_password" class="form-control" required>
                                 <button type="button" class="toggle-password">
                                     <i class="fas fa-eye"></i>
@@ -648,7 +653,7 @@
                         <div class="form-group">
                             <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
                             <div class="input-with-icon password-field">
-                                <i class="fas fa-lock"></i>
+                                
                                 <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
                                 <button type="button" class="toggle-password">
                                     <i class="fas fa-eye"></i>
@@ -809,28 +814,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return cookieValue;
     }
-    
-    // Fixed: Password şifrə göstərmə funksiyası
-    togglePasswordBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const passwordField = this.parentElement.querySelector('input');
-            if (!passwordField) return;
-            
-            // Şifrə tipini dəyişdir
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            
-            // İkonu dəyişdir
-            const icon = this.querySelector('i');
-            if (icon) {
-                if (type === 'password') {
-                    icon.className = 'fas fa-eye';
-                } else {
-                    icon.className = 'fas fa-eye-slash';
-                }
-            }
-        });
-    });
     
     // Password strength checker
     passwordInput.addEventListener('input', function() {
@@ -1123,11 +1106,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Set verified state
                 document.getElementById('id_is_verified').checked = true;
                 
-                // Show success notification
-                showNotification('success', '{% trans "Doğrulama uğurla tamamlandı!" %}');
-                
                 // Prepare form data for final submission
                 const formData = new FormData(registerForm);
+                formData.set('phone_number', phoneNumber); // Ensure the full E.164 number is submitted
                 formData.append('is_verified', 'true');
                 formData.append('password', passwordInput.value);
                 

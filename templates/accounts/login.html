@@ -98,10 +98,23 @@
         font-size: 16px;
         padding: 0;
         z-index: 10;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .toggle-password:hover {
         color: var(--primary-light);
+    }
+    
+    .toggle-password:focus {
+        outline: none;
+    }
+    
+    .input-with-icon.password-field input {
+        padding-right: 45px;
     }
     
     /* Login button states */
@@ -246,7 +259,7 @@
                     <div class="form-group">
                         <label for="id_password">{% trans "Şifrə" %}</label>
                         <div class="input-with-icon password-field">
-                            <i class="fas fa-lock"></i>
+                            
                             <input type="password" name="password" id="id_password" class="form-control" required>
                             <button type="button" class="toggle-password">
                                 <i class="fas fa-eye"></i>
@@ -314,22 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationText = notification.querySelector('.notification-text');
     const notificationIcon = notification.querySelector('.notification-icon i');
     const successCheckmark = document.querySelector('.success-checkmark');
-    
-    // Toggle password visibility
-    if (togglePasswordBtn) {
-        togglePasswordBtn.addEventListener('click', function() {
-            const passwordField = document.getElementById('id_password');
-            if (!passwordField) return;
-            
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            
-            const icon = this.querySelector('i');
-            if (icon) {
-                icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-            }
-        });
-    }
     
     // CSRF Token function
     function getCSRFToken() {
