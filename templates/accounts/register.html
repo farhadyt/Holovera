@@ -7,17 +7,47 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 <style>
+    /* Global fix - bütün overflow problemlərini həll etmək üçün */
+    .auth-scene, .auth-container, .auth-form-container, .auth-form, 
+    .registration-section, .verification-section {
+        overflow: visible !important;
+    }
+    
+    /* Vertical scrollbar-ı gizlətmək */
+    body::-webkit-scrollbar {
+        display: none;
+    }
+    
+    body {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+    
+    /* Form elementlərinin daha səliqəli görünməsi üçün */
+    .form-group {
+        margin-bottom: 25px;
+        clear: both;
+        overflow: visible;
+    }
+    
+    .auth-form-container {
+        height: auto !important;
+    }
+    
     /* User type selection styles - improved */
     .user-type-container {
         display: flex;
         gap: 15px;
         margin-bottom: 30px;
+        flex-wrap: wrap; /* Kiçik ekranlarda sətir qırma əlavə edildi */
     }
     
     .user-type-option {
         flex: 1;
         position: relative;
         cursor: pointer;
+        min-width: 100px; /* Minimum genişlik təyin edildi */
+        margin-bottom: 10px; /* Sətir qırıldıqda arasında məsafə əlavə edildi */
     }
     
     .user-type-option input {
@@ -31,33 +61,36 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        padding: 15px 10px; /* Yastıqları azaltdım */
         border-radius: 12px;
         border: 2px solid rgba(77, 240, 255, 0.25);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
         text-align: center;
         height: 100%;
+        min-height: 120px; /* Minimum hündürlük təyin edildi */
     }
     
     .user-type-icon {
-        font-size: 36px;
-        margin-bottom: 15px;
+        font-size: 28px; /* Kiçik ekranlar üçün azaldıldı */
+        margin-bottom: 10px;
         color: var(--primary-color);
         transition: all 0.3s ease;
     }
     
     .user-type-name {
         font-weight: 600;
-        font-size: 18px;
-        margin-bottom: 8px;
+        font-size: 16px; /* Kiçik ekranlar üçün azaldıldı */
+        margin-bottom: 6px;
         color: white;
+        word-break: break-word; /* Uzun sözlərin qırılmasına imkan verir */
     }
     
     .user-type-desc {
-        font-size: 13px;
+        font-size: 12px; /* Kiçik ekranlar üçün azaldıldı */
         color: var(--text-secondary);
-        line-height: 1.4;
+        line-height: 1.3;
+        word-break: break-word; /* Uzun sözlərin qırılmasına imkan verir */
     }
     
     .user-type-option input:checked + .user-type-label {
@@ -76,7 +109,7 @@
     /* Age range select - improved */
     .age-range-container {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
         margin-top: 10px;
     }
@@ -84,8 +117,9 @@
     .age-range-option {
         position: relative;
         cursor: pointer;
-        flex-grow: 1;
-        min-width: 80px;
+        flex: 1;
+        min-width: 70px; /* Minimum genişlik təyin edildi */
+        margin-bottom: 8px; /* Aşağıya məsafə əlavə edildi */
     }
     
     .age-range-option input {
@@ -99,12 +133,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 12px 20px;
+        padding: 10px 15px; /* Yastıqları azaltdım */
         border-radius: 10px;
         border: 2px solid rgba(77, 240, 255, 0.3);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
-        font-size: 16px;
+        font-size: 14px; /* Kiçik ekranlar üçün azaldıldı */
         font-weight: 500;
         color: rgba(255, 255, 255, 0.9);
         text-align: center;
@@ -143,12 +177,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 15px;
+        padding: 12px; /* Yastıqları azaltdım */
         border-radius: 10px;
         border: 2px solid rgba(77, 240, 255, 0.3);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
-        font-size: 16px;
+        font-size: 14px; /* Kiçik ekranlar üçün azaldıldı */
         color: rgba(255, 255, 255, 0.9);
     }
     
@@ -232,35 +266,51 @@
         z-index: 10;
     }
     
-    /* Phone input - improved */
+    /* Telefon input stilləri - yaxşılaşdırılmış */
     .iti {
         width: 100%;
+        display: block; /* Bu tam genişlikdə görünməsini təmin edir */
+        z-index: 5; /* Z-index əlavə edirik */
+    }
+    
+    /* Digər ITI elementi stillərini override edirik */
+    .iti__flag-container {
+        z-index: 100; /* Digər elementlərin üzərində görünməsini təmin edir */
+        position: absolute;
     }
     
     /* Fix country code dropdown text color */
     .iti__country-list {
         background-color: rgba(15, 25, 40, 0.95);
         border: 1px solid rgba(77, 240, 255, 0.3);
+        max-height: 200px; /* Kiçik ekranlarda dropdown üçün maksimum hündürlük */
+        overflow-y: auto;
+        min-width: 250px; /* Minimum genişlik əlavə edək */
+        margin-top: 5px; /* Mobil cihazlarda daha yaxşı görünüş üçün */
+        left: 0;
+        position: absolute;
+        z-index: 9999;
     }
     
-    .iti__country {
-        color: white;
-        padding: 10px 15px;
-        transition: all 0.2s ease;
+    /* Təhlükəsiz yerləşdirmə */
+    input[type="tel"].form-control {
+        padding-left: 80px !important;
     }
     
-    .iti__country:hover {
-        background-color: rgba(77, 240, 255, 0.2);
+    #id_phone_number {
+        padding-left: 80px !important;
     }
     
-    .iti__country-name, 
-    .iti__dial-code {
-        color: white;
+    /* Verification section visibility fix */
+    .verification-section.active {
+        display: block !important;
+        animation: fadeIn 0.4s ease;
+        overflow: visible !important;
     }
     
-    .iti__selected-flag {
-        background-color: rgba(12, 18, 30, 0.6);
-        border-radius: 5px 0 0 5px;
+    /* Notification fix */
+    .notification {
+        overflow: visible !important;
     }
     
     /* Notification styles */
@@ -325,11 +375,6 @@
     /* Verification code section */
     .verification-section {
         display: none;
-    }
-    
-    .verification-section.active {
-        display: block;
-        animation: fadeIn 0.4s ease;
     }
     
     .verification-code-input {
@@ -401,6 +446,122 @@
     @keyframes glowingBorder {
         from { box-shadow: 0 0 5px rgba(77, 240, 255, 0.3), 0 0 10px rgba(77, 240, 255, 0.2); }
         to { box-shadow: 0 0 15px rgba(77, 240, 255, 0.5), 0 0 30px rgba(77, 240, 255, 0.3); }
+    }
+    
+    /* Form elementlərinin kiçik ekranlarda görünüşünü yaxşılaşdıran media sorğuları */
+    @media (max-width: 768px) {
+        .user-type-container {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .user-type-option {
+            flex: none;
+            width: 100%;
+        }
+        
+        .user-type-label {
+            padding: 15px 10px;
+            min-height: auto;
+        }
+        
+        .age-range-container {
+            gap: 6px;
+        }
+        
+        .age-range-option {
+            min-width: 60px;
+        }
+        
+        .age-range-label {
+            padding: 8px 10px;
+        }
+        
+        .gender-container {
+            gap: 10px;
+        }
+        
+        .gender-label {
+            padding: 10px;
+        }
+        
+        .verification-code-input {
+            gap: 5px;
+        }
+        
+        .code-input {
+            width: 40px;
+            height: 50px;
+            font-size: 20px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .user-type-icon {
+            font-size: 24px;
+        }
+        
+        .user-type-name {
+            font-size: 14px;
+        }
+        
+        .user-type-desc {
+            font-size: 11px;
+        }
+        
+        .code-input {
+            width: 35px;
+            height: 45px;
+        }
+    }
+    
+    /* Ekran ölçüsünə görə adaptiv dinamik ölçü */
+    @media screen and (max-height: 850px) {
+        .form-group {
+            margin-bottom: 15px !important;
+        }
+        
+        .auth-header {
+            margin-bottom: 15px !important;
+        }
+        
+        .user-type-container {
+            margin-bottom: 12px !important;
+        }
+    }
+    
+    @media screen and (max-height: 700px) {
+        .form-group {
+            margin-bottom: 10px !important;
+        }
+        
+        .auth-header {
+            margin-bottom: 10px !important;
+        }
+        
+        .user-type-container {
+            margin-bottom: 8px !important;
+        }
+        
+        .auth-form-container {
+            padding: 15px !important;
+        }
+        
+        .form-control {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+    }
+    
+    /* Əlavə kiçik ekranlar üçün ölçü dəyişiklikləri */
+    @media screen and (max-height: 600px) {
+        .auth-button {
+            padding: 8px !important;
+        }
+        
+        .login-link {
+            margin-top: 8px !important;
+        }
     }
 </style>
 {% endblock %}
@@ -619,6 +780,19 @@ document.addEventListener('DOMContentLoaded', function() {
         customContainer: "phone-input-container"
     });
     
+    // Fix - telefon input CSS düzəltməsi
+    phoneInputField.style.paddingLeft = '90px';
+    
+    // Fix - formu göndərdikdə overflow-hidden əlavə edək
+    document.addEventListener("click", function (e) {
+        if (e.target && (e.target === sendCodeBtn || e.target === verifyCodeBtn)) {
+            document.body.style.overflowY = "hidden";
+            setTimeout(() => {
+                document.body.style.overflowY = "auto";
+            }, 1000);
+        }
+    });
+    
     // CSRF Token function
     function getCSRFToken() {
         const name = 'csrftoken';
@@ -635,6 +809,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return cookieValue;
     }
+    
+    // Fixed: Password şifrə göstərmə funksiyası
+    togglePasswordBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const passwordField = this.parentElement.querySelector('input');
+            if (!passwordField) return;
+            
+            // Şifrə tipini dəyişdir
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            // İkonu dəyişdir
+            const icon = this.querySelector('i');
+            if (icon) {
+                if (type === 'password') {
+                    icon.className = 'fas fa-eye';
+                } else {
+                    icon.className = 'fas fa-eye-slash';
+                }
+            }
+        });
+    });
     
     // Password strength checker
     passwordInput.addEventListener('input', function() {
@@ -676,16 +872,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return 'strong';
         }
     }
-    
-    // Toggle password visibility
-    togglePasswordBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const passwordField = this.previousElementSibling;
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-        });
-    });
     
     // Verification code input handling
     codeInputs.forEach((input, index) => {
@@ -1055,6 +1241,76 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         // The form is submitted via fetch in the verify code function
     });
+    
+    // Body overflow probleminin həlli
+    window.addEventListener('load', function() {
+        document.body.style.overflowY = 'auto';
+    });
+    
+    // Ekrana tam uyğunlaşdırmaq üçün responsive düzəlişlər
+    function optimizeFormForScreenSize() {
+        const viewportHeight = window.innerHeight;
+        const authFormContainer = document.querySelector('.auth-form-container');
+        const formGroups = document.querySelectorAll('.form-group');
+        const userTypeContainer = document.querySelector('.user-type-container');
+        const userTypeLabels = document.querySelectorAll('.user-type-label');
+        
+        // Ekran ölçüsünə görə form elementlərini tənzimlə
+        if (viewportHeight < 600) {
+            // Çox kiçik ekranlar üçün
+            formGroups.forEach(group => group.style.marginBottom = '8px');
+            if (userTypeContainer) userTypeContainer.style.marginBottom = '8px';
+            userTypeLabels.forEach(label => {
+                label.style.minHeight = '70px';
+                label.style.padding = '6px';
+            });
+            
+            // Form elementlərinin içindəki komponentləri də kiçilt
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.style.padding = '6px 6px 6px 35px';
+                input.style.fontSize = '13px';
+            });
+            
+            document.querySelectorAll('.user-type-icon').forEach(icon => {
+                icon.style.fontSize = '16px';
+                icon.style.marginBottom = '4px';
+            });
+            
+            document.querySelectorAll('.user-type-name').forEach(name => {
+                name.style.fontSize = '12px';
+                name.style.marginBottom = '2px';
+            });
+            
+            document.querySelectorAll('.user-type-desc').forEach(desc => {
+                desc.style.fontSize = '10px';
+            });
+            
+            document.querySelectorAll('.auth-button').forEach(btn => {
+                btn.style.padding = '8px';
+                btn.style.fontSize = '14px';
+            });
+            
+        } else if (viewportHeight < 750) {
+            // Kiçik ekranlar üçün
+            formGroups.forEach(group => group.style.marginBottom = '12px');
+            if (userTypeContainer) userTypeContainer.style.marginBottom = '12px';
+            userTypeLabels.forEach(label => {
+                label.style.minHeight = '80px';
+                label.style.padding = '8px';
+            });
+            
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.style.padding = '8px 8px 8px 40px';
+                input.style.fontSize = '14px';
+            });
+        }
+    }
+    
+    // İlkin əməliyyat
+    optimizeFormForScreenSize();
+    
+    // Ekran ölçüsü dəyişdikdə funk çağır
+    window.addEventListener('resize', optimizeFormForScreenSize);
 });
 </script>
 {% endblock %}

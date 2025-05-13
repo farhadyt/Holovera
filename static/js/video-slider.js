@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevBtn = document.getElementById('prev');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const timeProgress = document.querySelector('.time-progress');
+    const videos = document.querySelectorAll('.main-video, .thumbnail video');
     
     // Configuration
     const timeRunning = 7000; // 7 seconds duration
@@ -15,18 +16,97 @@ document.addEventListener('DOMContentLoaded', function() {
     let autoRotateTimer;
     let currentIndex = 0;
     let isTransitioning = false;
+    let videosLoaded = 0;
+    let totalVideos = videos.length;
+    let loadingTimeout;
+    
+    // Track video loading progress
+    function updateLoadingProgress() {
+        videosLoaded++;
+        console.log(`Video yükləndi: ${videosLoaded}/${totalVideos}`);
+        
+        // Only hide loading overlay when all videos are loaded
+        if (videosLoaded >= totalVideos) {
+            clearTimeout(loadingTimeout); // Clear safety timeout
+            hideLoading();
+            startVideoPlayback();
+            resetTimeBar();
+            startAutoRotation();
+            
+            // Ensure first slide's content is visible
+            animateContentElements(items[currentIndex], true);
+        }
+    }
     
     // Initialize the slider
     function initSlider() {
         setupThumbnails();
         setupEventListeners();
-        hideLoading();
-        startVideoPlayback();
-        resetTimeBar();
-        startAutoRotation();
+        setupVideoLoadTracking();
         
-        // Ensure first slide's content is visible
-        animateContentElements(items[currentIndex], true);
+        // Set a maximum timeout in case some videos take too long
+        loadingTimeout = setTimeout(function() {
+            console.log('Maksimum yüklənmə müddəti bitdi, səhifəni açırıq...');
+            if (loadingOverlay && loadingOverlay.style.opacity !== '0') {
+                hideLoading();
+                startVideoPlayback();
+                resetTimeBar();
+                startAutoRotation();
+                animateContentElements(items[currentIndex], true);
+            }
+        }, 10000); // 10 second maximum wait
+    }
+    
+    // Track when all videos are loaded
+    function setupVideoLoadTracking() {
+        // For each main video and thumbnail video
+        videos.forEach((video, index) => {
+            // Add load event listeners
+            if (video.readyState >= 3) { // HAVE_FUTURE_DATA or better
+                console.log(`Video ${index} artıq yüklənib`);
+                updateLoadingProgress();
+            } else {
+                console.log(`Video ${index} yüklənməsini gözləyirik...`);
+                
+                // Listen for when video can play
+                video.addEventListener('canplay', function() {
+                    console.log(`Video ${index} canplay eventi baş verdi`);
+                    updateLoadingProgress();
+                });
+                
+                video.addEventListener('loadeddata', function() {
+                    console.log(`Video ${index} loadeddata eventi baş verdi`);
+                    updateLoadingProgress();
+                });
+                
+                // Also add error handler in case video fails to load
+                video.addEventListener('error', function(e) {
+                    console.error('Video yüklənməsi xətası:', e);
+                    console.error('Video src:', video.querySelector('source')?.getAttribute('src'));
+                    updateLoadingProgress(); // Count as "loaded" to avoid blocking
+                });
+            }
+            
+            // Force load by setting src attribute if not already set
+            const source = video.querySelector('source');
+            if (source) {
+                const currentSrc = source.getAttribute('src');
+                video.load();
+            }
+        });
+        
+        // Add loading safety timeout to clear loading screen after some time regardless
+        setTimeout(function() {
+            if (videosLoaded < totalVideos) {
+                console.log(`Bütün videolar yüklənmədi, amma davam edirik. Yüklənmiş: ${videosLoaded}/${totalVideos}`);
+                clearTimeout(loadingTimeout);
+                hideLoading();
+                startVideoPlayback();
+                resetTimeBar();
+                startAutoRotation();
+                animateContentElements(items[currentIndex], true);
+            }
+        }, 8000); // 8 seconds safety
     }
     
     // Create thumbnail items
@@ -51,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 thumbnailVideo.muted = true;
                 thumbnailVideo.loop = true;
                 thumbnailVideo.playsInline = true;
+                thumbnailVideo.setAttribute('preload', 'auto');
                 
                 const thumbnailSource = document.createElement('source');
                 thumbnailSource.src = videoSrc;
@@ -88,32 +169,90 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupEventListeners() {
         // Next button click
         if (nextBtn) {
-            nextBtn.addEventListener('click', function() {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault(); // Add this to prevent default behavior
                 if (!isTransitioning) {
                     const nextIndex = (currentIndex + 1) % items.length;
                     switchToVideo(nextIndex);
                 }
             });
+            
+            // Make sure button is properly clickable
+            nextBtn.style.pointerEvents = 'auto';
+            nextBtn.style.cursor = 'pointer';
+            nextBtn.style.zIndex = '100';
         }
         
         // Previous button click
         if (prevBtn) {
-            prevBtn.addEventListener('click', function() {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault(); // Add this to prevent default behavior
                 if (!isTransitioning) {
                     const prevIndex = (currentIndex - 1 + items.length) % items.length;
                     switchToVideo(prevIndex);
                 }
             });
+            
+            // Make sure button is properly clickable
+            prevBtn.style.pointerEvents = 'auto';
+            prevBtn.style.cursor = 'pointer';
+            prevBtn.style.zIndex = '100';
         }
         
         // Keyboard navigation
         document.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowRight') {
-                nextBtn.click();
+                if (nextBtn) nextBtn.click();
             } else if (e.key === 'ArrowLeft') {
-                prevBtn.click();
+                if (prevBtn) prevBtn.click();
             }
         });
+        
+        // Make sure slider area is clickable in all browsers
+        const sliderArea = document.querySelector('.carousel-container');
+        if (sliderArea) {
+            sliderArea.style.pointerEvents = 'auto';
+            
+            // Ensure all sub-elements are also clickable
+            const interactiveElements = sliderArea.querySelectorAll('.thumbnail, .thumbnail .item, .arrows, .arrows button');
+            interactiveElements.forEach(el => {
+                el.style.pointerEvents = 'auto';
+                el.style.cursor = 'pointer';
+            });
+        }
+        
+        // Special fix for Mozilla Firefox
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            // Make thumbnail container higher z-index
+            const thumbnail = document.querySelector('.thumbnail');
+            if (thumbnail) {
+                thumbnail.style.zIndex = '30';
+                
+                // Ensure each thumbnail is clickable
+                const thumbnailItems = thumbnail.querySelectorAll('.item');
+                thumbnailItems.forEach(item => {
+                    item.style.pointerEvents = 'auto';
+                    item.style.cursor = 'pointer';
+                    item.style.position = 'relative';
+                    item.style.zIndex = '31';
+                });
+            }
+            
+            // Make arrows higher z-index
+            const arrows = document.querySelector('.arrows');
+            if (arrows) {
+                arrows.style.zIndex = '35';
+                
+                // Ensure buttons are clickable
+                const buttons = arrows.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.style.pointerEvents = 'auto';
+                    button.style.cursor = 'pointer';
+                    button.style.position = 'relative';
+                    button.style.zIndex = '36';
+                });
+            }
+        }
     }
     
     // Start video playback
@@ -179,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     buttons.style.animation = 'fadeIn 0.8s forwards';
                     buttons.style.animationDelay = '0.8s';
                 }
-            }, 500); // Delay content animation by 1 second after video transition
+            }, 500); // Delay content animation by 0.5 seconds after video transition
         } else {
             // Fade out animation
             elements.forEach(el => {
@@ -268,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Force browser reflow to ensure animation triggers
-        thumbnails[0].offsetWidth;
+        if (thumbnails[0]) thumbnails[0].offsetWidth;
         
         // Add active class with slight delay
         setTimeout(() => {
@@ -318,6 +457,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Start everything
-    initSlider();
+    // Check if the video element is supported
+    function checkVideoSupport() {
+        try {
+            const video = document.createElement('video');
+            if (typeof video.canPlayType === 'function') {
+                // Browser supports video element
+                return video.canPlayType('video/mp4') !== '';
+            }
+        } catch (error) {
+            console.error('Video element not supported:', error);
+        }
+        
+        return false;
+    }
+    
+    // Start everything with browser check
+    if (checkVideoSupport()) {
+        // Browser supports video, initialize slider
+        console.log('Brauzer video-nu dəstəkləyir, slider-i inicializasiya edirik...');
+        initSlider();
+    } else {
+        // Browser does not support video, hide loading overlay and display fallback
+        console.log('Brauzer video-nu dəstəkləmir, məlumat şəkli göstəriləcək...');
+        if (loadingOverlay) {
+            loadingOverlay.style.opacity = '0';
+            setTimeout(function() {
+                loadingOverlay.style.display = 'none';
+            }, 200);
+        }
+    }
 });

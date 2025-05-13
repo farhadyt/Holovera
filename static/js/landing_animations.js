@@ -33,10 +33,11 @@ function forceAllContentVisible() {
         '.scale-in, ' +
         'img'
     );
+    
     elements.forEach(item => {
-        item.style.opacity    = '1';
+        item.style.opacity = '1';
         item.style.visibility = 'visible';
-        item.style.transform  = 'none';
+        item.style.transform = 'none';
     });
 }
 
@@ -44,19 +45,22 @@ function forceAllContentVisible() {
 function createStaticDividers() {
     // Tüm bölüm ayırıcılarını bul ve içeriğini temizle
     document.querySelectorAll('.section-divider').forEach(divider => {
-        divider.innerHTML = '';
-        divider.classList.add('static-divider');
-        
-        // Basit, statik bir ayırıcı oluştur
-        const dividerContent = document.createElement('div');
-        dividerContent.className = 'static-divider-content';
-        
-        // Sadece statik bir çizgi
-        const centerLine = document.createElement('div');
-        centerLine.className = 'static-center-line';
-        dividerContent.appendChild(centerLine);
-        
-        divider.appendChild(dividerContent);
+        // Check if this divider already has the static divider content
+        if (!divider.classList.contains('static-divider')) {
+            divider.innerHTML = '';
+            divider.classList.add('static-divider');
+            
+            // Basit, statik bir ayırıcı oluştur
+            const dividerContent = document.createElement('div');
+            dividerContent.className = 'static-divider-content';
+            
+            // Sadece statik bir çizgi
+            const centerLine = document.createElement('div');
+            centerLine.className = 'static-center-line';
+            dividerContent.appendChild(centerLine);
+            
+            divider.appendChild(dividerContent);
+        }
     });
 }
 
@@ -73,7 +77,7 @@ function setupBackToTopButton() {
         
         backToTop = document.createElement('div');
         backToTop.className = 'back-to-top';
-        backToTop.innerHTML = '<i class="fas fa-chevron-up"></i>';
+        backToTop.innerHTML = '<div class="arrow-glow"></div><i class="fas fa-chevron-up"></i>';
         document.body.appendChild(backToTop);
         
         console.log("Back to Top düyməsi HTML-ə əlavə edildi");
@@ -81,24 +85,28 @@ function setupBackToTopButton() {
         console.log("Mövcud Back to Top düyməsi tapıldı");
     }
     
-    // Xüsusi stillər əlavə et
-    backToTop.style.position = 'fixed';
-    backToTop.style.bottom = '30px';
-    backToTop.style.right = '30px';
-    backToTop.style.width = '60px';
-    backToTop.style.height = '60px';
-    backToTop.style.borderRadius = '50%';
-    backToTop.style.backgroundColor = 'rgba(6, 9, 15, 0.9)';
-    backToTop.style.border = '2px solid #4DF0FF';
-    backToTop.style.color = '#4DF0FF';
-    backToTop.style.display = 'flex';
-    backToTop.style.alignItems = 'center';
-    backToTop.style.justifyContent = 'center';
-    backToTop.style.cursor = 'pointer';
-    backToTop.style.zIndex = '9999';
-    backToTop.style.boxShadow = '0 0 20px rgba(77, 240, 255, 0.4)';
-    backToTop.style.opacity = '0';
-    backToTop.style.visibility = 'hidden';
+    // Xüsusi stillər əlavə et (if not already set)
+    if (!backToTop.getAttribute('data-styled')) {
+        backToTop.setAttribute('data-styled', 'true');
+        backToTop.style.position = 'fixed';
+        backToTop.style.bottom = '30px';
+        backToTop.style.right = '30px';
+        backToTop.style.width = '60px';
+        backToTop.style.height = '60px';
+        backToTop.style.borderRadius = '50%';
+        backToTop.style.backgroundColor = 'rgba(6, 9, 15, 0.9)';
+        backToTop.style.border = '2px solid #4DF0FF';
+        backToTop.style.color = '#4DF0FF';
+        backToTop.style.display = 'flex';
+        backToTop.style.alignItems = 'center';
+        backToTop.style.justifyContent = 'center';
+        backToTop.style.cursor = 'pointer';
+        backToTop.style.zIndex = '9999';
+        backToTop.style.boxShadow = '0 0 20px rgba(77, 240, 255, 0.4)';
+        backToTop.style.opacity = '0';
+        backToTop.style.visibility = 'hidden';
+        backToTop.style.transition = 'all 0.3s ease';
+    }
     
     // Scroll hadisəsi
     window.addEventListener('scroll', function() {
@@ -125,28 +133,73 @@ function setupBackToTopButton() {
     console.log("Back to Top düyməsi funksionallığı əlavə edildi");
 }
 
-// Showcase filtresi
+// Showcase filtresi - TAMAMILƏ YENİLƏNMİŞ VERSİYA
 function initShowcaseFilter() {
+    console.log("Showcase filter inicializasiya olunur...");
+    
     const tabs = document.querySelectorAll('.showcase-tab');
     const items = document.querySelectorAll('.showcase-item');
     
-    if (!tabs.length || !items.length) return;
+    if (!tabs.length || !items.length) {
+        console.log("Showcase elementləri tapılmadı");
+        return;
+    }
     
+    console.log(`${tabs.length} filter tab, ${items.length} showcase item tapıldı`);
+    
+    // Əvvəlcə bütün elementləri göstəriş halına gətir
+    items.forEach(item => {
+        item.style.display = 'block';
+        item.style.opacity = '1';
+        item.style.visibility = 'visible';
+    });
+    
+    // İlk tabı aktiv et
+    tabs[0].classList.add('active');
+    
+    // Tab kliklərini idarə et
     tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Aktif sekmeyi güncelle
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Aktiv tabı yenilə
             tabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             
-            // Öğeleri filtrele
+            // Filter dəyərini əldə et
             const filter = this.getAttribute('data-filter');
+            console.log(`Filter seçildi: "${filter}"`);
             
-            items.forEach(item => {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
+            // Əgər "all" filter seçilibsə hər şeyi göstər
+            if (filter === 'all') {
+                console.log("Hamısı filtri seçildi - bütün elementlər göstəriləcək");
+                items.forEach(item => {
                     item.style.display = 'block';
-                    item.style.opacity = '1';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.visibility = 'visible';
+                    }, 10);
+                });
+                return;
+            }
+            
+            // Əks halda, kategoriyasına görə filter et
+            items.forEach(item => {
+                const category = item.getAttribute('data-category');
+                
+                if (category === filter) {
+                    // Göstərilməli olan element
+                    console.log(`Element "${category}" uyğun gəlir, göstəriləcək`);
+                    item.style.display = 'block';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.visibility = 'visible';
+                    }, 10);
                 } else {
+                    // Gizlədilməli olan element
+                    console.log(`Element "${category}" uyğun gəlmir, gizlədiləcək`);
                     item.style.opacity = '0';
+                    item.style.visibility = 'hidden';
                     setTimeout(() => {
                         item.style.display = 'none';
                     }, 300);
@@ -155,15 +208,12 @@ function initShowcaseFilter() {
         });
     });
     
-    // İlk sekmeyi aktif olarak ayarla
-    if (tabs.length > 0) {
-        tabs[0].classList.add('active');
-    }
+    console.log("Showcase filter inicializasiya tamamlandı");
 }
 
 // Müştəri rəyləri slider funksiyası - tam yenilənmiş
 function initTestimonialSlider() {
-    console.log("Müştəri rəyləri slayderi inisializasiya olunur...");
+    console.log("Müştəri rəyləri slayderi inicializasiya olunur...");
     
     const testimonialsList = document.querySelector('.testimonials-list');
     const testimonialItems = document.querySelectorAll('.testimonial-item');
@@ -171,37 +221,70 @@ function initTestimonialSlider() {
     const nextBtn = document.querySelector('.testimonial-btn.next');
     const dots = document.querySelectorAll('.testimonial-dot');
     
-    if (!testimonialsList || !testimonialItems.length || !prevBtn || !nextBtn) {
+    if (!testimonialsList || !testimonialItems.length) {
         console.error("Müştəri rəyləri elementləri tapılmadı");
         return;
     }
+    
+    if (!prevBtn || !nextBtn) {
+        console.error("Slider naviqasiya düymələri tapılmadı");
+        return;
+    }
+    
+    console.log(`${testimonialItems.length} müştəri rəyi tapıldı`);
+    console.log(`${dots ? dots.length : 0} indikatör nöqtə tapıldı`);
     
     let currentIndex = 0;
     let isAnimating = false;
     const animationDuration = 600;
     const totalItems = testimonialItems.length;
     
-    // Bütün elementləri gizlət
+    // İlkin hazırlıq - bütün elementləri gizlət
     testimonialItems.forEach((item, index) => {
-        item.classList.remove('active', 'prev', 'next');
-        item.style.opacity = '0';
+        if (index !== 0) { // İlk elementi saxla 
+            item.classList.remove('active', 'prev', 'next');
+            item.style.opacity = '0';
+            item.style.visibility = 'hidden';
+            item.style.display = 'none';
+        } else {
+            // İlk element aktiv olsun
+            item.classList.add('active');
+            item.classList.remove('prev', 'next');
+            item.style.opacity = '1';
+            item.style.visibility = 'visible';
+            item.style.display = 'block';
+        }
     });
     
     // İlkin vəziyyəti təyin et
     function setInitialState() {
+        // Əvvəlcə hər şeyi sıfırla
+        testimonialItems.forEach((item, index) => {
+            item.classList.remove('active', 'prev', 'next');
+            item.style.opacity = '0';
+            item.style.visibility = 'hidden';
+            item.style.display = 'none';
+        });
+        
         // Aktiv element
         testimonialItems[currentIndex].classList.add('active');
         testimonialItems[currentIndex].style.opacity = '1';
+        testimonialItems[currentIndex].style.visibility = 'visible';
+        testimonialItems[currentIndex].style.display = 'block';
         
         // Əvvəlki element
         const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
         testimonialItems[prevIndex].classList.add('prev');
         testimonialItems[prevIndex].style.opacity = '0.5';
+        testimonialItems[prevIndex].style.visibility = 'visible';
+        testimonialItems[prevIndex].style.display = 'block';
         
         // Sonrakı element
         const nextIndex = (currentIndex + 1) % totalItems;
         testimonialItems[nextIndex].classList.add('next');
         testimonialItems[nextIndex].style.opacity = '0.5';
+        testimonialItems[nextIndex].style.visibility = 'visible';
+        testimonialItems[nextIndex].style.display = 'block';
         
         // Aktiv nöqtə
         if (dots && dots.length) {
@@ -215,6 +298,7 @@ function initTestimonialSlider() {
     function changeSlide(newIndex) {
         if (isAnimating || newIndex === currentIndex) return;
         
+        console.log(`Slayd dəyişir: ${currentIndex} -> ${newIndex}`);
         isAnimating = true;
         
         // Əvvəlki statusları sıfırla
@@ -222,9 +306,19 @@ function initTestimonialSlider() {
         const activeItem = document.querySelector('.testimonial-item.active');
         const nextItem = document.querySelector('.testimonial-item.next');
         
-        if (prevItem) prevItem.classList.remove('prev');
+        if (prevItem) {
+            prevItem.classList.remove('prev');
+            prevItem.style.visibility = 'hidden';
+            prevItem.style.display = 'none';
+        }
+        
         if (activeItem) activeItem.classList.remove('active');
-        if (nextItem) nextItem.classList.remove('next');
+        
+        if (nextItem) {
+            nextItem.classList.remove('next');
+            nextItem.style.visibility = 'hidden';
+            nextItem.style.display = 'none';
+        }
         
         // İndeksi yenilə
         currentIndex = newIndex;
@@ -238,20 +332,28 @@ function initTestimonialSlider() {
             // Əvvəlki element
             testimonialItems[newPrevIndex].classList.add('prev');
             testimonialItems[newPrevIndex].style.opacity = '0.5';
+            testimonialItems[newPrevIndex].style.visibility = 'visible';
+            testimonialItems[newPrevIndex].style.display = 'block';
             
             // Aktiv element
             testimonialItems[currentIndex].classList.add('active');
             testimonialItems[currentIndex].style.opacity = '1';
+            testimonialItems[currentIndex].style.visibility = 'visible';
+            testimonialItems[currentIndex].style.display = 'block';
             
             // Sonrakı element
             testimonialItems[newNextIndex].classList.add('next');
             testimonialItems[newNextIndex].style.opacity = '0.5';
+            testimonialItems[newNextIndex].style.visibility = 'visible';
+            testimonialItems[newNextIndex].style.display = 'block';
             
             // Digər bütün elementləri gizlət
             testimonialItems.forEach((item, index) => {
                 if (index !== currentIndex && index !== newPrevIndex && index !== newNextIndex) {
                     item.classList.remove('active', 'prev', 'next');
                     item.style.opacity = '0';
+                    item.style.visibility = 'hidden';
+                    item.style.display = 'none';
                 }
             });
             
@@ -333,9 +435,11 @@ function initTestimonialSlider() {
     
     function startAutoSlide() {
         autoSlideInterval = setInterval(() => {
-            const newIndex = (currentIndex + 1) % totalItems;
-            changeSlide(newIndex);
-        }, 5000);
+            if (!isAnimating) {
+                const newIndex = (currentIndex + 1) % totalItems;
+                changeSlide(newIndex);
+            }
+        }, 7000); // 7 saniyə davam edir
     }
     
     function stopAutoSlide() {
@@ -351,7 +455,6 @@ function initTestimonialSlider() {
     
     console.log(`${testimonialItems.length} müştəri rəyi tapıldı və slider inisializasiya olundu`);
 }
-
 
 // Səhifə içi bağlantılar üçün yumşaq sürüşmə
 function initSmoothScrolling() {

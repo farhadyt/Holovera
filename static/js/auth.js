@@ -150,4 +150,83 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         }, 1000);
     }
+    
+    // Fix layout shift issues
+    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
+    
+    // Prevent initial layout shift by setting visible only when fully loaded
+    window.addEventListener('load', function() {
+        if (bodyElement.style.opacity !== '1') {
+            bodyElement.style.opacity = '1';
+        }
+    });
+    
+    // Fix viewport issues
+    let lastWidth = window.innerWidth;
+    let ignoreResize = false;
+    
+    window.addEventListener('resize', function() {
+        if (ignoreResize) return;
+        
+        // Address the issue of browser chrome showing/hiding on mobile
+        if (Math.abs(lastWidth - window.innerWidth) < 20) {
+            // Probably just the scrollbar or browser chrome
+            ignoreResize = true;
+            setTimeout(() => { 
+                ignoreResize = false;
+                lastWidth = window.innerWidth;
+            }, 300);
+            return;
+        }
+        
+        lastWidth = window.innerWidth;
+    });
+    
+    // XHR/Fetch error handling improvement
+    const originalFetch = window.fetch;
+    window.fetch = function() {
+        return originalFetch.apply(this, arguments)
+            .catch(error => {
+                console.error('Network error during fetch:', error);
+                // Show user-friendly error
+                if (typeof showNotification === 'function') {
+                    showNotification('error', 'Şəbəkə xətası baş verdi. Zəhmət olmasa internet bağlantınızı yoxlayın.');
+                }
+                throw error;
+            });
+    };
+    
+    // Global error handling for JSON parsing
+    window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('JSON')) {
+            console.error('JSON Parse Error:', e);
+            // Reload the page if it's a critical JSON error
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+    });
+    
+    // Phone number format handler - global helper function
+    window.formatPhoneNumber = function(phoneNumber) {
+        // Əgər telefon nömrəsi verilmişsə
+        if (!phoneNumber) return '';
+        
+        // Boşluqları təmizlə
+        phoneNumber = phoneNumber.trim();
+        
+        // Əgər "+" işarəsi yoxdursa əlavə et
+        if (!phoneNumber.startsWith('+')) {
+            phoneNumber = '+' + phoneNumber;
+        }
+        
+        return phoneNumber;
+    };
+    
+    // Telefon nömrəsi formatı üçün validasiya
+    window.validatePhoneNumber = function(phoneNumber) {
+        // Sadə validasiya - minimum 10 rəqəm olmalıdır
+        return /^\+\d{10,15}$/.test(phoneNumber);
+    };
 });

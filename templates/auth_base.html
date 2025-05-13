@@ -7,9 +7,12 @@
     {% load static %}
     {% load i18n %}
     <!-- CSS files -->
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/nav.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <!-- Axtarış CSS-i -->
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
     {% block extra_css %}{% endblock %}
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
@@ -19,9 +22,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Görünüş problemlərini aradan qaldırmaq üçün fix */
+        html, body {
+            overflow-x: hidden !important;
+            position: relative;
+            height: 100% !important;
+            min-height: 100vh;
+        }
+        
+        body.auth-page {
+            overflow-y: auto !important;
+            cursor: auto !important;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Form elementlərini düzgün göstər */
+        .auth-scene, .auth-container, .auth-form-container {
+            overflow: visible !important;
+        }
+        
+        /* Elementlərin kənardan çıxmasını əngəlləmək */
+        main {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(100vh - 70px); /* Nav hündürlüyündən çıxır */
+        }
+        
+        /* Scroll track-i gizlət */
+        ::-webkit-scrollbar {
+            width: 0px;
+        }
+        
+        /* Background elementlərinin pozisiyasını düzəlt */
+        .bg-elements {
+            z-index: -5;
+        }
+        
+        /* Integrated-nav yüksəkliyini azalt */
+        .integrated-nav {
+            height: 60px;
+        }
+        
+        /* Şəkillər arxa planda olmalıdır */
+        .bg-element {
+            z-index: -10;
+        }
+    </style>
 </head>
 <body class="auth-page">
-    <!-- Integrated navigation bar -->
+    <!-- Integrated navigation bar matching landing page -->
     <nav class="integrated-nav">
         <div class="logo">
             <a href="/">
@@ -56,17 +112,12 @@
                     {% endfor %}
                 </div>
             </div>
-
             
-                
-            
+            <!-- Add search button to match landing page -->
             <a href="#" class="icon-btn search-btn">
                 <i class="fas fa-search"></i>
                 <span class="btn-glow"></span>
             </a>
-
-
-
         </div>
     </nav>
 
@@ -94,46 +145,130 @@
         <div class="bg-element ribbon-element"></div>
     </div>
 
+    <!-- Search Overlay -->
+    <div class="search-overlay">
+        <div class="search-overlay-content">
+            <div class="search-header">
+                <h2>{% trans "Axtarış" %}</h2>
+                <button class="search-close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="search-form-container">
+                <form class="search-form" action="{% url 'home' %}" method="get">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="q" class="search-input" placeholder="{% trans 'Nə axtarırsınız?' %}">
+                        <button type="submit" class="search-submit-btn">{% trans "Axtar" %}</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="popular-searches">
+                <h3>{% trans "Ən çox axtarılanlar" %}</h3>
+                <div class="popular-searches-tags">
+                    <a href="?q=buket" class="search-tag">{% trans "Buket" %}</a>
+                    <a href="?q=ad+günü" class="search-tag">{% trans "Ad günü" %}</a>
+                    <a href="?q=sevgilim+üçün" class="search-tag">{% trans "Sevgilim üçün" %}</a>
+                    <a href="?q=romantik" class="search-tag">{% trans "Romantik" %}</a>
+                    <a href="?q=gül" class="search-tag">{% trans "Gül" %}</a>
+                    <a href="?q=şokolad" class="search-tag">{% trans "Şokolad" %}</a>
+                </div>
+            </div>
+            
+            <div class="recent-searches">
+                <h3>{% trans "Son axtarışlarınız" %}</h3>
+                <div class="recent-searches-list">
+                    <p>{% trans "Hələ axtarış etməmisiniz." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript temel -->
     <script src="{% static 'js/auth.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
     
-<!-- Firebase konfigürasyon ve başlatma -->
-{% if firebase_config %}
-<!-- Firebase konfiqurasyonunu data attribute olaraq gizli div içinde saxlayaq -->
-<div id="firebase-data" style="display:none;" 
-     data-config='{{ firebase_config|safe }}'></div>
-
-<!-- Firebase SDK yükle -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-<!-- Firebase başlatma ve ardından firebase-auth.js yükle -->
-<script>
-    // Global değişken tanımlayalım
-    window.firebaseInitialized = false;
+    <!-- Fix for cursor and scroll issues -->
+    <script>
+        // Page loaded - scroll və cursor problemlərini həll et
+        document.addEventListener('DOMContentLoaded', function() {
+            // İlkin olaraq cursor tənzimləməsi
+            document.body.style.cursor = 'auto';
+            document.body.style.overflowY = 'auto';
+            
+            // Form scroll problemini həll et
+            const authFormContainer = document.querySelector('.auth-form-container');
+            if (authFormContainer) {
+                authFormContainer.style.overflow = 'visible';
+                authFormContainer.style.maxHeight = 'none';
+            }
+            
+            // Formu dinamik olaraq ölçüyə uyğunlaşdır
+            function adjustFormSize() {
+                const viewportHeight = window.innerHeight;
+                const authContainer = document.querySelector('.auth-container');
+                const navHeight = document.querySelector('.integrated-nav').offsetHeight;
+                
+                if (authContainer) {
+                    // Ekranın ölçüsündən asılı olaraq, formu scale et
+                    if (viewportHeight < 600) {
+                        // Çox kiçik ekranlar üçün
+                        authContainer.style.transform = 'scale(0.85) translateY(-40px)';
+                    } else if (viewportHeight < 800) {
+                        // Kiçik ekranlar üçün
+                        authContainer.style.transform = 'scale(0.9) translateY(-30px)';
+                    } else {
+                        // Normal ölçülü ekranlar üçün
+                        authContainer.style.transform = 'translateY(-10px)';
+                    }
+                }
+            }
+            
+            // İlkin tənzimləmə
+            adjustFormSize();
+            
+            // Ekran ölçüsü dəyişildikdə dəyənən tənzimləmə
+            window.addEventListener('resize', adjustFormSize);
+        });
+    </script>
     
-    // Konfigurasyon verilerini al
-    const firebaseData = document.getElementById('firebase-data');
-    try {
-        const firebaseConfig = JSON.parse(firebaseData.getAttribute('data-config'));
-        console.log("Firebase konfiqurasyonu:", firebaseConfig);
+    <!-- Firebase konfigürasyon ve başlatma -->
+    {% if firebase_config %}
+    <!-- Firebase konfiqurasyonunu data attribute olaraq gizli div içinde saxlayaq -->
+    <div id="firebase-data" style="display:none;" 
+         data-config='{{ firebase_config|safe }}'></div>
+
+    <!-- Firebase SDK yükle -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <!-- Firebase başlatma ve ardından firebase-auth.js yükle -->
+    <script>
+        // Global değişken tanımlayalım
+        window.firebaseInitialized = false;
         
-        // Firebase başlat
-        if (firebaseConfig && firebaseConfig.apiKey) {
-            firebase.initializeApp(firebaseConfig);
-            window.firebaseInitialized = true;
-            console.log("Firebase başarıyla başlatıldı!");
-        } else {
-            console.error("Firebase konfiqurasiyası hatalı:", firebaseConfig);
+        // Konfigurasyon verilerini al
+        const firebaseData = document.getElementById('firebase-data');
+        try {
+            const firebaseConfig = JSON.parse(firebaseData.getAttribute('data-config'));
+            console.log("Firebase konfiqurasyonu:", firebaseConfig);
+            
+            // Firebase başlat
+            if (firebaseConfig && firebaseConfig.apiKey) {
+                firebase.initializeApp(firebaseConfig);
+                window.firebaseInitialized = true;
+                console.log("Firebase başarıyla başlatıldı!");
+            } else {
+                console.error("Firebase konfiqurasiyası hatalı:", firebaseConfig);
+            }
+        } catch (error) {
+            console.error("Firebase konfiqurasiya parse hatası:", error);
         }
-    } catch (error) {
-        console.error("Firebase konfiqurasiya parse hatası:", error);
-    }
-</script>
+    </script>
 
-<!-- Kendi Firebase auth kodumuz -->
-<script src="{% static 'js/firebase-auth.js' %}"></script>
-{% endif %}
+    <!-- Kendi Firebase auth kodumuz -->
+    <script src="{% static 'js/firebase-auth.js' %}"></script>
+    {% endif %}
     
     {% block extra_js %}{% endblock %}
 </body>

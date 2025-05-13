@@ -100,6 +100,10 @@
         z-index: 10;
     }
     
+    .toggle-password:hover {
+        color: var(--primary-light);
+    }
+    
     /* Login button states */
     .login-btn {
         position: relative;
@@ -312,12 +316,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const successCheckmark = document.querySelector('.success-checkmark');
     
     // Toggle password visibility
-    togglePasswordBtn.addEventListener('click', function() {
-        const passwordField = passwordInput;
-        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordField.setAttribute('type', type);
-        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-    });
+    if (togglePasswordBtn) {
+        togglePasswordBtn.addEventListener('click', function() {
+            const passwordField = document.getElementById('id_password');
+            if (!passwordField) return;
+            
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            }
+        });
+    }
     
     // CSRF Token function
     function getCSRFToken() {
@@ -383,93 +395,96 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Handle login attempt
-    loginBtn.addEventListener('click', function() {
-        if (!validateLoginForm()) {
-            return;
-        }
-        
-        // Show loading state
-        loginBtn.disabled = true;
-        loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
-        
-        // Format phone number (simple format for example)
-        let phoneNumber = phoneNumberInput.value.trim();
-        if (!phoneNumber.startsWith('+')) {
-            phoneNumber = '+' + phoneNumber;
-        }
-        
-        // Prepare login data
-        const loginData = {
-            phone_number: phoneNumber,
-            password: passwordInput.value,
-            remember: document.getElementById('remember-me').checked
-        };
-        
-        // Send login request
-        fetch('{% url "login" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
-            },
-            body: JSON.stringify(loginData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                if (response.status === 401) {
-                    // Incorrect credentials
-                    throw new Error('incorrect_credentials');
-                } else if (response.status === 403) {
-                    // Account not verified
-                    return response.json().then(data => {
-                        if (data.require_verification) {
-                            // Show SMS verification
-                            loginBtn.style.display = 'none';
-                            sendCodeBtn.style.display = 'block';
-                            // Highlight verification section
-                            setTimeout(() => {
-                                verificationCodeInput.classList.add('glowing-border-animation');
-                            }, 500);
-                            throw new Error('verification_required');
-                        } else {
-                            throw new Error(data.error || 'Forbidden');
-                        }
-                    });
-                }
-                throw new Error('server_error');
+    // Login Button event handler
+loginBtn.addEventListener('click', function() {
+    if (!validateLoginForm()) {
+        return;
+    }
+    
+    // Show loading state
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
+    
+    // Format phone number (improved phone number format handling)
+    let phoneNumber = phoneNumberInput.value.trim();
+    
+    // Əgər "+" işarəsi yoxdursa əlavə et
+    if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+' + phoneNumber;
+    }
+    
+    // Prepare login data - full phone number format
+    const loginData = {
+        phone_number: phoneNumber,
+        password: passwordInput.value,
+        remember: document.getElementById('remember-me').checked
+    };
+    
+    // Send login request
+    fetch('{% url "login" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify(loginData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Incorrect credentials
+                throw new Error('incorrect_credentials');
+            } else if (response.status === 403) {
+                // Account not verified
+                return response.json().then(data => {
+                    if (data.require_verification) {
+                        // Show SMS verification
+                        loginBtn.style.display = 'none';
+                        sendCodeBtn.style.display = 'block';
+                        // Highlight verification section
+                        setTimeout(() => {
+                            verificationCodeInput.classList.add('glowing-border-animation');
+                        }, 500);
+                        throw new Error('verification_required');
+                    } else {
+                        throw new Error(data.error || 'Forbidden');
+                    }
+                });
             }
-            return response.json();
-        })
-        .then(data => {
-            // Success! Show animation
-            loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
-            showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
-            
-            // Show success checkmark
-            document.querySelector('.auth-header h2').style.display = 'none';
-            document.querySelector('.auth-divider').style.display = 'none';
-            successCheckmark.style.display = 'block';
-            
-            // Redirect after animation
-            setTimeout(() => {
-                window.location.href = data.redirect_url || '{% url "landing" %}';
-            }, 2000);
-        })
-        .catch(error => {
-            // Reset button
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = '{% trans "Daxil ol" %}';
-            
-            // Handle specific errors
-            if (error.message === 'incorrect_credentials') {
-                showNotification('error', '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}');
-            } else if (error.message === 'verification_required') {
-                showNotification('info', '{% trans "Hesabınızı təsdiqləmək üçün SMS kodu göndərin" %}');
-            } else {
-                showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
-            }
-        });
+            throw new Error('server_error');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Success! Show animation
+        loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
+        showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
+        
+        // Show success checkmark
+        document.querySelector('.auth-header h2').style.display = 'none';
+        document.querySelector('.auth-divider').style.display = 'none';
+        successCheckmark.style.display = 'block';
+        
+        // Redirect after animation
+        setTimeout(() => {
+            window.location.href = data.redirect_url || '{% url "landing" %}';
+        }, 2000);
+    })
+    .catch(error => {
+        // Reset button
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '{% trans "Daxil ol" %}';
+        
+        // Handle specific errors
+        if (error.message === 'incorrect_credentials') {
+            showNotification('error', '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}');
+        } else if (error.message === 'verification_required') {
+            showNotification('info', '{% trans "Hesabınızı təsdiqləmək üçün SMS kodu göndərin" %}');
+        } else {
+            showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
+        }
     });
+});
     
     // Send verification code button
     sendCodeBtn.addEventListener('click', function() {

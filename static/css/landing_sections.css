@@ -353,7 +353,7 @@ html {
 }
 
 .about-feature {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .about-feature-title {
@@ -366,7 +366,7 @@ html {
 }
 
 .about-feature-title i {
-  margin-right: 15px;
+  margin-right: 20px; /* İkonu başlıqdan uzaqlaşdırdıq - əvvəl 15px idi */
   font-size: 24px;
   background: rgba(77, 240, 255, 0.1);
   width: 50px;
@@ -379,7 +379,7 @@ html {
 }
 
 .about-feature-text {
-  padding-left: 65px;
+  padding-left: 70px; /* Mətni sağa sürdük - əvvəl 65px idi */
   color: var(--text-secondary);
   line-height: 1.8;
 }

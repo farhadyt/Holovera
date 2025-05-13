@@ -18,15 +18,74 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto !important; /* Scroll-un olmasına icazə verilir */
     font-family: 'Montserrat', sans-serif;
+    cursor: auto !important;
 }
 
 .auth-page {
     background-color: var(--background-dark);
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
     position: relative;
+    padding-top: 60px; /* Header-in altında yer vermək üçün - azaldıldı */
+    padding-bottom: 20px; /* Aşağı padding azaldıldı */
+    display: flex; /* Əlavə edildi - mərkəzləşdirmək üçün */
+    flex-direction: column; /* Əlavə edildi - mərkəzləşdirmək üçün */
+    align-items: center; /* Əlavə edildi - mərkəzləşdirmək üçün */
+    justify-content: center; /* Əlavə edildi - mərkəzləşdirmək üçün */
+}
+
+/* Background Elements */
+.bg-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.bg-element {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.07;
+}
+
+.gift-element {
+    top: 20%;
+    left: 15%;
+    width: 150px;
+    height: 150px;
+    background-image: url('../images/icons/gift.svg');
+}
+
+.flower-element {
+    top: 15%;
+    right: 10%;
+    width: 120px;
+    height: 120px;
+    background-image: url('../images/icons/flower.svg');
+}
+
+.basket-element {
+    bottom: 20%;
+    left: 10%;
+    width: 140px;
+    height: 140px;
+    background-image: url('../images/icons/basket.svg');
+}
+
+.ribbon-element {
+    bottom: 25%;
+    right: 15%;
+    width: 100px;
+    height: 100px;
+    background-image: url('../images/icons/ribbon.svg');
 }
 
 /* Enhanced Header */
@@ -269,77 +328,17 @@ html, body {
     transform: scale(1.1);
 }
 
-/* Background Elements */
-.bg-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-    overflow: hidden;
-}
-
-.bg-element {
-    position: absolute;
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.07;
-}
-
-.gift-element {
-    top: 20%;
-    left: 15%;
-    width: 150px;
-    height: 150px;
-    background-image: url('../images/icons/gift.svg');
-}
-
-.flower-element {
-    top: 15%;
-    right: 10%;
-    width: 120px;
-    height: 120px;
-    background-image: url('../images/icons/flower.svg');
-}
-
-.basket-element {
-    bottom: 20%;
-    left: 10%;
-    width: 140px;
-    height: 140px;
-    background-image: url('../images/icons/basket.svg');
-}
-
-.ribbon-element {
-    bottom: 25%;
-    right: 15%;
-    width: 100px;
-    height: 100px;
-    background-image: url('../images/icons/ribbon.svg');
-}
-
-/* Main content area - completely revised */
-main {
-    width: 100vw;
-    height: 100vh;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-}
-
-/* Auth Container - absolute positioning for perfect centering */
+/* Auth Scene - Tam ekranda qeydiyyat forması üçün yeni */
 .auth-scene {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    margin: 0; /* 40px yerinə 0 təyin olundu */
+    padding: 0; /* Əlavə edildi */
 }
 
 .auth-bg {
@@ -370,12 +369,12 @@ main {
 }
 
 .auth-container {
-    position: absolute;
-    top: 48%; /* Slightly above center to accommodate header */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 450px;
+    position: relative;
+    width: 450px; 
     z-index: 10;
+    margin: 0 auto;
+    max-width: 90%; /* 95% yerinə 90% təyin edildi */
+    transform: translateY(-20px); /* Yuxarı hərəkət etdirmək üçün */
 }
 
 .auth-form-container {
@@ -384,13 +383,14 @@ main {
     backdrop-filter: blur(10px);
     border-radius: 15px;
     border: 1px solid rgba(77, 240, 255, 0.25);
-    padding: 40px;
+    padding: 25px; /* 40px yerinə 25px */
     box-shadow: 
         0 10px 30px rgba(0, 0, 0, 0.3),
         0 0 30px rgba(77, 240, 255, 0.15);
     color: var(--text-color);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    max-height: none;
 }
 
 .auth-form-container::before {
@@ -405,15 +405,15 @@ main {
 
 .auth-header {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 20px; /* 35px yerinə 20px */
     position: relative;
 }
 
 .auth-header h2 {
     color: var(--text-color);
-    font-size: 28px;
+    font-size: 24px; /* 28px yerinə 24px */
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* 15px yerinə 10px */
     text-shadow: 0 0 10px rgba(77, 240, 255, 0.3);
 }
 
@@ -429,10 +429,11 @@ main {
 .auth-form {
     position: relative;
     z-index: 2;
+    overflow: hidden; /* visible əvəzinə hidden edirik, cursor problemini həll etmək üçün */
 }
 
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 16px; /* 25px yerinə 16px */
     position: relative;
 }
 
@@ -455,17 +456,17 @@ main {
     top: 50%;
     transform: translateY(-50%);
     color: var(--primary-color);
-    font-size: 20px;
+    font-size: 18px; /* 20px yerinə 18px */
 }
 
 .form-control {
     width: 100%;
-    padding: 16px 16px 16px 45px;
+    padding: 12px 12px 12px 40px; /* 16px 16px 16px 45px yerinə */
     background: rgba(16, 25, 45, 0.7);
     border: 1px solid rgba(77, 240, 255, 0.25);
     border-radius: 8px;
     color: var(--text-color);
-    font-size: 15px;
+    font-size: 14px; /* 15px yerinə 14px */
     transition: all 0.3s;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -516,9 +517,9 @@ main {
 /* Login button */
 .auth-button {
     width: 100%;
-    padding: 16px;
+    padding: 14px; /* 16px yerinə 14px */
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 15px; /* 16px yerinə 15px */
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
@@ -594,7 +595,15 @@ main {
 
 /* Register Form Specific Styles */
 .register-form {
-    width: 500px;
+    width: 100%;
+    padding-bottom: 20px;
+    overflow: visible; /* Əlavə edirik ki, bütün elementlər görünsün */
+}
+
+.registration-section {
+    display: block;
+    width: 100%;
+    overflow: visible;
 }
 
 .form-row {
@@ -716,17 +725,15 @@ main {
     font-size: 16px;
     padding: 0;
     z-index: 10;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
-    transition: color 0.3s, transform 0.3s;
 }
 
 .toggle-password:hover {
     color: var(--primary-light);
-    transform: translateY(-50%) scale(1.1);
 }
 
 .toggle-password:focus {
@@ -737,106 +744,421 @@ main {
     padding-right: 45px;
 }
 
-/* Responsive Design */
+/* Glowing border animation */
+.glowing-border-animation {
+    animation: glowingBorder 1.5s infinite alternate;
+}
+
+@keyframes glowingBorder {
+    from { box-shadow: 0 0 5px rgba(77, 240, 255, 0.3), 0 0 10px rgba(77, 240, 255, 0.2); }
+    to { box-shadow: 0 0 15px rgba(77, 240, 255, 0.5), 0 0 30px rgba(77, 240, 255, 0.3); }
+}
+
+/* Form validation */
+.form-control.error {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Media queries for responsivity */
 @media (max-width: 768px) {
-    .auth-nav {
-        padding: 0 20px;
-    }
-    
-    .logo-text {
-        font-size: 26px;
-    }
-    
     .auth-container {
-        width: calc(100% - 40px);
-        max-width: 400px;
+        width: 90%;
+        margin: 0 auto;
     }
-    
+
     .auth-form-container {
-        padding: 30px 25px;
+        padding: 30px 20px;
+        max-height: none;
+        overflow: visible;
     }
-    
+
     .auth-header h2 {
         font-size: 24px;
     }
-    
+
     .form-options {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
-    
+
     .form-control {
         padding: 14px 14px 14px 40px;
     }
-    
+
     .register-form {
-        width: 100%;
-        max-width: 400px;
+        padding-bottom: 10px;
+    }
+    
+    .form-row {
+        flex-direction: column;
     }
     
     .form-row > .form-group {
-        flex: 0 0 100%;
-        max-width: 100%;
+        width: 100%;
+        margin-right: 0;
     }
     
     .bg-element {
-        display: none;
+        transform: scale(0.7);
     }
     
     .auth-bg::before {
-        background: none;
+        opacity: 0.5;
     }
     
     .logo-glow, .btn-glow {
         display: none;
     }
-    
+
     .login-btn:before, .register-btn:before {
-        display: none;
+        opacity: 0.1;
     }
     
     .messages-container {
-        width: calc(100% - 40px);
-        right: 20px;
+        width: 90%;
+        right: 5%;
+    }
+
+    .phone-input-container {
+        width: 100%;
+    }
+
+    /* Verification code input */
+    .verification-code-input {
+        gap: 6px;
+    }
+    
+    .code-input {
+        width: 42px;
+        height: 50px;
+        font-size: 20px;
     }
 }
 
 @media (max-width: 480px) {
-    .auth-nav {
-        padding: 0 15px;
-    }
-    
-    .logo-text {
-        font-size: 22px;
-    }
-    
-    .lang-btn {
-        padding: 6px 12px;
-    }
-    
-    .current-lang {
-        display: none;
-    }
-    
-    .icon-btn {
-        width: 40px;
-        height: 40px;
+    .auth-container {
+        width: 95%;
     }
     
     .auth-form-container {
-        padding: 25px 20px;
+        padding: 25px 15px;
+        border-radius: 12px;
     }
     
     .form-control {
-        padding: 12px 12px 12px 38px;
+        padding: 12px 12px 12px 36px;
+        font-size: 14px;
     }
     
     .auth-button {
-        padding: 14px;
+        padding: 12px 20px;
+        font-size: 15px;
     }
     
     .auth-controls {
         gap: 10px;
+    }
+
+    .auth-header h2 {
+        font-size: 22px;
+    }
+    
+    /* Telefon doğrulama kodu */
+    .code-input {
+        width: 35px;
+        height: 45px;
+        font-size: 18px;
+    }
+    
+    .verification-timer {
+        font-size: 13px;
+    }
+    
+    /* Input ikonları */
+    .input-with-icon i {
+        font-size: 16px;
+        left: 12px;
+    }
+}
+
+/* Yeni ekran ölçüsü üçün media query əlavə edirik */
+@media (max-width: 380px) {
+    .auth-form-container {
+        padding: 20px 12px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .code-input {
+        width: 30px;
+        height: 40px;
+    }
+    
+    .auth-header h2 {
+        font-size: 20px;
+    }
+    
+    .verification-code-input {
+        gap: 4px;
+    }
+}
+
+/* Fix for very small screens */
+@media (max-height: 700px) {
+    .auth-scene {
+        margin: 20px 0;
+        overflow: hidden; /* Kiçik ekranlarda da scroll problemini aradan qaldırır */
+    }
+
+    .auth-page {
+        padding-top: 70px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+}
+
+/* Input and form corrections */
+.iti {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 5;
+}
+
+.iti__flag-container {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 10;
+    padding: 0 !important;
+}
+
+.iti__selected-flag {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+    padding: 0 6px 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+input[type="tel"].form-control,
+#id_phone_number {
+    padding-left: 90px !important; 
+    width: 100% !important;
+}
+
+.iti__country-list {
+    position: absolute !important;
+    z-index: 999 !important;
+    background-color: rgba(15, 25, 40, 0.95) !important;
+    color: white !important;
+}
+
+.iti__country {
+    color: white !important;
+}
+
+.iti__country-name, 
+.iti__dial-code {
+    color: white !important;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+    display: none;
+    width: 0;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html, body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Auth container overflow fix */
+.auth-form-container {
+    max-height: none;
+    overflow: visible;
+}
+
+/* Registration section fix */
+.registration-section {
+    display: block;
+    width: 100%;
+    overflow: visible;
+}
+
+/* User type selection - compact version for smaller screens */
+.user-type-container {
+    gap: 10px; /* 15px yerinə 10px */
+    margin-bottom: 16px; /* 30px yerinə 16px */
+}
+
+.user-type-label {
+    padding: 12px 8px; /* 15px 10px yerinə 12px 8px */
+    min-height: 100px; /* 120px yerinə 100px */
+}
+
+.user-type-icon {
+    font-size: 24px; /* 28px yerinə 24px */
+    margin-bottom: 8px; /* 10px yerinə 8px */
+}
+
+/* Gender and age selection - compact */
+.gender-container, .age-range-container {
+    gap: 8px; /* 10px/15px yerinə 8px */
+    margin-top: 8px; /* 10px yerinə 8px */
+}
+
+.gender-label, .age-range-label {
+    padding: 8px; /* 12px yerinə 8px */
+    font-size: 13px; /* 14px yerinə 13px */
+}
+
+/* Adaptive scaling for different screen heights */
+@media (max-height: 800px) {
+    .auth-page {
+        padding-top: 55px;
+        padding-bottom: 15px;
+    }
+    
+    .auth-container {
+        transform: translateY(-30px);
+    }
+    
+    .auth-form-container {
+        padding: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    .auth-header {
+        margin-bottom: 15px;
+    }
+    
+    .auth-header h2 {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+    
+    .user-type-label {
+        min-height: 85px;
+        padding: 8px 6px;
+    }
+    
+    .user-type-icon {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+    
+    .user-type-name {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+    
+    .user-type-desc {
+        font-size: 10px;
+    }
+    
+    .form-control {
+        padding: 10px 10px 10px 36px;
+    }
+    
+    .login-link {
+        margin-top: 15px;
+    }
+}
+
+@media (max-height: 640px) {
+    .auth-page {
+        padding-top: 50px;
+    }
+    
+    .auth-container {
+        transform: translateY(-40px);
+    }
+    
+    .auth-form-container {
+        padding: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    .user-type-label {
+        min-height: 75px;
+    }
+    
+    .user-type-icon {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+    
+    .user-type-name {
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+    
+    .auth-button {
+        padding: 10px;
+    }
+}
+
+/* Fix for horizontal screen orientation on mobile devices */
+@media (max-height: 500px) {
+    .auth-page {
+        padding: 5px 0;
+        height: auto;
+    }
+    
+    .auth-container {
+        transform: none;
+        margin: 5px auto;
+    }
+    
+    .auth-form-container {
+        padding: 10px;
+        border-radius: 8px;
+    }
+    
+    /* Make form scrollable when in horizontal orientation */
+    .auth-form {
+        max-height: 80vh;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    
+    .form-group {
+        margin-bottom: 8px;
+    }
+    
+    .auth-header h2 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .auth-divider {
+        height: 2px;
+        width: 40px;
     }
 }

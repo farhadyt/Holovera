@@ -275,6 +275,11 @@
   .integrated-nav {
       padding: 12px var(--padding-medium);
   }
+  
+  /* Language dropdown maksimum enini tənzimləyirik */
+  .language-options {
+      width: 160px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -298,11 +303,28 @@
       width: 36px;
       height: 36px;
   }
+  
+  /* Dropdown pozisiyasını tənzimləyirik */
+  .language-options {
+      width: 150px;
+      right: -5px;
+  }
+  
+  .logo::after {
+      height: 1px;
+  }
+  
+  /* Dropdown içindəki elementləri kiçildirik */
+  .lang-option {
+      padding: 10px 12px;
+      font-size: 14px;
+  }
 }
 
 @media (max-width: 576px) {
   .integrated-nav {
       padding: 8px var(--padding-xsmall);
+      height: 60px;
   }
   
   .logo-text {
@@ -317,6 +339,50 @@
   .auth-controls .icon-btn {
       width: 32px;
       height: 32px;
+  }
+  
+  .auth-controls .icon-btn i {
+      font-size: 14px;
+  }
+  
+  /* Language button tənzimləmələri */
+  .lang-btn {
+      padding: 5px 8px;
+  }
+  
+  .lang-flag {
+      width: 20px;
+      height: 14px;
+  }
+  
+  /* Language dropdown */
+  .language-options {
+      width: 130px;
+      right: -8px;
+  }
+}
+
+/* Extra kiçik cihazlar üçün */
+@media (max-width: 360px) {
+  .integrated-nav {
+      padding: 6px 10px;
+      height: 55px;
+  }
+  
+  .logo-text {
+      font-size: 18px;
+  }
+  
+  .auth-controls {
+      gap: 8px;
+  }
+  
+  .auth-controls .icon-btn {
+      width: 30px;
+      height: 30px;
+  }
+  
+  .auth-controls .icon-btn i {
       font-size: 12px;
   }
 }
