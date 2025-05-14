@@ -31,15 +31,39 @@
 
     /* AUTH-PAGE konteynerini düzgün yerləşdirilməsi */
     .auth-page {
-        display: block !important;
-        height: auto !important;
-        min-height: 100vh;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        min-height: 100vh !important;
         padding-top: 0 !important;
-        padding-bottom: 50px !important;
+        padding-bottom: 0 !important;
+    }
+
+    .auth-scene {
+        flex-grow: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        padding: 50px 0 !important;
+    }
+
+    .auth-container {
+        margin: 0 auto !important;
+        transform: none !important;
+        max-width: 90% !important;
+        width: 450px !important;
+    }
+
+        /* Nav bar-ın üstündə olmasını təmin edir */
+        .integrated-nav {
+        position: absolute !important;
+        width: 100% !important;
+        z-index: 2000 !important;
     }
     
     /* 1. Əsas overflow və görünüş problemlərini həll et */
-    .auth-scene, .auth-container, .auth-form-container, .auth-form, 
+    .auth-form-container, .auth-form, 
     .registration-section, .verification-section {
         overflow: visible !important;
     }
@@ -543,6 +567,15 @@
     }
     
     @media (max-height: 700px) {
+
+        .auth-scene {
+            padding: 30px 0 !important;
+        }
+
+        .auth-form-container {
+            padding: 25px !important;
+        }
+
         .auth-container {
             margin: 90px auto 20px !important; /* Yuxarıdan məsafə daha da azaldı */
         }
@@ -586,6 +619,19 @@
     
     /* 5. Çox kiçik ekranlar üçün xüsusi stil */
     @media (max-height: 600px) {
+
+        .auth-scene {
+            padding: 20px 0 !important;
+        }
+        
+        .auth-form-container {
+            padding: 20px !important;
+        }
+
+        .form-group {
+            margin-bottom: 12px !important;
+        }
+
         .auth-container {
             margin: 80px auto 20px !important; /* Daha da azaldıldı */
         }
@@ -877,33 +923,35 @@
                             {{ form.phone_number }}
                         </div>
                         
-                        <!-- Password Field - NEW -->
-                        <div class="form-group">
-                            <label for="id_password">{% trans "Şifrə" %}</label>
-                            <div class="input-with-icon password-field">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" name="password" id="id_password" class="form-control" required>
-                                <button type="button" class="toggle-password" id="toggle-password-1">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                        <!-- Password Field -->
+                            <!-- Password Field -->
+                            <div class="form-group">
+                                <label for="id_password">{% trans "Şifrə" %}</label>
+                                <div class="input-with-icon password-field">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" name="password" id="id_password" class="form-control" required>
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="password-strength-meter"></div>
+                                </div>
+                                <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
                             </div>
-                            <div class="password-strength">
-                                <div class="password-strength-meter"></div>
-                            </div>
-                            <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
-                        </div>
 
-                        <!-- Password Confirmation Field - YENİLƏNMİŞ ID VƏ BUTTON -->
-                        <div class="form-group">
-                            <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
-                            <div class="input-with-icon password-field">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
-                                <button type="button" class="toggle-password" id="toggle-password-2">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                            <!-- Password Confirmation Field -->
+                            <div class="form-group">
+                                <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
+                                <div class="input-with-icon password-field">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        
                         
                         <!-- Gender Selection -->
                         <div class="form-group">

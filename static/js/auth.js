@@ -1,27 +1,51 @@
 // static/js/auth.js
 document.addEventListener('DOMContentLoaded', function() {
-    // Password visibility toggle
-    const togglePasswordButtons = document.querySelectorAll('.toggle-password');
-    
-    togglePasswordButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Find the password input field
-            const passwordField = this.previousElementSibling;
-            
-            // Toggle password visibility
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
-            } else {
-                passwordField.type = 'password';
-                this.innerHTML = '<i class="fas fa-eye"></i>';
+    // Simplest possible implementation of password toggle
+    function initializePasswordToggles() {
+        // Get all toggle password buttons
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        
+        toggleButtons.forEach(button => {
+            // First, remove any existing click event listeners by cloning and replacing
+            const newButton = button.cloneNode(true);
+            if (button.parentNode) {
+                button.parentNode.replaceChild(newButton, button);
             }
+            
+            // Now add the click event to the new button
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Find the password input element
+                // Start with the direct parent div to find the input
+                const parentDiv = this.parentElement;
+                if (!parentDiv) return;
+                
+                const input = parentDiv.querySelector('input[type="password"], input[type="text"]');
+                if (!input) return;
+                
+                // Toggle password visibility
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    input.type = 'password';
+                    this.innerHTML = '<i class="fas fa-eye"></i>';
+                }
+            });
         });
-    });
-
-    // Logo hover effect - IMPROVED: More robust selector to work across all pages
+        
+        console.log('Initialized', toggleButtons.length, 'password toggle buttons');
+    }
+    
+    // Call immediately on page load
+    initializePasswordToggles();
+    
+    // Also call after a short delay to catch any dynamic elements
+    setTimeout(initializePasswordToggles, 500);
+    setTimeout(initializePasswordToggles, 1000);
+    
+    // Logo hover effect
     const logos = document.querySelectorAll('.logo a, .header-container .logo a');
     
     logos.forEach(logo => {
