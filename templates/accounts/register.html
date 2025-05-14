@@ -7,6 +7,15 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 <style>
+    /* ƏSAS FİX: Header və form arasında məsafəni artır */
+    .auth-container {
+        width: 450px;
+        max-width: 90%;
+        margin: 120px auto 50px !important; /* Məsafəni artırıldı - 120px yuxarıdan, 50px aşağıdan */
+        transform: none !important;
+        position: relative;
+    }
+
     /* Global fix - bütün overflow problemlərini həll etmək üçün */
     html, body, .auth-page, .auth-scene, .auth-container, .auth-form-container {
         overflow: visible !important;
@@ -17,6 +26,16 @@
         min-height: 100vh;
         height: auto !important;
         overflow-y: auto !important;
+        padding-top: 0 !important; /* Əlavə padding qoymamaq üçün */
+    }
+
+    /* AUTH-PAGE konteynerini düzgün yerləşdirilməsi */
+    .auth-page {
+        display: block !important;
+        height: auto !important;
+        min-height: 100vh;
+        padding-top: 0 !important;
+        padding-bottom: 50px !important;
     }
     
     /* 1. Əsas overflow və görünüş problemlərini həll et */
@@ -35,14 +54,6 @@
         scrollbar-width: none;     /* Firefox */
     }
     
-    /* 2. Form konteynerinin ölçüsü və mövqeyi */
-    .auth-container {
-        width: 450px;
-        max-width: 90%;
-        margin: 100px auto 30px; /* 70px yerinə 100px edək - header ilə form arasında daha çox boşluq üçün */
-        transform: none !important;
-    }
-    
     /* 3. Form elementləri və aralarındakı boşluqlar */
     .form-group {
         margin-bottom: 18px; /* Daha yığcam aralar */
@@ -52,6 +63,8 @@
     
     .auth-form-container {
         height: auto !important;
+        max-height: none !important;
+        padding: 30px !important;
     }
     
     /* User type selection styles - improved */
@@ -126,20 +139,21 @@
         text-shadow: 0 0 10px rgba(77, 240, 255, 0.8);
     }
     
-    /* Age range select - improved */
+    /* YAŞ ARALIĞI DİZAYNI - YENİLƏNMİŞ */
     .age-range-container {
         display: flex;
-        gap: 8px;
+        gap: 10px; /* Daha geniş aralıq */
         flex-wrap: wrap;
-        margin-top: 10px;
+        margin-top: 15px;
+        justify-content: space-between; /* Elementləri daha yaxşı paylaşdırır */
     }
     
     .age-range-option {
         position: relative;
         cursor: pointer;
-        flex: 1;
-        min-width: 70px; /* Minimum genişlik təyin edildi */
-        margin-bottom: 8px; /* Aşağıya məsafə əlavə edildi */
+        flex: 1 0 auto; /* Daha yaxşı sıralama */
+        min-width: 60px; /* Minimum genişlik */
+        margin-bottom: 10px; /* Aşağıya məsafə */
     }
     
     .age-range-option input {
@@ -153,15 +167,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 10px 15px; /* Yastıqları azaltdım */
+        padding: 12px 15px; /* Daha böyük padding */
         border-radius: 10px;
         border: 2px solid rgba(77, 240, 255, 0.3);
         background: rgba(12, 18, 30, 0.8);
         transition: all 0.3s ease;
-        font-size: 14px; /* Kiçik ekranlar üçün azaldıldı */
+        font-size: 15px; /* Daha böyük font */
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.95); /* Daha işıqlı rəng */
         text-align: center;
+        min-height: 45px; /* Sabit hündürlük */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Kölgə əlavə edildi */
     }
     
     .age-range-option input:checked + .age-range-label {
@@ -170,14 +186,21 @@
         color: white;
         font-weight: 600;
         box-shadow: 0 0 15px rgba(77, 240, 255, 0.4);
-        transform: translateY(-3px);
+        transform: translateY(-3px) scale(1.05); /* Daha böyük hərəkət */
+    }
+    
+    /* Hover effect */
+    .age-range-option:hover .age-range-label {
+        border-color: rgba(77, 240, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(77, 240, 255, 0.2);
     }
     
     /* Gender styles - improved */
     .gender-container {
         display: flex;
         gap: 15px;
-        margin-top: 10px;
+        margin-top: 15px;
     }
     
     .gender-option {
@@ -272,6 +295,7 @@
         opacity: 1;
     }
     
+    /* ƏSAS FİX: Password visibility toggle */
     .toggle-password {
         position: absolute;
         right: 15px;
@@ -289,6 +313,21 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    
+    /* Təkmilləşdirilmiş hover effekt */
+    .toggle-password:hover {
+        color: white;
+        text-shadow: 0 0 8px rgba(77, 240, 255, 0.8);
+    }
+    
+    .toggle-password:focus {
+        outline: none;
+    }
+    
+    /* ƏSAS FİX: Şifrə xanası düzəlişi */
+    .input-with-icon.password-field input {
+        padding-right: 45px !important;
     }
     
     /* Telefon input stilləri - yaxşılaşdırılmış */
@@ -476,7 +515,7 @@
     /* 4. Müxtəlif ekran ölçüləri üçün adaptiv stil */
     @media (max-height: 800px) {
         .auth-container {
-            margin: 90px auto 20px; 
+            margin: 100px auto 30px !important; /* Yuxarıdan məsafə azaldı */
         }
         
         .form-group {
@@ -505,11 +544,11 @@
     
     @media (max-height: 700px) {
         .auth-container {
-            margin: 80px auto 15px;
+            margin: 90px auto 20px !important; /* Yuxarıdan məsafə daha da azaldı */
         }
         
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         
         .auth-header {
@@ -541,18 +580,18 @@
         }
         
         .auth-button {
-            padding: 10px;
+            padding: 12px;
         }
     }
     
     /* 5. Çox kiçik ekranlar üçün xüsusi stil */
     @media (max-height: 600px) {
         .auth-container {
-            margin: 75px auto 10px;
+            margin: 80px auto 20px !important; /* Daha da azaldıldı */
         }
         
         .auth-form-container {
-            padding: 15px;
+            padding: 15px !important;
         }
         
         .auth-header {
@@ -596,11 +635,11 @@
     /* 6. Mobil cihaz üfüqi rejimdə */
     @media (max-height: 450px) {
         .auth-container {
-            margin: 70px auto;
+            margin: 75px auto 15px !important; /* Minimuma endirildi */
         }
         
         .auth-form-container {
-            padding: 12px;
+            padding: 12px !important;
             border-radius: 8px;
         }
         
@@ -705,7 +744,7 @@
         }
         
         .auth-form-container {
-            padding: 20px 15px;
+            padding: 20px 15px !important;
         }
         
         .form-control {
@@ -715,7 +754,7 @@
     
     /* 8. Formu avtomatik adapt edən stil */
     .auth-form-container.compact {
-        padding: 15px;
+        padding: 15px !important;
     }
     
     .auth-form-container.compact .form-group {
@@ -772,8 +811,6 @@
         width: 1px;
         background-color: rgba(77, 240, 255, 0.3);
     }
-
-
 
 </style>
 {% endblock %}
@@ -846,7 +883,7 @@
                             <div class="input-with-icon password-field">
                                 <i class="fas fa-lock"></i>
                                 <input type="password" name="password" id="id_password" class="form-control" required>
-                                <button type="button" class="toggle-password">
+                                <button type="button" class="toggle-password" id="toggle-password-1">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
@@ -856,13 +893,13 @@
                             <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
                         </div>
 
-                        <!-- Password Confirmation Field - struktur düzgün olmalı-->
+                        <!-- Password Confirmation Field - YENİLƏNMİŞ ID VƏ BUTTON -->
                         <div class="form-group">
                             <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
                             <div class="input-with-icon password-field">
                                 <i class="fas fa-lock"></i>
                                 <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
-                                <button type="button" class="toggle-password">
+                                <button type="button" class="toggle-password" id="toggle-password-2">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
@@ -978,13 +1015,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmPasswordInput = document.getElementById('id_confirm_password');
     const passwordStrengthMeter = document.querySelector('.password-strength-meter');
     const passwordHint = document.querySelector('.password-hint');
-    const togglePasswordBtns = document.querySelectorAll('.toggle-password');
     const notification = document.getElementById('notification');
     const notificationText = notification.querySelector('.notification-text');
     const notificationIcon = notification.querySelector('.notification-icon i');
     
-
-
+    // ƏSAS FİX: Parol göz ikonlarını daima id-lərlə seçək
+    const togglePasswordBtn1 = document.getElementById('toggle-password-1');
+    const togglePasswordBtn2 = document.getElementById('toggle-password-2');
+    
     // Initialize telephone input
     const phoneInputField = document.querySelector("#id_phone_number");
     const phoneInput = window.intlTelInput(phoneInputField, {
@@ -994,10 +1032,10 @@ document.addEventListener('DOMContentLoaded', function() {
         customContainer: "phone-input-container"
     });
 
-// Fix - telefon input CSS düzəltməsi - padding artırılacaq
+    // Fix - telefon input CSS düzəltməsi - padding artırılacaq
     phoneInputField.style.paddingLeft = '100px'; // 90px yerinə 100px
 
-// Əlavə olaraq, flag konteyneri və dropdown üçün CSS tənzimləmələri
+    // Əlavə olaraq, flag konteyneri və dropdown üçün CSS tənzimləmələri
     const flagContainer = document.querySelector('.iti__flag-container');
     if (flagContainer) {
         flagContainer.style.width = '90px';
@@ -1005,104 +1043,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const selectedFlag = document.querySelector('.iti__selected-flag');
     if (selectedFlag) {
-     selectedFlag.style.width = '90px';
+        selectedFlag.style.width = '90px';
     }
 
-    
-// optimizeFormForViewport() 
-function optimizeFormForViewport() {
-    const vh = window.innerHeight;
-    const formContainer = document.querySelector('.auth-form-container');
-    const authContainer = document.querySelector('.auth-container');
-    
-    // Əvvəlcə əvvəlki bütün stilləri sıfırla
-    authContainer.style.margin = '';
-    formContainer.style.padding = '';
-    formContainer.style.maxHeight = '';
-    formContainer.classList.remove('compact');
-    
-    // Ekran hündürlüyünə görə adaptasiya - header ilə form arasında boşluğu saxlamaq üçün
-    if (vh < 600) {
-        // Çox kiçik ekranlar
-        authContainer.style.margin = '75px auto 10px'; // 45px yerinə 75px
-        formContainer.style.padding = '15px';
-        formContainer.classList.add('compact');
+    // Səhifə yükləndikdə başlanğıc tənzimləmələr
+    window.addEventListener('load', function() {
+        // Formun yuxarıdan məsafəsini tənzimlə
+        adjustFormSpacing();
         
-        // Bütün form-group-ları tap və margin-bottom-u kiçilt
-        document.querySelectorAll('.form-group').forEach(group => {
-            group.style.marginBottom = '10px';
-        });
+        // Scroll-u yuxarı hissəyə sıfırla
+        window.scrollTo(0, 0);
         
-        // Button padding-i kiçilt
-        document.querySelectorAll('.auth-button').forEach(btn => {
-            btn.style.padding = '8px';
-        });
-    } else if (vh < 700) {
-        // Kiçik ekranlar
-        authContainer.style.margin = '80px auto 15px'; // 50px yerinə 80px
-        formContainer.style.padding = '20px';
-        
-        document.querySelectorAll('.form-group').forEach(group => {
-            group.style.marginBottom = '12px';
-        });
-    } else if (vh < 800) {
-        // Orta ekranlar
-        authContainer.style.margin = '90px auto 20px'; // 60px yerinə 90px
-        formContainer.style.padding = '25px';
-        
-        document.querySelectorAll('.form-group').forEach(group => {
-            group.style.marginBottom = '14px';
-        });
-    } else {
-        // Böyük ekranlar - default stillər
-        authContainer.style.margin = '100px auto 30px'; // 70px yerinə 100px
-        formContainer.style.padding = '30px';
-        
-        document.querySelectorAll('.form-group').forEach(group => {
-            group.style.marginBottom = '18px';
-        });
-    }
-    
-    // Ekran genişliyi üçün əlavə yoxlama
-    const vw = window.innerWidth;
-    if (vw < 480) {
-        // Dar mobil cihazlar
-        formContainer.style.padding = '15px';
-        authContainer.style.maxWidth = '95%';
-        
-        // Telefon input genişliyini düzəlt
-        const phoneInputContainer = document.querySelector('.iti');
-        if (phoneInputContainer) {
-            phoneInputContainer.style.maxWidth = '100%';
-        }
-    }
-}
-
-    // Fix - formu göndərdikdə overflow-hidden əlavə edək
-    document.addEventListener("click", function (e) {
-        if (e.target && (e.target === sendCodeBtn || e.target === verifyCodeBtn)) {
-            document.body.style.overflowY = "hidden";
-            setTimeout(() => {
-                document.body.style.overflowY = "auto";
-            }, 1000);
-        }
+        // Body overflow-i aktiv et
+        document.body.style.overflowY = 'auto';
     });
     
-    // CSRF Token function
-    function getCSRFToken() {
-        const name = 'csrftoken';
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+    // Ekran ölçüsü dəyişəndə form yerləşməsini tənzimlə
+    window.addEventListener('resize', adjustFormSpacing);
+    
+    // Form spacing funksiyası
+    function adjustFormSpacing() {
+        const vh = window.innerHeight;
+        const authContainer = document.querySelector('.auth-container');
+        const headerHeight = 70; // Nav bar hündürlüyü
+        
+        // Kiçik ekranlarda, daha az margin əlavə et
+        if (vh < 600) {
+            authContainer.style.margin = '80px auto 20px !important';
+        } else if (vh < 700) {
+            authContainer.style.margin = '90px auto 20px !important';
+        } else if (vh < 800) {
+            authContainer.style.margin = '100px auto 30px !important';
+        } else {
+            authContainer.style.margin = '120px auto 50px !important';
         }
-        return cookieValue;
+        
+        // Telefon input initialization sonrası yenidən hesabla (gecikmə ilə)
+        setTimeout(() => {
+            if (phoneInputField) {
+                phoneInputField.style.paddingLeft = '100px';
+            }
+        }, 500);
+    }
+    
+    // ƏSAS FİX: Düzəltilmiş Password Toggle funksiyası - hər iki göz iconu üçün ayrı işləyir
+    if (togglePasswordBtn1) {
+        togglePasswordBtn1.addEventListener('click', function() {
+            togglePasswordVisibility(passwordInput, this);
+        });
+    }
+    
+    if (togglePasswordBtn2) {
+        togglePasswordBtn2.addEventListener('click', function() {
+            togglePasswordVisibility(confirmPasswordInput, this);
+        });
+    }
+    
+    // Password visibility toggle helper function
+    function togglePasswordVisibility(inputField, toggleButton) {
+        if (inputField.type === 'password') {
+            inputField.type = 'text';
+            toggleButton.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            inputField.type = 'password';
+            toggleButton.innerHTML = '<i class="fas fa-eye"></i>';
+        }
     }
     
     // Password strength checker
@@ -1192,31 +1197,6 @@ function optimizeFormForViewport() {
         });
     });
     
-    // Password visibility toggle
-    togglePasswordBtns.forEach(button => {
-        button.addEventListener('click', function() {
-            // İnput elementini düzgün şəkildə seçək
-            // previousElementSibling yerinə parent > input seçim şəklində düzəldirəm
-            const passwordField = this.closest('.password-field').querySelector('input[type="password"], input[type="text"]');
-            
-            // Console-a yazaq ki, elementlər düzgün tapılırmı görək
-            console.log('Password field found:', passwordField);
-            
-            // İnput tipini dəyişdirək
-            if (passwordField) {
-                const currentType = passwordField.getAttribute('type');
-                
-                if (currentType === 'password') {
-                    passwordField.setAttribute('type', 'text');
-                    this.innerHTML = '<i class="fas fa-eye-slash"></i>';
-                } else {
-                    passwordField.setAttribute('type', 'password');
-                    this.innerHTML = '<i class="fas fa-eye"></i>';
-                }
-            }
-        });
-    });
-    
     // Form validation
     function validateRegistrationForm() {
         // User type validation
@@ -1271,6 +1251,23 @@ function optimizeFormForViewport() {
         }
         
         return true;
+    }
+    
+    // CSRF Token function
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
     
     // Notification system
@@ -1419,7 +1416,10 @@ function optimizeFormForViewport() {
         .then(data => {
             if (data.success) {
                 // Set verified state
-                document.getElementById('id_is_verified').checked = true;
+                const isVerifiedInput = document.getElementById('id_is_verified');
+                if (isVerifiedInput) {
+                    isVerifiedInput.checked = true;
+                }
                 
                 // Prepare form data for final submission
                 const formData = new FormData(registerForm);
@@ -1537,22 +1537,6 @@ function optimizeFormForViewport() {
         e.preventDefault();
         // The form is submitted via fetch in the verify code function
     });
-    
-    // Body overflow probleminin həlli
-    window.addEventListener('load', function() {
-        document.body.style.overflowY = 'auto';
-    });
-    
-    // Səhifə yükləndikdə və ekran ölçüsü dəyişdikdə funksiyanı çağır
-    // İlkin çağırış
-    optimizeFormForViewport();
-    
-    // Ekran ölçüsü dəyişdikdə yenidən hesabla
-    window.addEventListener('resize', optimizeFormForViewport);
-    
-    // Telefon input initialization sonrası yenidən hesabla (gecikmə ilə)
-    setTimeout(optimizeFormForViewport, 500);
 });
 </script>
 {% endblock %}
-
