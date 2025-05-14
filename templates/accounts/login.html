@@ -400,88 +400,100 @@ loginBtn.addEventListener('click', function() {
     
     // Show loading state
     loginBtn.disabled = true;
-    loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
-    
-    // Format phone number (improved phone number format handling)
-    let phoneNumber = phoneNumberInput.value.trim();
-    
-    // Əgər "+" işarəsi yoxdursa əlavə et
-    if (!phoneNumber.startsWith('+')) {
-        phoneNumber = '+' + phoneNumber;
-    }
-    
-    // Prepare login data - full phone number format
-    const loginData = {
-        phone_number: phoneNumber,
-        password: passwordInput.value,
-        remember: document.getElementById('remember-me').checked
-    };
-    
-    // Send login request
-    fetch('{% url "login" %}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken()
-        },
-        body: JSON.stringify(loginData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            if (response.status === 401) {
-                // Incorrect credentials
-                throw new Error('incorrect_credentials');
-            } else if (response.status === 403) {
-                // Account not verified
-                return response.json().then(data => {
-                    if (data.require_verification) {
-                        // Show SMS verification
-                        loginBtn.style.display = 'none';
-                        sendCodeBtn.style.display = 'block';
-                        // Highlight verification section
-                        setTimeout(() => {
-                            verificationCodeInput.classList.add('glowing-border-animation');
-                        }, 500);
-                        throw new Error('verification_required');
-                    } else {
-                        throw new Error(data.error || 'Forbidden');
+        loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
+        
+        // Format phone number (improved phone number format handling)
+        let phoneNumber = phoneNumberInput.value.trim();
+        
+        // Əgər "+" işarəsi yoxdursa əlavə et
+        if (!phoneNumber.startsWith('+')) {
+            phoneNumber = '+' + phoneNumber;
+        }
+        
+        // Prepare login data - full phone number format
+        const loginData = {
+            phone_number: phoneNumber,
+            password: passwordInput.value,
+            remember: document.getElementById('remember-me').checked
+        };
+        
+        // Send login request
+        fetch('{% url "login" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(loginData)
+        })
+        .then(response => {
+            // Xəta barədə əlavə məlumat alırıq
+            const contentType = response.headers.get('content-type');
+            if (!response.ok) {
+                if (contentType && contentType.includes('application/json')) {
+                    // JSON xətası
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'server_error');
+                    });
+                } else {
+                    // HTML/digər xəta (redirect, sessiya bitmə və s.)
+                    console.error('Server HTML xətası qaytardı, yenidən login edin');
+                    // Sessiya xətası - səhifəni yeniləyirik
+                    if (response.status === 403) {
+                        throw new Error('session_expired');
                     }
-                });
+                    throw new Error('server_error');
+                }
             }
-            throw new Error('server_error');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Success! Show animation
-        loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
-        showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
-        
-        // Show success checkmark
-        document.querySelector('.auth-header h2').style.display = 'none';
-        document.querySelector('.auth-divider').style.display = 'none';
-        successCheckmark.style.display = 'block';
-        
-        // Redirect after animation
-        setTimeout(() => {
-            window.location.href = data.redirect_url || '{% url "landing" %}';
-        }, 2000);
-    })
-    .catch(error => {
-        // Reset button
-        loginBtn.disabled = false;
-        loginBtn.innerHTML = '{% trans "Daxil ol" %}';
-        
-        // Handle specific errors
-        if (error.message === 'incorrect_credentials') {
-            showNotification('error', '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}');
-        } else if (error.message === 'verification_required') {
-            showNotification('info', '{% trans "Hesabınızı təsdiqləmək üçün SMS kodu göndərin" %}');
-        } else {
-            showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
-        }
+            
+            // Cavab tipinə görə parse edirik
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else if (contentType && contentType.includes('text/html')) {
+                throw new Error('unexpected_html_response');
+            }
+            return response.json(); // Default JSON gözləyirik
+        })
+        .then(data => {
+            // Success! Show animation
+            loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
+            showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
+            
+            // Show success checkmark
+            document.querySelector('.auth-header h2').style.display = 'none';
+            document.querySelector('.auth-divider').style.display = 'none';
+            successCheckmark.style.display = 'block';
+            
+            // Redirect after animation
+            setTimeout(() => {
+                window.location.href = data.redirect_url || '{% url "landing" %}';
+            }, 2000);
+        })
+        .catch(error => {
+            // Reset button
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '{% trans "Daxil ol" %}';
+            
+            // Handle specific errors
+            if (error.message === 'incorrect_credentials') {
+                showNotification('error', '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}');
+            } else if (error.message === 'verification_required') {
+                showNotification('info', '{% trans "Hesabınızı təsdiqləmək üçün SMS kodu göndərin" %}');
+            } else if (error.message === 'session_expired') {
+                showNotification('error', '{% trans "Sessiyanın vaxtı bitib, səhifə yenilənir..." %}');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else if (error.message === 'unexpected_html_response') {
+                showNotification('error', '{% trans "Gözlənilməz server cavabı, yenidən cəhd edin" %}');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
+            }
+        });
     });
-});
     
     // Send verification code button
     sendCodeBtn.addEventListener('click', function() {

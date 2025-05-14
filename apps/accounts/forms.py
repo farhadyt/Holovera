@@ -63,7 +63,7 @@ class CustomRegistrationForm(forms.ModelForm):
         label=_("Telefon nömrəsi"),
         widget=forms.TextInput(attrs={
             'class': 'form-control', 
-            'placeholder': _("+994501234567"),
+            'placeholder': _("501234567"),
             'id': 'id_phone_number'
         })
     )

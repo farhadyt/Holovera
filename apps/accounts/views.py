@@ -252,7 +252,7 @@ class LoginView(FormView):
                 is_verified = data.get('verified', False)
                 
                 # Debug info
-                print(f"Login attempt for: {phone_number}")
+                logger.info(f"Login attempt for: {phone_number}")
                 
                 # Basic validation
                 if not phone_number or not password:
@@ -264,11 +264,11 @@ class LoginView(FormView):
                 # Try to find the user
                 try:
                     user = User.objects.get(phone_number=phone_number)
-                    print(f"User found: {user.username}, verified: {user.is_verified}")
+                    logger.info(f"User found: {user.username}, verified: {user.is_verified}")
                     
                     # Authenticate
                     user_auth = authenticate(request, username=user.username, password=password)
-                    print(f"Authentication result: {user_auth is not None}")
+                    logger.info(f"Authentication result: {user_auth is not None}")
                     
                     if user_auth is not None:
                         # It's good practice to check if the user account is active.
@@ -280,13 +280,20 @@ class LoginView(FormView):
 
                         login(request, user_auth)
                         
-                        # Set session expiry if remember me is not checked
-                        if not remember_me:
+                        # Set session expiry if remember me is checked
+                        if remember_me:
+                            # 2 həftə saxla (1209600 saniyə)
+                            request.session.set_expiry(1209600)
+                        else:
+                            # Browser bağlandıqda sessiya bitəcək
                             request.session.set_expiry(0)
+                        
+                        # İstifadəçini yönləndirmək üçün URL
+                        redirect_url = request.GET.get('next', self.get_success_url())
                         
                         return JsonResponse({
                             'success': True,
-                            'redirect_url': self.get_success_url()
+                            'redirect_url': redirect_url
                         })
                     else:
                         return JsonResponse({
@@ -322,6 +329,15 @@ class LoginView(FormView):
         
         if user is not None:
             login(self.request, user)
+            
+            # Set session expiry based on remember me
+            if form.cleaned_data.get('remember_me', False):
+                # 2 weeks
+                self.request.session.set_expiry(1209600)
+            else:
+                # Until browser is closed
+                self.request.session.set_expiry(0)
+                
             messages.success(self.request, _("Uğurla daxil oldunuz!"))
             
             # next parametri varsa, ora yönləndir
@@ -461,6 +477,10 @@ class VerifyFirebaseTokenView(View):
             
             # User-i login et
             login(request, user)
+            
+            # Remember Me - Firebase istifadəçiləri üçün sessiya müddəti 2 həftə
+            if request.session:
+                request.session.set_expiry(1209600)  # 2 həftə (14 gün * 24 saat * 60 dəqiqə * 60 saniyə)
             
             return JsonResponse({
                 'success': True, 
