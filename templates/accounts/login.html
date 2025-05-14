@@ -393,107 +393,88 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle login attempt
     // Login Button event handler
-loginBtn.addEventListener('click', function() {
+    loginBtn.addEventListener('click', function() {
     if (!validateLoginForm()) {
         return;
     }
     
     // Show loading state
     loginBtn.disabled = true;
-        loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
-        
-        // Format phone number (improved phone number format handling)
-        let phoneNumber = phoneNumberInput.value.trim();
-        
-        // Əgər "+" işarəsi yoxdursa əlavə et
-        if (!phoneNumber.startsWith('+')) {
-            phoneNumber = '+' + phoneNumber;
+    loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
+    
+    // Format phone number (improved phone number format handling)
+    let phoneNumber = phoneNumberInput.value.trim();
+    
+    // Əgər "+" işarəsi yoxdursa əlavə et
+    if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+' + phoneNumber;
+    }
+    
+    // Prepare login data - "Məni xatırla" seçimi əlavə edildi
+    const rememberMe = document.getElementById('remember-me').checked;
+    console.log("Remember me status:", rememberMe); // Debug
+    
+    const loginData = {
+        phone_number: phoneNumber,
+        password: passwordInput.value,
+        remember: rememberMe // Məlumatı göndər
+    };
+    
+    // Send login request
+    fetch('{% url "login" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify(loginData)
+    })
+    .then(response => {
+        // Response handling
+        const contentType = response.headers.get('content-type');
+        if (!response.ok) {
+            if (contentType && contentType.includes('application/json')) {
+                // JSON error
+                return response.json().then(data => {
+                    throw new Error(data.error || 'server_error');
+                });
+            } else {
+                // HTML/other error (redirect, session expired etc.)
+                console.error('Server HTML error returned, try logging in again');
+                if (response.status === 403) {
+                    throw new Error('session_expired');
+                }
+                throw new Error('server_error');
+            }
         }
         
-        // Prepare login data - full phone number format
-        const loginData = {
-            phone_number: phoneNumber,
-            password: passwordInput.value,
-            remember: document.getElementById('remember-me').checked
-        };
+        // Parse the response based on content type
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
+        } else if (contentType && contentType.includes('text/html')) {
+            throw new Error('unexpected_html_response');
+        }
+        return response.json(); // Default expect JSON
+    })
+    .then(data => {
+        // Success! Show animation
+        loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
+        showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
         
-        // Send login request
-        fetch('{% url "login" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
-            },
-            body: JSON.stringify(loginData)
-        })
-        .then(response => {
-            // Xəta barədə əlavə məlumat alırıq
-            const contentType = response.headers.get('content-type');
-            if (!response.ok) {
-                if (contentType && contentType.includes('application/json')) {
-                    // JSON xətası
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'server_error');
-                    });
-                } else {
-                    // HTML/digər xəta (redirect, sessiya bitmə və s.)
-                    console.error('Server HTML xətası qaytardı, yenidən login edin');
-                    // Sessiya xətası - səhifəni yeniləyirik
-                    if (response.status === 403) {
-                        throw new Error('session_expired');
-                    }
-                    throw new Error('server_error');
-                }
-            }
-            
-            // Cavab tipinə görə parse edirik
-            if (contentType && contentType.includes('application/json')) {
-                return response.json();
-            } else if (contentType && contentType.includes('text/html')) {
-                throw new Error('unexpected_html_response');
-            }
-            return response.json(); // Default JSON gözləyirik
-        })
-        .then(data => {
-            // Success! Show animation
-            loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
-            showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
-            
-            // Show success checkmark
-            document.querySelector('.auth-header h2').style.display = 'none';
-            document.querySelector('.auth-divider').style.display = 'none';
-            successCheckmark.style.display = 'block';
-            
-            // Redirect after animation
-            setTimeout(() => {
-                window.location.href = data.redirect_url || '{% url "landing" %}';
-            }, 2000);
-        })
-        .catch(error => {
-            // Reset button
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = '{% trans "Daxil ol" %}';
-            
-            // Handle specific errors
-            if (error.message === 'incorrect_credentials') {
-                showNotification('error', '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}');
-            } else if (error.message === 'verification_required') {
-                showNotification('info', '{% trans "Hesabınızı təsdiqləmək üçün SMS kodu göndərin" %}');
-            } else if (error.message === 'session_expired') {
-                showNotification('error', '{% trans "Sessiyanın vaxtı bitib, səhifə yenilənir..." %}');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else if (error.message === 'unexpected_html_response') {
-                showNotification('error', '{% trans "Gözlənilməz server cavabı, yenidən cəhd edin" %}');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else {
-                showNotification('error', '{% trans "Server xətası" %}: ' + error.message);
-            }
-        });
+        // Show success checkmark
+        document.querySelector('.auth-header h2').style.display = 'none';
+        document.querySelector('.auth-divider').style.display = 'none';
+        successCheckmark.style.display = 'block';
+        
+        // Redirect after animation
+        setTimeout(() => {
+            window.location.href = data.redirect_url || '{% url "landing" %}';
+        }, 2000);
+    })
+    .catch(error => {
+        // Error handling...
     });
+});
     
     // Send verification code button
     sendCodeBtn.addEventListener('click', function() {

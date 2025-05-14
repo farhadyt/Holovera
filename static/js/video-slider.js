@@ -61,41 +61,45 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupVideoLoadTracking() {
         // For each main video and thumbnail video
         videos.forEach((video, index) => {
-            // Add load event listeners
+            // Load event üçün daha etibarlı yanaşma
             if (video.readyState >= 3) { // HAVE_FUTURE_DATA or better
                 console.log(`Video ${index} artıq yüklənib`);
                 updateLoadingProgress();
             } else {
                 console.log(`Video ${index} yüklənməsini gözləyirik...`);
                 
-                // Listen for when video can play
+                // Bütün mümkün event'ləri dinləyirik
+                video.addEventListener('canplaythrough', function() {
+                    console.log(`Video ${index} canplaythrough eventi baş verdi`);
+                    updateLoadingProgress();
+                }, { once: true }); // Event yalnız bir dəfə çağırılsın
+                
                 video.addEventListener('canplay', function() {
                     console.log(`Video ${index} canplay eventi baş verdi`);
                     updateLoadingProgress();
-                });
+                }, { once: true });
                 
                 video.addEventListener('loadeddata', function() {
                     console.log(`Video ${index} loadeddata eventi baş verdi`);
                     updateLoadingProgress();
-                });
+                }, { once: true });
                 
-                // Also add error handler in case video fails to load
+                // Xəta halında
                 video.addEventListener('error', function(e) {
                     console.error('Video yüklənməsi xətası:', e);
                     console.error('Video src:', video.querySelector('source')?.getAttribute('src'));
-                    updateLoadingProgress(); // Count as "loaded" to avoid blocking
-                });
+                    updateLoadingProgress(); // "yüklənmiş" kimi hesab et
+                }, { once: true });
             }
             
-            // Force load by setting src attribute if not already set
-            const source = video.querySelector('source');
-            if (source) {
-                const currentSrc = source.getAttribute('src');
+            // Videonun yüklənməyə başlaması üçün
+            if (video.classList.contains('main-video')) {
+                video.setAttribute('preload', 'auto');
                 video.load();
             }
         });
         
-        // Add loading safety timeout to clear loading screen after some time regardless
+        // Təhlükəsizlik timeout'u - maksimum 8 saniyə gözlə
         setTimeout(function() {
             if (videosLoaded < totalVideos) {
                 console.log(`Bütün videolar yüklənmədi, amma davam edirik. Yüklənmiş: ${videosLoaded}/${totalVideos}`);
@@ -106,7 +110,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 startAutoRotation();
                 animateContentElements(items[currentIndex], true);
             }
-        }, 8000); // 8 seconds safety
+        }, 8000);
+    }
+    
+    // Timeline progress üçün düzəliş
+    function resetTimeBar() {
+        if (timeProgress) {
+            // Daha etibarlı timeline reset etmə
+            timeProgress.style.transition = 'none';
+            timeProgress.style.width = '0%';
+            
+            // Force reflow
+            timeProgress.offsetWidth;
+            
+            // Start animation
+            requestAnimationFrame(() => {
+                timeProgress.style.transition = `width ${timeRunning}ms linear`;
+                timeProgress.style.width = '100%';
+            });
+        }
     }
     
     // Create thumbnail items

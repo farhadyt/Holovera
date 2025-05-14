@@ -252,7 +252,7 @@ class LoginView(FormView):
                 is_verified = data.get('verified', False)
                 
                 # Debug info
-                logger.info(f"Login attempt for: {phone_number}")
+                logger.info(f"Login attempt for: {phone_number}, remember_me: {remember_me}")
                 
                 # Basic validation
                 if not phone_number or not password:
@@ -284,9 +284,11 @@ class LoginView(FormView):
                         if remember_me:
                             # 2 həftə saxla (1209600 saniyə)
                             request.session.set_expiry(1209600)
+                            logger.info(f"Remember me enabled for user: {user.username}")
                         else:
                             # Browser bağlandıqda sessiya bitəcək
                             request.session.set_expiry(0)
+                            logger.info(f"Remember me disabled for user: {user.username}")
                         
                         # İstifadəçini yönləndirmək üçün URL
                         redirect_url = request.GET.get('next', self.get_success_url())
@@ -334,9 +336,11 @@ class LoginView(FormView):
             if form.cleaned_data.get('remember_me', False):
                 # 2 weeks
                 self.request.session.set_expiry(1209600)
+                logger.info(f"Remember me enabled for user via form: {user.username}")
             else:
                 # Until browser is closed
                 self.request.session.set_expiry(0)
+                logger.info(f"Remember me disabled for user via form: {user.username}")
                 
             messages.success(self.request, _("Uğurla daxil oldunuz!"))
             

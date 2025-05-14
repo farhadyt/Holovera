@@ -8,6 +8,18 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 <style>
     /* Global fix - bütün overflow problemlərini həll etmək üçün */
+    html, body, .auth-page, .auth-scene, .auth-container, .auth-form-container {
+        overflow: visible !important;
+        position: relative;
+    }
+    
+    body {
+        min-height: 100vh;
+        height: auto !important;
+        overflow-y: auto !important;
+    }
+    
+    /* 1. Əsas overflow və görünüş problemlərini həll et */
     .auth-scene, .auth-container, .auth-form-container, .auth-form, 
     .registration-section, .verification-section {
         overflow: visible !important;
@@ -23,9 +35,17 @@
         scrollbar-width: none;     /* Firefox */
     }
     
-    /* Form elementlərinin daha səliqəli görünməsi üçün */
+    /* 2. Form konteynerinin ölçüsü və mövqeyi */
+    .auth-container {
+        width: 450px;
+        max-width: 90%;
+        margin: 100px auto 30px; /* 70px yerinə 100px edək - header ilə form arasında daha çox boşluq üçün */
+        transform: none !important;
+    }
+    
+    /* 3. Form elementləri və aralarındakı boşluqlar */
     .form-group {
-        margin-bottom: 25px;
+        margin-bottom: 18px; /* Daha yığcam aralar */
         clear: both;
         overflow: visible;
     }
@@ -239,7 +259,7 @@
         background-color: #4dff4d;
         width: 100%;
     }
-    
+
     .password-hint {
         color: var(--text-secondary);
         font-size: 12px;
@@ -299,11 +319,11 @@
     
     /* Təhlükəsiz yerləşdirmə */
     input[type="tel"].form-control {
-        padding-left: 80px !important;
+        padding-left: 100px !important; 
     }
     
     #id_phone_number {
-        padding-left: 80px !important;
+        padding-left: 100px !important;
     }
     
     /* Verification section visibility fix */
@@ -453,7 +473,164 @@
         to { box-shadow: 0 0 15px rgba(77, 240, 255, 0.5), 0 0 30px rgba(77, 240, 255, 0.3); }
     }
     
-    /* Form elementlərinin kiçik ekranlarda görünüşünü yaxşılaşdıran media sorğuları */
+    /* 4. Müxtəlif ekran ölçüləri üçün adaptiv stil */
+    @media (max-height: 800px) {
+        .auth-container {
+            margin: 90px auto 20px; 
+        }
+        
+        .form-group {
+            margin-bottom: 14px;
+        }
+        
+        .user-type-label {
+            min-height: 100px; /* Daha kiçik */
+            padding: 10px 8px;
+        }
+        
+        .user-type-icon {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+        
+        .user-type-name {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .user-type-desc {
+            font-size: 11px;
+        }
+    }
+    
+    @media (max-height: 700px) {
+        .auth-container {
+            margin: 80px auto 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        .auth-header {
+            margin-bottom: 15px;
+        }
+        
+        .auth-header h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            padding: 10px 10px 10px 36px;
+        }
+        
+        .user-type-container {
+            margin-bottom: 15px;
+            gap: 8px;
+        }
+        
+        .user-type-label {
+            min-height: 85px;
+            padding: 8px 6px;
+        }
+        
+        .user-type-icon {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .auth-button {
+            padding: 10px;
+        }
+    }
+    
+    /* 5. Çox kiçik ekranlar üçün xüsusi stil */
+    @media (max-height: 600px) {
+        .auth-container {
+            margin: 75px auto 10px;
+        }
+        
+        .auth-form-container {
+            padding: 15px;
+        }
+        
+        .auth-header {
+            margin-bottom: 10px;
+        }
+        
+        .auth-header h2 {
+            font-size: 18px;
+        }
+        
+        .user-type-container {
+            flex-direction: row; /* Yatay düzülüş */
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            flex-wrap: nowrap; /* Scroll effekti üçün */
+        }
+        
+        .user-type-option {
+            flex: 0 0 140px; /* Sabit genişlik */
+        }
+        
+        .user-type-label {
+            min-height: 75px;
+        }
+        
+        .gender-container, .age-range-container {
+            gap: 5px;
+        }
+        
+        .gender-label, .age-range-label {
+            padding: 6px;
+            font-size: 12px;
+        }
+        
+        .login-link {
+            margin-top: 10px;
+        }
+    }
+    
+    /* 6. Mobil cihaz üfüqi rejimdə */
+    @media (max-height: 450px) {
+        .auth-container {
+            margin: 70px auto;
+        }
+        
+        .auth-form-container {
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        /* İki sütunlu layout */
+        .auth-form form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        
+        .form-group {
+            width: 48%;
+            margin-bottom: 8px;
+        }
+        
+        /* Bəzi elementlər tam genişlikdə olsun */
+        .form-group:nth-child(1), /* User type */
+        .form-group:nth-last-child(1), /* Submit button */
+        .form-group:nth-last-child(2) /* Age range */ {
+            width: 100%;
+        }
+        
+        .auth-button {
+            padding: 8px;
+            font-size: 14px;
+        }
+    }
+    
+    /* 7. Mobil genişlik üçün düzəlişlər */
     @media (max-width: 768px) {
         .user-type-container {
             flex-direction: column;
@@ -502,6 +679,10 @@
     }
     
     @media (max-width: 480px) {
+        .auth-container {
+            max-width: 95%;
+        }
+        
         .user-type-icon {
             font-size: 24px;
         }
@@ -518,56 +699,82 @@
             width: 35px;
             height: 45px;
         }
-    }
-    
-    /* Ekran ölçüsünə görə adaptiv dinamik ölçü */
-    @media screen and (max-height: 850px) {
+        
         .form-group {
-            margin-bottom: 15px !important;
-        }
-        
-        .auth-header {
-            margin-bottom: 15px !important;
-        }
-        
-        .user-type-container {
-            margin-bottom: 12px !important;
-        }
-    }
-    
-    @media screen and (max-height: 700px) {
-        .form-group {
-            margin-bottom: 10px !important;
-        }
-        
-        .auth-header {
-            margin-bottom: 10px !important;
-        }
-        
-        .user-type-container {
-            margin-bottom: 8px !important;
+            margin-bottom: 12px;
         }
         
         .auth-form-container {
-            padding: 15px !important;
+            padding: 20px 15px;
         }
         
         .form-control {
-            padding-top: 8px !important;
-            padding-bottom: 8px !important;
+            font-size: 14px;
         }
     }
     
-    /* Əlavə kiçik ekranlar üçün ölçü dəyişiklikləri */
-    @media screen and (max-height: 600px) {
-        .auth-button {
-            padding: 8px !important;
-        }
-        
-        .login-link {
-            margin-top: 8px !important;
-        }
+    /* 8. Formu avtomatik adapt edən stil */
+    .auth-form-container.compact {
+        padding: 15px;
     }
+    
+    .auth-form-container.compact .form-group {
+        margin-bottom: 10px;
+    }
+    
+    .auth-form-container.compact .auth-header {
+        margin-bottom: 10px;
+    }
+    
+    /* 9. Telefon input-u üçün xüsusi düzəlişlər */
+    .iti__country-list {
+        color: white !important;
+    }
+    
+    .iti__country-name, 
+    .iti__dial-code {
+        color: white !important;
+    }
+    
+    .iti__country {
+        color: white !important;
+    }
+    
+    /* Fix - telefon input CSS düzəltməsi */
+    .iti__flag-container {
+        position: absolute !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        z-index: 10;
+        padding: 0 !important;
+        width: 90px !important; /* Əlavə edildi - dropdown konteyneri genişliyi */
+    }
+    
+    .iti__selected-flag {
+        position: absolute !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        height: 100% !important;
+        padding: 0 6px 0 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 90px !important; /* Əlavə edildi - flag konteyneri genişliyi */
+    }
+
+    .iti__selected-flag::after {
+        content: '';
+        position: absolute;
+        top: 25%;
+        right: 0;
+        height: 50%;
+        width: 1px;
+        background-color: rgba(77, 240, 255, 0.3);
+    }
+
+
+
 </style>
 {% endblock %}
 
@@ -637,7 +844,7 @@
                         <div class="form-group">
                             <label for="id_password">{% trans "Şifrə" %}</label>
                             <div class="input-with-icon password-field">
-                                
+                                <i class="fas fa-lock"></i>
                                 <input type="password" name="password" id="id_password" class="form-control" required>
                                 <button type="button" class="toggle-password">
                                     <i class="fas fa-eye"></i>
@@ -648,12 +855,12 @@
                             </div>
                             <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
                         </div>
-                        
-                        <!-- Password Confirmation Field - NEW -->
+
+                        <!-- Password Confirmation Field - struktur düzgün olmalı-->
                         <div class="form-group">
                             <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
                             <div class="input-with-icon password-field">
-                                
+                                <i class="fas fa-lock"></i>
                                 <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
                                 <button type="button" class="toggle-password">
                                     <i class="fas fa-eye"></i>
@@ -776,6 +983,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationText = notification.querySelector('.notification-text');
     const notificationIcon = notification.querySelector('.notification-icon i');
     
+
+
     // Initialize telephone input
     const phoneInputField = document.querySelector("#id_phone_number");
     const phoneInput = window.intlTelInput(phoneInputField, {
@@ -784,10 +993,91 @@ document.addEventListener('DOMContentLoaded', function() {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
         customContainer: "phone-input-container"
     });
+
+// Fix - telefon input CSS düzəltməsi - padding artırılacaq
+    phoneInputField.style.paddingLeft = '100px'; // 90px yerinə 100px
+
+// Əlavə olaraq, flag konteyneri və dropdown üçün CSS tənzimləmələri
+    const flagContainer = document.querySelector('.iti__flag-container');
+    if (flagContainer) {
+        flagContainer.style.width = '90px';
+    }
+
+    const selectedFlag = document.querySelector('.iti__selected-flag');
+    if (selectedFlag) {
+     selectedFlag.style.width = '90px';
+    }
+
     
-    // Fix - telefon input CSS düzəltməsi
-    phoneInputField.style.paddingLeft = '90px';
+// optimizeFormForViewport() 
+function optimizeFormForViewport() {
+    const vh = window.innerHeight;
+    const formContainer = document.querySelector('.auth-form-container');
+    const authContainer = document.querySelector('.auth-container');
     
+    // Əvvəlcə əvvəlki bütün stilləri sıfırla
+    authContainer.style.margin = '';
+    formContainer.style.padding = '';
+    formContainer.style.maxHeight = '';
+    formContainer.classList.remove('compact');
+    
+    // Ekran hündürlüyünə görə adaptasiya - header ilə form arasında boşluğu saxlamaq üçün
+    if (vh < 600) {
+        // Çox kiçik ekranlar
+        authContainer.style.margin = '75px auto 10px'; // 45px yerinə 75px
+        formContainer.style.padding = '15px';
+        formContainer.classList.add('compact');
+        
+        // Bütün form-group-ları tap və margin-bottom-u kiçilt
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.style.marginBottom = '10px';
+        });
+        
+        // Button padding-i kiçilt
+        document.querySelectorAll('.auth-button').forEach(btn => {
+            btn.style.padding = '8px';
+        });
+    } else if (vh < 700) {
+        // Kiçik ekranlar
+        authContainer.style.margin = '80px auto 15px'; // 50px yerinə 80px
+        formContainer.style.padding = '20px';
+        
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.style.marginBottom = '12px';
+        });
+    } else if (vh < 800) {
+        // Orta ekranlar
+        authContainer.style.margin = '90px auto 20px'; // 60px yerinə 90px
+        formContainer.style.padding = '25px';
+        
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.style.marginBottom = '14px';
+        });
+    } else {
+        // Böyük ekranlar - default stillər
+        authContainer.style.margin = '100px auto 30px'; // 70px yerinə 100px
+        formContainer.style.padding = '30px';
+        
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.style.marginBottom = '18px';
+        });
+    }
+    
+    // Ekran genişliyi üçün əlavə yoxlama
+    const vw = window.innerWidth;
+    if (vw < 480) {
+        // Dar mobil cihazlar
+        formContainer.style.padding = '15px';
+        authContainer.style.maxWidth = '95%';
+        
+        // Telefon input genişliyini düzəlt
+        const phoneInputContainer = document.querySelector('.iti');
+        if (phoneInputContainer) {
+            phoneInputContainer.style.maxWidth = '100%';
+        }
+    }
+}
+
     // Fix - formu göndərdikdə overflow-hidden əlavə edək
     document.addEventListener("click", function (e) {
         if (e.target && (e.target === sendCodeBtn || e.target === verifyCodeBtn)) {
@@ -833,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             passwordHint.textContent = '{% trans "Güclü şifrə!" %}';
         }
     });
-    
+   
     function checkPasswordStrength(password) {
         // At least 8 characters
         if (password.length < 8) {
@@ -897,6 +1187,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (i + index < codeInputs.length - 1) {
                         codeInputs[i + index + 1].focus();
                     }
+                }
+            }
+        });
+    });
+    
+    // Password visibility toggle
+    togglePasswordBtns.forEach(button => {
+        button.addEventListener('click', function() {
+            // İnput elementini düzgün şəkildə seçək
+            // previousElementSibling yerinə parent > input seçim şəklində düzəldirəm
+            const passwordField = this.closest('.password-field').querySelector('input[type="password"], input[type="text"]');
+            
+            // Console-a yazaq ki, elementlər düzgün tapılırmı görək
+            console.log('Password field found:', passwordField);
+            
+            // İnput tipini dəyişdirək
+            if (passwordField) {
+                const currentType = passwordField.getAttribute('type');
+                
+                if (currentType === 'password') {
+                    passwordField.setAttribute('type', 'text');
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    passwordField.setAttribute('type', 'password');
+                    this.innerHTML = '<i class="fas fa-eye"></i>';
                 }
             }
         });
@@ -1228,70 +1543,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflowY = 'auto';
     });
     
-    // Ekrana tam uyğunlaşdırmaq üçün responsive düzəlişlər
-    function optimizeFormForScreenSize() {
-        const viewportHeight = window.innerHeight;
-        const authFormContainer = document.querySelector('.auth-form-container');
-        const formGroups = document.querySelectorAll('.form-group');
-        const userTypeContainer = document.querySelector('.user-type-container');
-        const userTypeLabels = document.querySelectorAll('.user-type-label');
-        
-        // Ekran ölçüsünə görə form elementlərini tənzimlə
-        if (viewportHeight < 600) {
-            // Çox kiçik ekranlar üçün
-            formGroups.forEach(group => group.style.marginBottom = '8px');
-            if (userTypeContainer) userTypeContainer.style.marginBottom = '8px';
-            userTypeLabels.forEach(label => {
-                label.style.minHeight = '70px';
-                label.style.padding = '6px';
-            });
-            
-            // Form elementlərinin içindəki komponentləri də kiçilt
-            document.querySelectorAll('.form-control').forEach(input => {
-                input.style.padding = '6px 6px 6px 35px';
-                input.style.fontSize = '13px';
-            });
-            
-            document.querySelectorAll('.user-type-icon').forEach(icon => {
-                icon.style.fontSize = '16px';
-                icon.style.marginBottom = '4px';
-            });
-            
-            document.querySelectorAll('.user-type-name').forEach(name => {
-                name.style.fontSize = '12px';
-                name.style.marginBottom = '2px';
-            });
-            
-            document.querySelectorAll('.user-type-desc').forEach(desc => {
-                desc.style.fontSize = '10px';
-            });
-            
-            document.querySelectorAll('.auth-button').forEach(btn => {
-                btn.style.padding = '8px';
-                btn.style.fontSize = '14px';
-            });
-            
-        } else if (viewportHeight < 750) {
-            // Kiçik ekranlar üçün
-            formGroups.forEach(group => group.style.marginBottom = '12px');
-            if (userTypeContainer) userTypeContainer.style.marginBottom = '12px';
-            userTypeLabels.forEach(label => {
-                label.style.minHeight = '80px';
-                label.style.padding = '8px';
-            });
-            
-            document.querySelectorAll('.form-control').forEach(input => {
-                input.style.padding = '8px 8px 8px 40px';
-                input.style.fontSize = '14px';
-            });
-        }
-    }
+    // Səhifə yükləndikdə və ekran ölçüsü dəyişdikdə funksiyanı çağır
+    // İlkin çağırış
+    optimizeFormForViewport();
     
-    // İlkin əməliyyat
-    optimizeFormForScreenSize();
+    // Ekran ölçüsü dəyişdikdə yenidən hesabla
+    window.addEventListener('resize', optimizeFormForViewport);
     
-    // Ekran ölçüsü dəyişdikdə funk çağır
-    window.addEventListener('resize', optimizeFormForScreenSize);
+    // Telefon input initialization sonrası yenidən hesabla (gecikmə ilə)
+    setTimeout(optimizeFormForViewport, 500);
 });
 </script>
 {% endblock %}
+

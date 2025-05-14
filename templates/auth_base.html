@@ -77,6 +77,35 @@
     </style>
 </head>
 <body class="auth-page">
+
+    <script>
+        // Səhifə yükləndikdən sonra overflow problemlərini həll et
+        document.addEventListener('DOMContentLoaded', function() {
+            // Overflow problemini həll et
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+            
+            // Form container-lərini düzəlt
+            const formContainers = document.querySelectorAll('.auth-form-container');
+            formContainers.forEach(container => {
+                container.style.overflow = 'visible';
+                container.style.maxHeight = 'none';
+            });
+            
+            // Scroll problemlərini həll et
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
+        
+        // Ekran ölçüsü dəyişiləndə də yoxla
+        window.addEventListener('resize', function() {
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        });
+    </script>
+
+
     <!-- Integrated navigation bar matching landing page -->
     <nav class="integrated-nav">
         <div class="logo">
@@ -122,7 +151,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main>
+    <main style="overflow: visible !important; min-height: auto !important; height: auto !important;">
         {% if messages %}
         <div class="messages-container">
             {% for message in messages %}
