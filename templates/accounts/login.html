@@ -1,6 +1,6 @@
 {% extends 'auth_base.html' %}
 {% load static %}
-{% load i18n %}  <!-- Tərcümə funksiyalarını yükləyirik -->
+{% load i18n %}
 
 {% block title %}{% trans "Login" %} - Holovera{% endblock %}
 
@@ -22,30 +22,32 @@
         margin-bottom: 25px;
     }
     
-    /* Notification styles */
+    /* Notification styles - başlanğıcda gizlidir */
     .notification {
         position: fixed;
-        top: -100px;
+        top: 100px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateY(-200px); /* Ekranın xaricində başlayır */
         background: rgba(12, 20, 35, 0.95);
         backdrop-filter: blur(8px);
         color: white;
         padding: 15px 25px;
         border-radius: 10px;
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow);
-        border: 1px solid var(--primary-color);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 240, 255, 0.3);
+        border: 1px solid var(--primary-color, #4DF0FF);
         z-index: 9999;
         display: flex;
         align-items: center;
         gap: 15px;
         opacity: 0;
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     }
     
     .notification.show {
-        top: 100px;
+        transform: translateX(-50%) translateY(0); /* Göründüyü zaman ekranda görünəcək */
         opacity: 1;
+        visibility: visible;
     }
     
     .notification-icon {
@@ -73,7 +75,6 @@
         background: var(--primary-color);
         width: 100%;
         transform-origin: left;
-        animation: progress 5s linear forwards;
     }
     
     @keyframes progress {
@@ -222,6 +223,40 @@
         from { box-shadow: 0 0 5px rgba(77, 240, 255, 0.3), 0 0 10px rgba(77, 240, 255, 0.2); }
         to { box-shadow: 0 0 15px rgba(77, 240, 255, 0.5), 0 0 30px rgba(77, 240, 255, 0.3); }
     }
+
+    /* Form mərkəzləşdirmə */
+    @media (min-height: 700px) {
+        .auth-container {
+            margin: calc(50vh - 300px) auto calc(50vh - 300px);
+        }
+    }
+
+    /* Kiçik ekranlar üçün */
+    @media (max-height: 700px) {
+        .auth-container {
+            margin: 50px auto 50px;
+        }
+    }
+
+    /* Icon düzəlişləri - bütün ekran ölçülərində sabit qalır */
+    .input-with-icon i {
+        position: absolute !important;
+        left: 15px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+
+    /* Başlığın mərkəzləşdirilməsi */
+    .auth-header {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .auth-header h2 {
+        margin-top: 5px;
+    }
 </style>
 {% endblock %}
 
@@ -300,7 +335,7 @@
     </div>
 </div>
 
-<!-- Notification container -->
+<!-- Notification container - gizlidir, yalnız lazım olduqda göstəriləcək -->
 <div id="notification" class="notification">
     <div class="notification-icon">
         <i class="fas fa-check"></i>
@@ -345,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
     
-    // Notification system
+    // Təkmilləşdirilmiş notification sistemi
     function showNotification(type, message) {
         // Update icon
         if (type === 'success') {
@@ -367,6 +402,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show notification
         notification.classList.add('show');
+        
+        // Progress bar animasiyası
+        const progress = notification.querySelector('.notification-progress');
+        progress.style.animation = 'none';
+        progress.offsetHeight; // Force reflow
+        progress.style.animation = 'progress 5s linear forwards';
         
         // Auto hide after 5 seconds
         setTimeout(() => {
@@ -392,89 +433,105 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Handle login attempt
-    // Login Button event handler
     loginBtn.addEventListener('click', function() {
-    if (!validateLoginForm()) {
-        return;
-    }
-    
-    // Show loading state
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
-    
-    // Format phone number (improved phone number format handling)
-    let phoneNumber = phoneNumberInput.value.trim();
-    
-    // Əgər "+" işarəsi yoxdursa əlavə et
-    if (!phoneNumber.startsWith('+')) {
-        phoneNumber = '+' + phoneNumber;
-    }
-    
-    // Prepare login data - "Məni xatırla" seçimi əlavə edildi
-    const rememberMe = document.getElementById('remember-me').checked;
-    console.log("Remember me status:", rememberMe); // Debug
-    
-    const loginData = {
-        phone_number: phoneNumber,
-        password: passwordInput.value,
-        remember: rememberMe // Məlumatı göndər
-    };
-    
-    // Send login request
-    fetch('{% url "login" %}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken()
-        },
-        body: JSON.stringify(loginData)
-    })
-    .then(response => {
-        // Response handling
-        const contentType = response.headers.get('content-type');
-        if (!response.ok) {
-            if (contentType && contentType.includes('application/json')) {
-                // JSON error
-                return response.json().then(data => {
-                    throw new Error(data.error || 'server_error');
-                });
-            } else {
-                // HTML/other error (redirect, session expired etc.)
-                console.error('Server HTML error returned, try logging in again');
-                if (response.status === 403) {
-                    throw new Error('session_expired');
+        if (!validateLoginForm()) {
+            return;
+        }
+        
+        // Show loading state
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<span class="login-progress"></span>{% trans "Daxil olunur..." %}';
+        
+        // Format phone number (improved phone number format handling)
+        let phoneNumber = phoneNumberInput.value.trim();
+        
+        // Əgər "+" işarəsi yoxdursa əlavə et
+        if (!phoneNumber.startsWith('+')) {
+            phoneNumber = '+' + phoneNumber;
+        }
+        
+        // Prepare login data - "Məni xatırla" seçimi əlavə edildi
+        const rememberMe = document.getElementById('remember-me').checked;
+        console.log("Remember me status:", rememberMe); // Debug
+        
+        const loginData = {
+            phone_number: phoneNumber,
+            password: passwordInput.value,
+            remember: rememberMe // Məlumatı göndər
+        };
+        
+        // Send login request
+        fetch('{% url "login" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(loginData)
+        })
+        .then(response => {
+            // Response handling
+            const contentType = response.headers.get('content-type');
+            if (!response.ok) {
+                if (contentType && contentType.includes('application/json')) {
+                    // JSON error
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'server_error');
+                    });
+                } else {
+                    // HTML/other error (redirect, session expired etc.)
+                    console.error('Server HTML error returned, try logging in again');
+                    if (response.status === 403) {
+                        throw new Error('session_expired');
+                    }
+                    throw new Error('server_error');
                 }
-                throw new Error('server_error');
             }
-        }
-        
-        // Parse the response based on content type
-        if (contentType && contentType.includes('application/json')) {
-            return response.json();
-        } else if (contentType && contentType.includes('text/html')) {
-            throw new Error('unexpected_html_response');
-        }
-        return response.json(); // Default expect JSON
-    })
-    .then(data => {
-        // Success! Show animation
-        loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
-        showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
-        
-        // Show success checkmark
-        document.querySelector('.auth-header h2').style.display = 'none';
-        document.querySelector('.auth-divider').style.display = 'none';
-        successCheckmark.style.display = 'block';
-        
-        // Redirect after animation
-        setTimeout(() => {
-            window.location.href = data.redirect_url || '{% url "landing" %}';
-        }, 2000);
-    })
-    .catch(error => {
-        // Error handling...
+            
+            // Parse the response based on content type
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else if (contentType && contentType.includes('text/html')) {
+                throw new Error('unexpected_html_response');
+            }
+            return response.json(); // Default expect JSON
+        })
+        .then(data => {
+            // Success! Show animation
+            loginBtn.innerHTML = '{% trans "Uğurla daxil oldunuz!" %}';
+            showNotification('success', '{% trans "Uğurla daxil oldunuz!" %}');
+            
+            // Show success checkmark
+            document.querySelector('.auth-header h2').style.display = 'none';
+            document.querySelector('.auth-divider').style.display = 'none';
+            successCheckmark.style.display = 'block';
+            
+            // Redirect after animation
+            setTimeout(() => {
+                window.location.href = data.redirect_url || '{% url "landing" %}';
+            }, 2000);
+        })
+        .catch(error => {
+            // Xəta işlənməsi
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '{% trans "Daxil ol" %}';
+            
+            let errorMessage = '{% trans "Server xətası, yenidən cəhd edin" %}';
+            
+            if (error.message === 'session_expired') {
+                errorMessage = '{% trans "Sessiyanın vaxtı bitib, yenidən daxil olun" %}';
+            } else if (error.message === 'Yanlış telefon nömrəsi və ya şifrə') {
+                errorMessage = '{% trans "Yanlış telefon nömrəsi və ya şifrə" %}';
+            } else if (error.message.includes('verification_required')) {
+                errorMessage = '{% trans "Hesabınız doğrulanmayıb" %}';
+                // Doğrulama ekranına keç
+                loginBtn.style.display = 'none';
+                sendCodeBtn.style.display = 'block';
+            }
+            
+            showNotification('error', errorMessage);
+        });
     });
-});
     
     // Send verification code button
     sendCodeBtn.addEventListener('click', function() {
@@ -630,6 +687,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Şifrə göstərmə/gizlətmə düyməsi
+    if (togglePasswordBtn) {
+        togglePasswordBtn.addEventListener('click', function() {
+            const input = this.closest('.password-field').querySelector('input');
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                this.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        });
+    }
+    
     // Handle Enter key press
     loginForm.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
@@ -650,6 +721,38 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         loginBtn.click();
     });
+
+    // Form elementlərinin düzgün spacing olması üçün
+    window.addEventListener('resize', adjustFormLayout);
+    
+    function adjustFormLayout() {
+        const viewport = window.innerHeight;
+        const container = document.querySelector('.auth-container');
+        
+        if (container) {
+            // Ekran ölçüsünə görə container margin
+            if (viewport < 600) {
+                container.style.margin = '30px auto';
+            } else if (viewport < 800) {
+                container.style.margin = '40px auto';
+            } else if (viewport >= 800) {
+                // Formanı vertikala görə mərkəzləşdirmək
+                container.style.margin = 'calc(50vh - 300px) auto calc(50vh - 300px)';
+            }
+        }
+        
+        // Icon pozisiyalarını sabit saxlamaq
+        var icons = document.querySelectorAll('.input-with-icon i');
+        icons.forEach(function(icon) {
+            icon.style.position = 'absolute';
+            icon.style.left = '15px';
+            icon.style.top = '50%';
+            icon.style.transform = 'translateY(-50%)';
+        });
+    }
+    
+    // İlkin layout tənzimləməsi
+    adjustFormLayout();
 });
 </script>
 {% endblock %}

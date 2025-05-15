@@ -568,10 +568,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Responsive form layout
     function adjustFormLayout() {
         const viewport = window.innerHeight;
-        if (viewport < 700) {
-            document.querySelector('.auth-container').style.margin = '30px auto';
-        } else {
-            document.querySelector('.auth-container').style.margin = '70px auto';
+        const container = document.querySelector('.auth-container');
+        
+        if (container) {
+            // Maintain fixed distance from top (header) regardless of screen size
+            if (viewport < 600) {
+                container.style.margin = '100px auto 30px'; // Fixed top margin at 100px
+            } else if (viewport < 800) {
+                container.style.margin = '100px auto 40px'; // Fixed top margin at 100px
+            } else {
+                container.style.margin = '100px auto 70px'; // Fixed top margin at 100px
+            }
+            
+            // Ensure icons are positioned correctly
+            const icons = document.querySelectorAll('.input-with-icon i');
+            icons.forEach(function(icon) {
+                icon.style.position = 'absolute';
+                icon.style.left = '15px';
+                icon.style.top = '50%';
+                icon.style.transform = 'translateY(-50%)';
+            });
         }
     }
     

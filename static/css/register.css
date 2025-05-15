@@ -38,8 +38,8 @@ html, body {
     min-height: 100vh;
     width: 100%;
     box-sizing: border-box;
-    padding: 100px 0; /* Yuxarıdan və aşağıdan bərabər məsafə */
-}
+    padding-top: 165px;
+    }
 
 /* Main content area */
 .auth-scene {
@@ -49,14 +49,14 @@ html, body {
     width: 100%;
     flex-grow: 0;
     position: relative;
-    margin: 30px 0;
+ 
 }
 
-/* Form container */
+/* Form container - konkret məsafə ilə header-dən */
 .auth-container {
     width: 100%;
     max-width: 1000px;
-    margin: 70px auto 70px; /* Yuxarı və aşağı marjinləri bərabər etdim */
+    margin: 100px auto 70px; /* Header-dən 100px məsafə */
     position: relative;
     z-index: 10;
     perspective: 1000px;
@@ -76,15 +76,18 @@ html, body {
     max-width: 1000px;
 }
 
-/* Başlıq hissəsi */
+/* Başlıq hissəsi - mərkəzləşdirilmiş */
 .auth-header {
     text-align: center;
-    padding: 35px 30px 20px !important;
+    padding: 30px 30px 20px !important; /* Yuxarıdan padding artırıldı */
     background: linear-gradient(to bottom, rgba(15, 25, 40, 0.8), rgba(10, 15, 25, 0.6));
     border-radius: 16px 16px 0 0;
     border-bottom: 2px solid rgba(77, 240, 255, 0.3);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .auth-header h2 {
@@ -198,13 +201,13 @@ html, body {
     position: relative;
 }
 
-/* Tam ad və telefon nömrəsi inputlarını aralı etdim */
+/* Tam ad və telefon nömrəsi inputlarını daha çox aralı etdim */
 .form-group.name-field {
-    margin-bottom: 45px !important; /* Daha çox məsafə */
+    margin-bottom: 60px !important; /* Daha çox məsafə */
 }
 
 .form-group.phone-field {
-    margin-bottom: 40px !important; /* Daha çox məsafə */
+    margin-bottom: 50px !important; /* Daha çox məsafə */
 }
 
 /* "Siz kimsiniz?" bölümü */
@@ -522,11 +525,13 @@ label {
     position: absolute;
 }
 
+/* Ölkə kodu seçimini telefon nömrəsindən aralı etmək */
 .iti__selected-flag {
     background-color: rgba(20, 30, 50, 0.6) !important;
     border-right: 1px solid rgba(77, 240, 255, 0.3);
     border-radius: 8px 0 0 8px;
     padding: 0 15px 0 12px !important;
+    margin-right: 10px !important; /* Araya əlavə məsafə */
 }
 
 .iti__arrow {
@@ -536,12 +541,14 @@ label {
     margin-left: 6px;
 }
 
+/* Ölkə seçim siyahısının ölçüsünü kiçiltmək */
 .iti__country-list {
     background-color: rgba(15, 25, 40, 0.95) !important;
     border: 1px solid rgba(77, 240, 255, 0.3) !important;
-    max-height: 200px;
+    max-height: 180px !important; /* Hündürlüyü azaltdım */
     overflow-y: auto;
-    min-width: 300px;
+    min-width: 250px !important; /* Kiçildilib */
+    max-width: 280px !important; /* Maksimum genişlik təyin edildi */
     margin-top: 8px;
     left: 0;
     position: absolute;
@@ -554,7 +561,8 @@ label {
 .iti__country {
     transition: all 0.2s ease;
     color: white !important;
-    padding: 10px 12px;
+    padding: 8px 10px !important; /* Padding kiçiltildi */
+    font-size: 13px !important; /* Font ölçüsü kiçiltildi */
 }
 
 .iti__country:hover {
@@ -569,12 +577,13 @@ label {
     color: rgba(255, 255, 255, 0.9) !important;
 }
 
+/* Telefon inputu stilini nizamlamaq */
 input[type="tel"].form-control {
-    padding-left: 90px !important;
+    padding-left: 100px !important; /* Araya daha çox yer vermək üçün */
 }
 
 #id_phone_number {
-    padding-left: 90px !important;
+    padding-left: 100px !important; /* Araya daha çox yer vermək üçün */
 }
 
 /* SMS Göndərmə buttonu */
@@ -653,7 +662,7 @@ input[type="tel"].form-control {
     position: fixed;
     top: 100px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(-200px); /* Başlanğıcda ekrandan kənarda olacaq */
     background: rgba(12, 20, 35, 0.95);
     backdrop-filter: blur(8px);
     color: white;
@@ -666,10 +675,14 @@ input[type="tel"].form-control {
     align-items: center;
     gap: 15px;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+    visibility: hidden;
 }
 
 .notification.show {
     opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Göstərmək üçün ekranda görünür */
 }
 
 .notification-icon {
@@ -711,16 +724,18 @@ input[type="tel"].form-control {
     pointer-events: none;
 }
 
-/* Responsive düzəlişlər */
+/* Bütün ekran ölçüləri üçün düzəlişlər (Responsive) - Fixed header distance */
 @media screen and (max-width: 1200px) {
     .auth-container {
-        margin: 60px auto;
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 60px;
     }
 }
 
 @media screen and (max-width: 992px) {
     .auth-container {
-        margin: 50px auto;
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 50px;
     }
     
     .auth-header h2 {
@@ -734,7 +749,8 @@ input[type="tel"].form-control {
     }
     
     .auth-container {
-        margin: 40px auto;
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 40px;
     }
     
     .auth-form-container {
@@ -754,9 +770,7 @@ input[type="tel"].form-control {
         border-bottom: 1px solid rgba(77, 240, 255, 0.2);
     }
     
-    .auth-header {
-        padding: 25px 20px 15px !important;
-    }
+
     
     .auth-header h2 {
         font-size: 22px;
@@ -782,6 +796,28 @@ input[type="tel"].form-control {
     .user-type-name, .user-type-desc {
         text-align: left;
     }
+    
+    /* İnputların pozisiyasını düzətmək */
+    .input-with-icon i {
+        left: 15px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+    
+    /* Növbəti səviyyədə arxa fonun pozisiyasını qorumaq */
+    .auth-page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Notification-in ortalanmasını təmin etmək */
+    .notification {
+        width: 90%;
+        max-width: 450px;
+    }
 }
 
 @media screen and (max-width: 576px) {
@@ -790,7 +826,8 @@ input[type="tel"].form-control {
     }
     
     .auth-container {
-        margin: 30px auto;
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 30px;
     }
     
     .auth-header {
@@ -811,11 +848,56 @@ input[type="tel"].form-control {
     }
     
     .iti__country-list {
-        min-width: 250px;
+        min-width: 200px !important;
+        max-width: 250px !important;
+    }
+    
+    /* İkonları və inputları sabit saxlamaq üçün */
+    .input-with-icon i {
+        left: 15px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+    
+    /* Form yüksəkliyini qorumaq */
+    .auth-form-container {
+        height: auto;
+        min-height: auto;
     }
 }
 
 /* Form içindəki loading indicator - aradan qaldırılmalıdır */
 .loading-indicator {
     display: none !important; /* Tamamilə gizlədilir */
+}
+
+/* Removed vertical centering styles that would cause the form to change position */
+@media (min-height: 700px) {
+    .auth-container {
+        margin-top: 100px; /* Fixed distance from header */
+    }
+}
+
+/* Vertical center on very small heights */
+@media (max-height: 700px) {
+    .auth-container {
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 50px;
+    }
+}
+
+/* Ekranın yüksəkliyi kiçik olduqda marjinləri balanslaşdırmaq üçün */
+@media (max-height: 600px) {
+    .auth-container {
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 40px;
+    }
+}
+
+/* Ekranın yüksəkliyi çox kiçik olduqda */
+@media (max-height: 500px) {
+    .auth-container {
+        margin-top: 100px; /* Fixed distance from header */
+        margin-bottom: 30px;
+    }
 }

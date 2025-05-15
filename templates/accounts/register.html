@@ -7,6 +7,90 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 <link rel="stylesheet" href="{% static 'css/register.css' %}">
+<style>
+/* Əlavə stil düzəlişləri */
+.auth-header {
+    text-align: center;
+    padding: 15px 30px 20px !important; /* Yuxarıdan padding artırıldı */
+}
+
+.auth-header h2 {
+    position: relative;
+    display: inline-block;
+    margin-top: 1px; /* Başlığı bir qədər yuxarı qaldırmaq üçün */
+}
+
+/* Forma elementlərinin sabit pozisiyasını təmin etmək */
+.input-with-icon i {
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+/* Əlavə boşluq vermək */
+.form-group.name-field {
+    margin-bottom: 60px !important; /* Daha çox məsafə */
+}
+
+.form-group.phone-field {
+    margin-bottom: 50px !important; /* Daha çox məsafə */
+}
+
+/* Ölkə kodu və telefon arasında məsafə */
+.iti__flag-container {
+    z-index: 60;
+    position: absolute;
+}
+
+.iti__selected-flag {
+    padding: 0 15px 0 12px !important;
+    margin-right: 10px !important; /* Araya əlavə məsafə */
+}
+
+input[type="tel"].form-control {
+    padding-left: 100px !important; /* Araya məsafə vermək */
+}
+
+#id_phone_number {
+    padding-left: 100px !important; /* Eyni məsafəni təmin etmək */
+}
+
+/* Ölkə siyahı ölçüsünün kiçiltilməsi */
+.iti__country-list {
+    max-height: 180px !important;
+    min-width: 250px !important;
+    max-width: 280px !important;
+}
+
+.iti__country {
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+}
+
+/* Notification default gizlətmək */
+.notification {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-200px);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Formanın ekranda mərkəzdə yerləşməsini təmin etmək */
+@media (min-height: 700px) {
+    .auth-container {
+        margin-top: 100px; /* Header-dən sabit məsafə */
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -44,11 +128,21 @@
                                                     {% elif 'designer' in choice.choice_value %}fa-palette
                                                     {% else %}fa-shopping-bag{% endif %} 
                                                     user-type-icon"></i>
-                                                <span class="user-type-name">{{ choice.choice_label }}</span>
+                                                <span class="user-type-name">
+                                                    {% if 'product_owner' in choice.choice_value %}
+                                                        Product
+                                                    {% else %}
+                                                        {{ choice.choice_label }}
+                                                    {% endif %}
+                                                </span>
                                                 <span class="user-type-desc">
                                                     {% for user_type in form.fields.user_type.queryset %}
                                                         {% if user_type.id|stringformat:"s" == choice.choice_value %}
-                                                            {{ user_type.description }}
+                                                            {% if 'product_owner' in choice.choice_value %}
+                                                                Owner
+                                                            {% else %}
+                                                                {{ user_type.description }}
+                                                            {% endif %}
                                                         {% endif %}
                                                     {% endfor %}
                                                 </span>
@@ -64,43 +158,6 @@
                                 <div class="input-with-icon">
                                     <i class="fas fa-user"></i>
                                     {{ form.name }}
-                                </div>
-                            </div>
-                            
-                            <!-- Telefon nömrəsi -->
-                            <div class="form-group phone-field">
-                                <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
-                                {{ form.phone_number }}
-                            </div>
-                        </div>
-
-                        <!-- Sağ sütun - Əlavə məlumat -->
-                        <div class="right-page">
-                            <!-- Şifrə -->
-                            <div class="form-group">
-                                <label for="id_password">{% trans "Şifrə" %}</label>
-                                <div class="input-with-icon password-field">
-                                    <i class="fas fa-lock"></i>
-                                    <input type="password" name="password" id="id_password" class="form-control" required>
-                                    <button type="button" class="toggle-password">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                                <div class="password-strength">
-                                    <div class="password-strength-meter"></div>
-                                </div>
-                                <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
-                            </div>
-                            
-                            <!-- Şifrə təsdiqi -->
-                            <div class="form-group">
-                                <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
-                                <div class="input-with-icon password-field">
-                                    <i class="fas fa-lock"></i>
-                                    <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
-                                    <button type="button" class="toggle-password">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
                                 </div>
                             </div>
                             
@@ -133,6 +190,43 @@
                                             <div class="age-range-label">{{ choice.choice_label }}</div>
                                         </label>
                                     {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sağ sütun - Əlavə məlumat -->
+                        <div class="right-page">
+                            <!-- Telefon nömrəsi -->
+                            <div class="form-group phone-field">
+                                <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
+                                {{ form.phone_number }}
+                            </div>
+                            
+                            <!-- Şifrə -->
+                            <div class="form-group">
+                                <label for="id_password">{% trans "Şifrə" %}</label>
+                                <div class="input-with-icon password-field">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" name="password" id="id_password" class="form-control" required>
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="password-strength-meter"></div>
+                                </div>
+                                <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
+                            </div>
+                            
+                            <!-- Şifrə təsdiqi -->
+                            <div class="form-group">
+                                <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
+                                <div class="input-with-icon password-field">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </div>
                             </div>
                             
@@ -184,7 +278,7 @@
     </div>
 </div>
 
-<!-- Bildiriş konteyner -->
+<!-- Bildiriş konteyner - gizli halda başlayır -->
 <div id="notification" class="notification">
     <div class="notification-icon">
         <i class="fas fa-check"></i>
@@ -249,18 +343,32 @@ document.addEventListener('DOMContentLoaded', function() {
             countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
             countryList.style.borderRadius = '10px';
             countryList.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(77, 240, 255, 0.15)';
+            countryList.style.maxHeight = '180px'; // Ölkə siyahısının hündürlüyünü məhdudlaşdırın
+            countryList.style.minWidth = '250px';
+            countryList.style.maxWidth = '280px';
         }
         
+        // Ölkə kodunu nömrədən aralı etmək
         var selectedFlag = document.querySelector('.iti__selected-flag');
         if (selectedFlag) {
             selectedFlag.style.backgroundColor = 'rgba(20, 30, 50, 0.6)';
             selectedFlag.style.borderRight = '1px solid rgba(77, 240, 255, 0.3)';
             selectedFlag.style.borderRadius = '8px 0 0 8px';
+            selectedFlag.style.marginRight = '10px';
         }
         
         var phoneInputField = document.getElementById('id_phone_number');
         if (phoneInputField) {
-            phoneInputField.style.paddingLeft = '90px';
+            phoneInputField.style.paddingLeft = '100px';
+        }
+        
+        // Ölkə elementlərinin stil düzəlişləri
+        var countryItems = document.querySelectorAll('.iti__country');
+        if (countryItems.length) {
+            countryItems.forEach(function(item) {
+                item.style.padding = '8px 10px';
+                item.style.fontSize = '13px';
+            });
         }
     }, 500);
     
@@ -274,17 +382,75 @@ document.addEventListener('DOMContentLoaded', function() {
         if (container) {
             // Ekran ölçüsünə görə container margin
             if (viewport < 600) {
-                container.style.margin = '20px auto';
+                container.style.margin = '100px auto 30px'; // Top margin fixed at 100px
             } else if (viewport < 800) {
-                container.style.margin = '40px auto';
+                container.style.margin = '100px auto 40px'; // Top margin fixed at 100px
             } else {
-                container.style.margin = '70px auto';
+                container.style.margin = '100px auto 70px'; // Top margin fixed at 100px
             }
         }
+        
+        // Təmin et ki, form elementləri stabil qalır
+        var icons = document.querySelectorAll('.input-with-icon i');
+        icons.forEach(function(icon) {
+            icon.style.position = 'absolute';
+            icon.style.left = '15px';
+            icon.style.top = '50%';
+            icon.style.transform = 'translateY(-50%)';
+        });
     }
     
     // İlkin layout tənzimləməsi
     adjustFormLayout();
+    
+    // Bildiriş sisteminin təkmilləşdirilməsi
+    window.showNotification = function(type, message) {
+        var notification = document.getElementById('notification');
+        var icon = notification.querySelector('.notification-icon i');
+        var text = notification.querySelector('.notification-text');
+        
+        // İkonu tipə görə dəyişdir
+        if (type === 'success') {
+            icon.className = 'fas fa-check';
+            notification.style.borderColor = '#4dff4d';
+        } else if (type === 'error') {
+            icon.className = 'fas fa-times';
+            notification.style.borderColor = '#ff4d4d';
+        } else if (type === 'info') {
+            icon.className = 'fas fa-info';
+            notification.style.borderColor = '#4d88ff';
+        } else if (type === 'warning') {
+            icon.className = 'fas fa-exclamation-triangle';
+            notification.style.borderColor = '#ffd24d';
+        }
+        
+        // Mesajı təyin et
+        text.textContent = message;
+        
+        // Bildirişi göstər
+        notification.classList.add('show');
+        
+        // Progress bar animasiyası əlavə et
+        var progress = notification.querySelector('.notification-progress');
+        progress.style.animation = 'none';
+        progress.offsetHeight; // Force reflow
+        progress.style.animation = 'progress 5s linear';
+        
+        // 5 saniyə sonra gizlət
+        setTimeout(function() {
+            notification.classList.remove('show');
+        }, 5000);
+    };
+    
+    // Progress animasiya stili əlavə et
+    var style = document.createElement('style');
+    style.textContent = `
+        @keyframes progress {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
+    `;
+    document.head.appendChild(style);
 });
 </script>
 {% endblock %}
