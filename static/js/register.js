@@ -1,3 +1,4 @@
+// static/js/register.js
 document.addEventListener('DOMContentLoaded', function() {
     // Form elementləri
     const registerForm = document.getElementById('register-form');
@@ -244,6 +245,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show notification
         notification.classList.add('show');
+        
+        // Progress bar animasiyası
+        const progress = notification.querySelector('.notification-progress');
+        progress.style.animation = 'none';
+        progress.offsetHeight; // Force reflow
+        progress.style.animation = 'progress 5s linear forwards';
         
         // Auto hide after 5 seconds
         setTimeout(() => {
@@ -536,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
         element.style.textOverflow = 'ellipsis';
     });
     
-    // ülkə seçim düzəlişləri
+    // Ölkə seçimi üçün stilləri nizamlamaq
     function adjustCountryDropdown() {
         const countryList = document.querySelector('.iti__country-list');
         if (countryList) {
@@ -544,10 +551,15 @@ document.addEventListener('DOMContentLoaded', function() {
             countryList.style.maxHeight = '300px';
             countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
             countryList.style.borderRadius = '10px';
+            countryList.style.zIndex = '100';
+            countryList.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(77, 240, 255, 0.15)';
             
             const countries = countryList.querySelectorAll('.iti__country');
             countries.forEach(country => {
                 country.style.color = 'white';
+                country.style.padding = '8px 10px';
+                country.style.fontSize = '13px';
+                
                 const countryName = country.querySelector('.iti__country-name');
                 const dialCode = country.querySelector('.iti__dial-code');
                 
@@ -555,32 +567,92 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (dialCode) dialCode.style.color = 'rgba(255, 255, 255, 0.9)';
             });
         }
+        
+        // Ölkə kodu ilə telefon nömrəsini ayırmaq
+        const selectedFlag = document.querySelector('.iti__selected-flag');
+        if (selectedFlag) {
+            selectedFlag.style.backgroundColor = 'rgba(20, 30, 50, 0.6)';
+            selectedFlag.style.borderRight = '1px solid rgba(77, 240, 255, 0.3)';
+            selectedFlag.style.borderRadius = '8px 0 0 8px';
+            selectedFlag.style.marginRight = '10px';
+        }
+        
+        // Telefon inputuna əlavə padding
+        const phoneInputField = document.getElementById('id_phone_number');
+        if (phoneInputField) {
+            phoneInputField.style.paddingLeft = '100px';
+        }
     }
     
     // Telefon input-da fokus olduqda ölkə dropdown-u düzəlt
-    phoneInputField.addEventListener('focus', function() {
-        setTimeout(adjustCountryDropdown, 100);
-    });
+    if (phoneInputField) {
+        phoneInputField.addEventListener('focus', function() {
+            setTimeout(adjustCountryDropdown, 100);
+        });
+        
+        // İlk yükləmədə də düzəltməyi yoxla
+        setTimeout(adjustCountryDropdown, 500);
+    }
     
-    // İlk yükləmədə də düzəltməyi yoxla
-    setTimeout(adjustCountryDropdown, 500);
+    // Tam ad və input focus effektləri
+    const nameInput = document.getElementById('id_name');
     
-    // Responsive form layout
+    if (nameInput) {
+        nameInput.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
+        });
+        
+        nameInput.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = 'none';
+        });
+    }
+    
+    if (phoneInputField) {
+        phoneInputField.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
+        });
+        
+        phoneInputField.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = 'none';
+        });
+    }
+    
+    // Responsive form layout - YENİLƏNMİŞ VƏ TƏKMİLLƏŞDİRİLMİŞ VERSİYA
     function adjustFormLayout() {
         const viewport = window.innerHeight;
         const container = document.querySelector('.auth-container');
         
         if (container) {
-            // Maintain fixed distance from top (header) regardless of screen size
-            if (viewport < 600) {
-                container.style.margin = '100px auto 30px'; // Fixed top margin at 100px
-            } else if (viewport < 800) {
-                container.style.margin = '100px auto 40px'; // Fixed top margin at 100px
-            } else {
-                container.style.margin = '100px auto 70px'; // Fixed top margin at 100px
+            // HEADER-DƏN SABİT MƏSAFƏ SAXLAYIRIQ - BU ƏN ÖNƏMLİ DƏRBƏN
+            const fixedTopMargin = 100; // Sabit header məsafəsi
+            
+            // Ekranın hündürlüyündən asılı olaraq bottom margin və scale dəyərini təyin edirik
+            if (viewport < 500) {
+                // Çox kiçik ekranlar üçün
+                container.style.margin = `${fixedTopMargin}px auto 30px`;
+                container.style.transform = 'scale(0.85)';
+                
+                // Çox kiçik ekranlarda əlavə scroll elavə etmək
+                const authForm = document.querySelector('.auth-form');
+                if (authForm) {
+                    authForm.style.maxHeight = '400px';
+                    authForm.style.overflowY = 'auto';
+                }
+            } 
+            else if (viewport < 600) {
+                container.style.margin = `${fixedTopMargin}px auto 30px`;
+                container.style.transform = 'scale(0.9)';
+            } 
+            else if (viewport < 800) {
+                container.style.margin = `${fixedTopMargin}px auto 40px`;
+                container.style.transform = 'scale(0.95)';
+            } 
+            else {
+                container.style.margin = `${fixedTopMargin}px auto 70px`;
+                container.style.transform = 'scale(1)';
             }
             
-            // Ensure icons are positioned correctly
+            // Təmin et ki, form elementləri stabil qalır
             const icons = document.querySelectorAll('.input-with-icon i');
             icons.forEach(function(icon) {
                 icon.style.position = 'absolute';
@@ -588,15 +660,81 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.style.top = '50%';
                 icon.style.transform = 'translateY(-50%)';
             });
+            
+            // Form container-in visible məsələsini həll et
+            container.style.overflowY = 'visible';
+            document.querySelector('.auth-form-container').style.overflowY = 'visible';
+            
+            // İnputların doğru göstərilməsini təmin et
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.style.width = '100%';
+            });
         }
     }
     
-    // İlkin və resize zamanı düzəlişlər
-    window.addEventListener('resize', adjustFormLayout);
+    // İlkin layout tənzimləməsi
     adjustFormLayout();
     
-    // Gizlət loading indicator-u
+    // Ekran ölçüsü dəyişdikdə də layout tənzimləməsi
+    window.addEventListener('resize', adjustFormLayout);
+    
+    // Progress animasiya stillərini əlavə et
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes progress {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Əmin ol ki, loading indicator tam gizlidir
     if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
     }
+    
+    // Əmin ol ki, cursor auto-dur
+    document.body.style.cursor = 'auto';
+    document.documentElement.style.cursor = 'auto';
+    
+    // Overflow problemini həll et - Tüm konteynerləri düzəltmək
+    document.querySelectorAll('.auth-form-container, .auth-scene, .auth-container').forEach(el => {
+        el.style.overflow = 'visible';
+        el.style.maxHeight = 'none';
+    });
+    
+    // Global showNotification funksiyası
+    window.showNotification = function(type, message) {
+        // Update icon
+        if (type === 'success') {
+            notificationIcon.className = 'fas fa-check';
+            notification.style.borderColor = '#4dff4d';
+        } else if (type === 'error') {
+            notificationIcon.className = 'fas fa-times';
+            notification.style.borderColor = '#ff4d4d';
+        } else if (type === 'info') {
+            notificationIcon.className = 'fas fa-info';
+            notification.style.borderColor = '#4d88ff';
+        } else if (type === 'warning') {
+            notificationIcon.className = 'fas fa-exclamation-triangle';
+            notification.style.borderColor = '#ffd24d';
+        }
+        
+        // Set message
+        notificationText.textContent = message;
+        
+        // Show notification
+        notification.classList.add('show');
+        
+        // Progress bar animasiyası
+        const progress = notification.querySelector('.notification-progress');
+        progress.style.animation = 'none';
+        progress.offsetHeight; // Force reflow
+        progress.style.animation = 'progress 5s linear';
+        
+        // 5 saniyə sonra gizlət
+        setTimeout(function() {
+            notification.classList.remove('show');
+        }, 5000);
+    };
 });
