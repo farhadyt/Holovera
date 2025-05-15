@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="auth-scene">
-    <!-- Optimizasiya olunmuş arxa fon -->
+    <!-- Arxa fon -->
     <div class="auth-bg"></div>
     
     <!-- Auth konteyner -->
@@ -23,17 +23,17 @@
             </div>
             
             <div class="auth-form">
-                <!-- Main Registration Form -->
+                <!-- Ana Qeydiyyat Formu -->
                 <form method="post" action="{% url 'register' %}" id="register-form">
                     {% csrf_token %}
                     
-                    <!-- Step 1: User Information - Book Layout -->
+                    <!-- Mərhələ 1: İstifadəçi məlumatları - İki sütun layout -->
                     <div id="registration-section" class="registration-section active">
-                        <!-- Left Page - Basic Information -->
+                        <!-- Sol sütun - Əsas məlumat -->
                         <div class="left-page">
-                            <!-- User Type Selection -->
+                            <!-- İstifadəçi tipi seçimi -->
                             <div class="form-group user-type-section">
-                                <label>{% trans "Siz kimsiz?" %}</label>
+                                <label>{% trans "Siz kimsiniz?" %}</label>
                                 <div class="user-type-container">
                                     {% for choice in form.user_type %}
                                         <label class="user-type-option">
@@ -58,98 +58,94 @@
                                 </div>
                             </div>
                             
-                            <div class="form-groups-wrapper">
-                                <!-- Full Name -->
-                                <div class="form-group name-field">
-                                    <label for="id_name">{% trans "Tam ad" %}</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-user"></i>
-                                        {{ form.name }}
-                                    </div>
+                            <!-- Tam ad -->
+                            <div class="form-group name-field">
+                                <label for="id_name">{% trans "Tam ad" %}</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user"></i>
+                                    {{ form.name }}
                                 </div>
-                                
-                                <!-- Phone Number with Country Code -->
-                                <div class="form-group phone-field">
-                                    <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
-                                    {{ form.phone_number }}
-                                </div>
+                            </div>
+                            
+                            <!-- Telefon nömrəsi -->
+                            <div class="form-group phone-field">
+                                <label for="id_phone_number">{% trans "Telefon nömrəsi" %}</label>
+                                {{ form.phone_number }}
                             </div>
                         </div>
 
-                        <!-- Right Page - Additional Information -->
+                        <!-- Sağ sütun - Əlavə məlumat -->
                         <div class="right-page">
-                            <div class="form-groups-wrapper">
-                                <!-- Password Field -->
-                                <div class="form-group">
-                                    <label for="id_password">{% trans "Şifrə" %}</label>
-                                    <div class="input-with-icon password-field">
-                                        <i class="fas fa-lock"></i>
-                                        <input type="password" name="password" id="id_password" class="form-control" required>
-                                        <button type="button" class="toggle-password">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <div class="password-strength">
-                                        <div class="password-strength-meter"></div>
-                                    </div>
-                                    <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
+                            <!-- Şifrə -->
+                            <div class="form-group">
+                                <label for="id_password">{% trans "Şifrə" %}</label>
+                                <div class="input-with-icon password-field">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" name="password" id="id_password" class="form-control" required>
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </div>
-                                
-                                <!-- Password Confirmation Field -->
-                                <div class="form-group">
-                                    <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
-                                    <div class="input-with-icon password-field">
-                                        <i class="fas fa-lock"></i>
-                                        <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
-                                        <button type="button" class="toggle-password">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
+                                <div class="password-strength">
+                                    <div class="password-strength-meter"></div>
                                 </div>
-                                
-                                <!-- Gender Selection -->
-                                <div class="form-group">
-                                    <label>{% trans "Cins" %}</label>
-                                    <div class="gender-container">
-                                        {% for choice in form.gender %}
-                                            <label class="gender-option">
-                                                {{ choice.tag }}
-                                                <div class="gender-label">
-                                                    <i class="fas 
-                                                        {% if choice.choice_value == 'M' %}fa-mars
-                                                        {% else %}fa-venus{% endif %} 
-                                                        gender-icon"></i>
-                                                    {{ choice.choice_label }}
-                                                </div>
-                                            </label>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                
-                                <!-- Age Range Selection -->
-                                <div class="form-group">
-                                    <label>{% trans "Yaş aralığı" %}</label>
-                                    <div class="age-range-container">
-                                        {% for choice in form.age_range %}
-                                            <label class="age-range-option">
-                                                {{ choice.tag }}
-                                                <div class="age-range-label">{{ choice.choice_label }}</div>
-                                            </label>
-                                        {% endfor %}
-                                    </div>
+                                <div class="password-hint">{% trans "Təhlükəsiz şifrə üçün ən az 8 simvol, hərf və rəqəm istifadə edin" %}</div>
+                            </div>
+                            
+                            <!-- Şifrə təsdiqi -->
+                            <div class="form-group">
+                                <label for="id_confirm_password">{% trans "Şifrəni təsdiqləyin" %}</label>
+                                <div class="input-with-icon password-field">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </div>
                             </div>
                             
-                            <!-- Hidden fields for Firebase info -->
+                            <!-- Cins seçimi -->
+                            <div class="form-group">
+                                <label>{% trans "Cins" %}</label>
+                                <div class="gender-container">
+                                    {% for choice in form.gender %}
+                                        <label class="gender-option">
+                                            {{ choice.tag }}
+                                            <div class="gender-label">
+                                                <i class="fas 
+                                                    {% if choice.choice_value == 'M' %}fa-mars
+                                                    {% else %}fa-venus{% endif %} 
+                                                    gender-icon"></i>
+                                                {{ choice.choice_label }}
+                                            </div>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <!-- Yaş aralığı -->
+                            <div class="form-group">
+                                <label>{% trans "Yaş aralığı" %}</label>
+                                <div class="age-range-container">
+                                    {% for choice in form.age_range %}
+                                        <label class="age-range-option">
+                                            {{ choice.tag }}
+                                            <div class="age-range-label">{{ choice.choice_label }}</div>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <!-- Gizli sahələr -->
                             {{ form.firebase_uid }}
                             {{ form.is_verified }}
                             
-                            <!-- Submit Button to Proceed to Verification -->
-                            <button type="button" id="send-code-btn" class="auth-button login-btn sms-button">{% trans "SMS kodu göndər" %}</button>
+                            <!-- SMS kodu göndərmə düyməsi -->
+                            <button type="button" id="send-code-btn" class="auth-button">{% trans "SMS kodu göndər" %}</button>
                         </div>
                     </div>
                     
-                    <!-- Step 2: Phone Verification -->
+                    <!-- Mərhələ 2: Telefon doğrulaması -->
                     <div id="verification-section" class="verification-section">
                         <div class="verification-header">
                             <h3>{% trans "Telefon nömrənizi təsdiqləyin" %}</h3>
@@ -174,7 +170,7 @@
                             <button type="button" id="resend-code-btn" disabled>{% trans "Yenidən göndər" %}</button>
                         </div>
                         
-                        <button type="button" id="verify-code-btn" class="auth-button login-btn">{% trans "Kodu doğrula və qeydiyyatdan keç" %}</button>
+                        <button type="button" id="verify-code-btn" class="auth-button">{% trans "Kodu doğrula və qeydiyyatdan keç" %}</button>
                         
                         <button type="button" id="back-btn" class="auth-button secondary-btn">{% trans "Geri qayıt" %}</button>
                     </div>
@@ -188,7 +184,7 @@
     </div>
 </div>
 
-<!-- Notification container -->
+<!-- Bildiriş konteyner -->
 <div id="notification" class="notification">
     <div class="notification-icon">
         <i class="fas fa-check"></i>
@@ -202,4 +198,93 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js"></script>
 <script src="{% static 'js/register.js' %}"></script>
+
+<script>
+// Əlavə JS - yükləndikdə işləyəcək
+document.addEventListener('DOMContentLoaded', function() {
+    // Loading indicatoru tamamilə gizlət (əgər varsa)
+    var loadingIndicator = document.querySelector('.loading-indicator');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+    }
+    
+    // Tam ad və telefon nömrəsi inputlarına fokus olduqda əlavə effektlər
+    var nameInput = document.getElementById('id_name');
+    var phoneInput = document.getElementById('id_phone_number');
+    
+    if (nameInput) {
+        nameInput.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
+        });
+        
+        nameInput.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = 'none';
+        });
+    }
+    
+    if (phoneInput) {
+        phoneInput.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
+        });
+        
+        phoneInput.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = 'none';
+        });
+    }
+    
+    // İstifadəçi tipi seçimlərində sözlərin bölünməsini əngəllə
+    var userTypeNames = document.querySelectorAll('.user-type-name');
+    userTypeNames.forEach(function(el) {
+        el.style.whiteSpace = 'nowrap';
+        el.style.overflow = 'hidden';
+        el.style.textOverflow = 'ellipsis';
+    });
+    
+    // intl-tel-input üçün əlavə düzəlişlər
+    setTimeout(function() {
+        var countryList = document.querySelector('.iti__country-list');
+        if (countryList) {
+            countryList.style.zIndex = '100';
+            countryList.style.backgroundColor = 'rgba(15, 25, 40, 0.95)';
+            countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+            countryList.style.borderRadius = '10px';
+            countryList.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(77, 240, 255, 0.15)';
+        }
+        
+        var selectedFlag = document.querySelector('.iti__selected-flag');
+        if (selectedFlag) {
+            selectedFlag.style.backgroundColor = 'rgba(20, 30, 50, 0.6)';
+            selectedFlag.style.borderRight = '1px solid rgba(77, 240, 255, 0.3)';
+            selectedFlag.style.borderRadius = '8px 0 0 8px';
+        }
+        
+        var phoneInputField = document.getElementById('id_phone_number');
+        if (phoneInputField) {
+            phoneInputField.style.paddingLeft = '90px';
+        }
+    }, 500);
+    
+    // Form elementlərinin düzgün spacing olması üçün
+    window.addEventListener('resize', adjustFormLayout);
+    
+    function adjustFormLayout() {
+        const viewport = window.innerHeight;
+        const container = document.querySelector('.auth-container');
+        
+        if (container) {
+            // Ekran ölçüsünə görə container margin
+            if (viewport < 600) {
+                container.style.margin = '20px auto';
+            } else if (viewport < 800) {
+                container.style.margin = '40px auto';
+            } else {
+                container.style.margin = '70px auto';
+            }
+        }
+    }
+    
+    // İlkin layout tənzimləməsi
+    adjustFormLayout();
+});
+</script>
 {% endblock %}

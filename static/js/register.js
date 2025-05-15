@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Form elements
+    // Form elementləri
     const registerForm = document.getElementById('register-form');
     const registrationSection = document.getElementById('registration-section');
     const verificationSection = document.getElementById('verification-section');
@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationIcon = notification.querySelector('.notification-icon i');
     const formContainer = document.querySelector('.auth-form-container');
     
-    // Toggle password buttons
+    // Toggle password buttonları
     const togglePasswordBtns = document.querySelectorAll('.toggle-password');
     
-    // Initialize telephone input
+    // Telefon input inisiallizasiyası
     const phoneInputField = document.querySelector("#id_phone_number");
     const phoneInput = window.intlTelInput(phoneInputField, {
         preferredCountries: ["az", "tr", "ru", "gb", "us"],
@@ -31,154 +31,17 @@ document.addEventListener('DOMContentLoaded', function() {
         customContainer: "phone-input-container"
     });
 
-    // Fix - telefon input CSS düzəltməsi - padding artırılacaq
-    phoneInputField.style.paddingLeft = '100px'; // 90px yerinə 100px
-
-    // Əlavə olaraq, flag konteyneri və dropdown üçün CSS tənzimləmələri
-    const flagContainer = document.querySelector('.iti__flag-container');
-    if (flagContainer) {
-        flagContainer.style.width = '90px';
+    // Loading indicatoru gizlət (əgər varsa)
+    const loadingIndicator = document.querySelector('.loading-indicator');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
     }
 
-    const selectedFlag = document.querySelector('.iti__selected-flag');
-    if (selectedFlag) {
-        selectedFlag.style.width = '90px';
-    }
-
-    // Səhifə yükləndikdə başlanğıc tənzimləmələr
-    window.addEventListener('load', function() {
-        // Formun yuxarıdan məsafəsini tənzimlə
-        adjustFormSpacing();
-        
-        // Scroll-u yuxarı hissəyə sıfırla
-        window.scrollTo(0, 0);
-        
-        // Body overflow-i aktiv et
-        document.body.style.overflowY = 'auto';
-        
-        // Ensure registration section is active on load
-        registrationSection.classList.add('active');
-        verificationSection.classList.remove('active');
-        
-        // Add animation to form inputs
-        animateFormElements(registrationSection);
-    });
-    
-    // Ekran ölçüsü dəyişəndə form yerləşməsini tənzimlə
-    window.addEventListener('resize', adjustFormSpacing);
-    
-    // Input focus effektləri
-    const formInputs = document.querySelectorAll('.form-control');
-    formInputs.forEach(input => {
-        // Focus/blur effektləri
-        input.addEventListener('focus', function() {
-            this.parentElement.classList.add('input-focused');
-        });
-        
-        input.addEventListener('blur', function() {
-            this.parentElement.classList.remove('input-focused');
-        });
-        
-        // Touch cihazlarda istifadə rahatlığı
-        input.addEventListener('touchstart', function() {
-            this.focus();
-        });
-    });
-    
-    // Radio buttons və checkbox effektləri
-    const radioInputs = document.querySelectorAll('input[type="radio"]');
-    radioInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            // Aktiv element üçün pulse animasiyası
-            if (this.checked) {
-                const label = this.closest('label');
-                addTemporaryClass(label, 'pulse-effect', 600);
-            }
-        });
-    });
-    
-    // Form spacing funksiyası
-    function adjustFormSpacing() {
-        const vh = window.innerHeight;
-        const authContainer = document.querySelector('.auth-container');
-        const headerHeight = 70; // Nav bar hündürlüyü
-        
-        // Kiçik ekranlarda, daha az margin əlavə et
-        if (vh < 600) {
-            authContainer.style.margin = '75px auto 20px';
-        } else if (vh < 700) {
-            authContainer.style.margin = '85px auto 20px';
-        } else if (vh < 800) {
-            authContainer.style.margin = '95px auto 30px';
-        } else {
-            authContainer.style.margin = '100px auto 50px';
-        }
-        
-        // Mobil görünüş düzəlişi
-        if (window.innerWidth <= 768) {
-            const registerForm = document.querySelector('.register-form');
-            if (registerForm) {
-                registerForm.classList.add('mobile-view');
-            }
-            
-            // Kitab effektini deaktiv et (mobil üçün)
-            formContainer.style.transformStyle = 'flat';
-        } else {
-            const registerForm = document.querySelector('.register-form');
-            if (registerForm) {
-                registerForm.classList.remove('mobile-view');
-            }
-            
-            // Kitab effektini aktiv et (desktop üçün)
-            formContainer.style.transformStyle = 'preserve-3d';
-        }
-        
-        // Telefon input initialization sonrası yenidən hesabla (gecikmə ilə)
-        setTimeout(() => {
-            if (phoneInputField) {
-                phoneInputField.style.paddingLeft = '100px';
-            }
-        }, 500);
-    }
-    
-    // Animasiyalı giriş effekti
-    function animateFormElements(container) {
-        const formElements = container.querySelectorAll('.form-group, .auth-button');
-        
-        formElements.forEach((element, index) => {
-            // Hər element üçün gecikmə ilə animasiya
-            setTimeout(() => {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(20px)';
-                
-                // Təmiz CSS transition əlavə et
-                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                
-                // Növbəti frame-də animasiyanı başlat
-                requestAnimationFrame(() => {
-                    element.style.opacity = '1';
-                    element.style.transform = 'translateY(0)';
-                });
-            }, 100 + (index * 100)); // Hər element üçün +100ms gecikmə
-        });
-    }
-    
-    // Müvəqqəti class əlavə etmək üçün köməkçi funksiya
-    function addTemporaryClass(element, className, duration) {
-        element.classList.add(className);
-        setTimeout(() => {
-            element.classList.remove(className);
-        }, duration);
-    }
-    
-    // Password göstərmə/gizlətmə butonlarını aktivləşdirmək
+    // Şifrə göstərmə/gizlətmə butonlarını aktivləşdirmək
     togglePasswordBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const input = this.closest('.password-field').querySelector('input');
             togglePasswordVisibility(input, this);
-            
-            // Kiçik animasiya effekti
-            addTemporaryClass(this, 'pulse-effect', 300);
         });
     });
     
@@ -240,17 +103,12 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('input', function() {
             if (this.value && index < codeInputs.length - 1) {
                 codeInputs[index + 1].focus();
-                
-                // Növbəti inputa keçən zaman kiçik animasiya
-                addTemporaryClass(codeInputs[index + 1], 'glowing-border-animation', 600);
             }
             
             // Check if all inputs are filled
             const allFilled = [...codeInputs].every(input => input.value.trim() !== '');
             if (allFilled) {
                 verifyCodeBtn.focus();
-                // Bütün kodlar daxil edildikdə düyməni vurğula
-                addTemporaryClass(verifyCodeBtn, 'pulse-effect', 600);
             }
         });
         
@@ -282,15 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Paste zamanı son fokuslanmış inputu vurğula
-                const lastIndex = Math.min(index + digits.length - 1, codeInputs.length - 1);
-                addTemporaryClass(codeInputs[lastIndex], 'glowing-border-animation', 600);
-                
                 // Əgər bütün inputlar doldurulubsa, düyməni fokusla
                 const allFilled = [...codeInputs].every(input => input.value.trim() !== '');
                 if (allFilled) {
                     verifyCodeBtn.focus();
-                    addTemporaryClass(verifyCodeBtn, 'pulse-effect', 600);
                 }
             }
         });
@@ -310,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!nameField.value.trim()) {
             showNotification('error', 'Zəhmət olmasa tam adınızı daxil edin');
             nameField.focus();
-            // Xəta halında inputu vurğula
-            addTemporaryClass(nameField.parentElement, 'error-highlight', 800);
             return false;
         }
         
@@ -319,8 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!phoneInput.isValidNumber()) {
             showNotification('error', 'Zəhmət olmasa düzgün telefon nömrəsi daxil edin');
             phoneInputField.focus();
-            // Xəta halında inputu vurğula
-            addTemporaryClass(phoneInputField.parentElement, 'error-highlight', 800);
             return false;
         }
         
@@ -329,8 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (password.length < 8) {
             showNotification('error', 'Şifrə ən az 8 simvoldan ibarət olmalıdır');
             passwordInput.focus();
-            // Xəta halında inputu vurğula
-            addTemporaryClass(passwordInput.parentElement, 'error-highlight', 800);
             return false;
         }
         
@@ -338,8 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (password !== confirmPasswordInput.value) {
             showNotification('error', 'Şifrələr uyğun gəlmir');
             confirmPasswordInput.focus();
-            // Xəta halında inputu vurğula
-            addTemporaryClass(confirmPasswordInput.parentElement, 'error-highlight', 800);
             return false;
         }
         
@@ -347,9 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const genderSelected = registerForm.querySelector('input[name="gender"]:checked');
         if (!genderSelected) {
             showNotification('error', 'Zəhmət olmasa cinsinizi seçin');
-            // Cins bölməsini vurğula
-            const genderContainer = document.querySelector('.gender-container');
-            addTemporaryClass(genderContainer, 'error-highlight', 800);
             return false;
         }
         
@@ -357,9 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const ageRangeSelected = registerForm.querySelector('input[name="age_range"]:checked');
         if (!ageRangeSelected) {
             showNotification('error', 'Zəhmət olmasa yaş aralığınızı seçin');
-            // Yaş bölməsini vurğula
-            const ageContainer = document.querySelector('.age-range-container');
-            addTemporaryClass(ageContainer, 'error-highlight', 800);
             return false;
         }
         
@@ -427,9 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 formContainer.style.opacity = '1';
                 formContainer.style.transform = 'scale(1)';
                 
-                // Form elementlərini ardıcıl animasiya ilə göstər
-                animateFormElements(registrationSection);
-                
                 // Scroll to top after switching
                 window.scrollTo(0, 0);
             }, 300);
@@ -448,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // İlk kod inputuna fokuslan
                 codeInputs[0].focus();
-                codeInputs[0].classList.add('glowing-border-animation');
                 
                 // Scroll to top after switching
                 window.scrollTo(0, 0);
@@ -458,9 +293,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Send verification code
     sendCodeBtn.addEventListener('click', function() {
-        // Düyməni basarkən animasiya
-        addTemporaryClass(this, 'pulse-effect', 300);
-        
         // Validate form
         if (!validateRegistrationForm()) {
             return;
@@ -526,9 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verify code
     verifyCodeBtn.addEventListener('click', function() {
-        // Düyməni basarkən animasiya
-        addTemporaryClass(this, 'pulse-effect', 300);
-        
         // Get verification code
         let verificationCode = '';
         let isValid = true;
@@ -543,13 +372,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isValid) {
             showNotification('error', 'Zəhmət olmasa bütün rəqəmləri daxil edin');
             codeInputs[0].focus();
-            
-            // Doldurulmamış inputların hamısını vurğula
-            codeInputs.forEach(input => {
-                if (!input.value) {
-                    addTemporaryClass(input, 'error-highlight', 800);
-                }
-            });
             return;
         }
         
@@ -633,10 +455,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 verifyCodeBtn.disabled = false;
                 verifyCodeBtn.innerHTML = 'Kodu doğrula və qeydiyyatdan keç';
                 
-                // Clear inputs, focus first one and highlight all
+                // Clear inputs, focus first one
                 codeInputs.forEach(input => {
                     input.value = '';
-                    addTemporaryClass(input, 'error-highlight', 800);
                 });
                 codeInputs[0].focus();
             }
@@ -651,18 +472,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Back button
     backBtn.addEventListener('click', function() {
-        // Düyməni basarkən animasiya
-        addTemporaryClass(this, 'pulse-effect', 300);
-        
         switchToSection('registration');
     });
     
     // Resend code
     resendCodeBtn.addEventListener('click', function() {
         if (resendCodeBtn.disabled) return;
-        
-        // Düyməni basarkən animasiya
-        addTemporaryClass(this, 'pulse-effect', 300);
         
         // Return to registration section
         switchToSection('registration');
@@ -702,8 +517,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (secondsLeft <= 0) {
                 clearInterval(resendTimer);
                 resendCodeBtn.disabled = false;
-                // Düymə aktiv olduqda vurğula
-                addTemporaryClass(resendCodeBtn, 'pulse-effect', 600);
             }
         }, 1000);
     }
@@ -714,21 +527,60 @@ document.addEventListener('DOMContentLoaded', function() {
         // The form is submitted via fetch in the verify code function
     });
     
-    // Touch friendly event handlers
-    if ('ontouchstart' in window) {
-        // Touch cihazları üçün hover effektini simul edək
-        const hoverElements = document.querySelectorAll('.user-type-label, .gender-label, .age-range-label, .auth-button');
-        
-        hoverElements.forEach(element => {
-            element.addEventListener('touchstart', function() {
-                this.classList.add('touch-hover');
-            });
+    // User tipi ətraflı görünməsi üçün
+    const userTypeNames = document.querySelectorAll('.user-type-name');
+    userTypeNames.forEach(function(element) {
+        // Əmin ol ki, heç bir halda mətn bölünməsin
+        element.style.whiteSpace = 'nowrap';
+        element.style.overflow = 'hidden';
+        element.style.textOverflow = 'ellipsis';
+    });
+    
+    // ülkə seçim düzəlişləri
+    function adjustCountryDropdown() {
+        const countryList = document.querySelector('.iti__country-list');
+        if (countryList) {
+            countryList.style.backgroundColor = 'rgba(15, 25, 40, 0.95)';
+            countryList.style.maxHeight = '300px';
+            countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+            countryList.style.borderRadius = '10px';
             
-            element.addEventListener('touchend', function() {
-                setTimeout(() => {
-                    this.classList.remove('touch-hover');
-                }, 200);
+            const countries = countryList.querySelectorAll('.iti__country');
+            countries.forEach(country => {
+                country.style.color = 'white';
+                const countryName = country.querySelector('.iti__country-name');
+                const dialCode = country.querySelector('.iti__dial-code');
+                
+                if (countryName) countryName.style.color = 'rgba(255, 255, 255, 0.9)';
+                if (dialCode) dialCode.style.color = 'rgba(255, 255, 255, 0.9)';
             });
-        });
+        }
     }
-}); 
+    
+    // Telefon input-da fokus olduqda ölkə dropdown-u düzəlt
+    phoneInputField.addEventListener('focus', function() {
+        setTimeout(adjustCountryDropdown, 100);
+    });
+    
+    // İlk yükləmədə də düzəltməyi yoxla
+    setTimeout(adjustCountryDropdown, 500);
+    
+    // Responsive form layout
+    function adjustFormLayout() {
+        const viewport = window.innerHeight;
+        if (viewport < 700) {
+            document.querySelector('.auth-container').style.margin = '30px auto';
+        } else {
+            document.querySelector('.auth-container').style.margin = '70px auto';
+        }
+    }
+    
+    // İlkin və resize zamanı düzəlişlər
+    window.addEventListener('resize', adjustFormLayout);
+    adjustFormLayout();
+    
+    // Gizlət loading indicator-u
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+    }
+});

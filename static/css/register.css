@@ -1,26 +1,32 @@
 /* =========== FUTURISTIK KITAB DİZAYNI REGISTER FORMU =========== */
 
 /* Global reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html, body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
     overflow-x: hidden;
     background-color: var(--bg-color, #0a1019);
-    scroll-behavior: smooth;
+    font-family: 'Montserrat', sans-serif;
 }
 
-/* Header fixed position - sabit yüksəklik */
+/* Header fixed position */
 .integrated-nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 9999; /* Ən yuxarıda görünsün */
+    z-index: 9999;
     background-color: rgba(10, 16, 25, 0.95);
     backdrop-filter: blur(10px);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    height: 70px; /* Sabit hündürlük */
+    height: 70px;
 }
 
 /* Ana container - əsas səhifə strukturu */
@@ -28,74 +34,94 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Mərkəzləşdirmə */
+    justify-content: center;
     min-height: 100vh;
     width: 100%;
     box-sizing: border-box;
-    padding: 85px 0; /* Yuxarıdan və aşağıdan bərabər məsafə */
+    padding: 100px 0; /* Yuxarıdan və aşağıdan bərabər məsafə */
 }
 
-/* Main content area - book container */
+/* Main content area */
 .auth-scene {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    flex-grow: 0; /* Böyüməni əngəlləyir */
+    flex-grow: 0;
     position: relative;
+    margin: 30px 0;
 }
 
-/* Kitab forması container */
+/* Form container */
 .auth-container {
     width: 100%;
-    max-width: 1000px; /* Kitab üçün lazım olan genişlik */
-    margin: 100px auto 50px;
+    max-width: 1000px;
+    margin: 70px auto 70px; /* Yuxarı və aşağı marjinləri bərabər etdim */
     position: relative;
-    transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
     z-index: 10;
-    perspective: 1500px; /* 3D kitab effekti üçün */
+    perspective: 1000px;
 }
 
-/* Kitab formu */
+/* Form dizaynı */
 .auth-form-container {
-    height: auto;
     background: rgba(10, 15, 25, 0.85);
     border-radius: 16px;
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(77, 240, 255, 0.15);
     border: 1px solid rgba(77, 240, 255, 0.2);
-    transition: all 0.5s ease-in-out;
-    overflow: hidden; /* Taşmanı əngəlləyir */
+    overflow: visible;
     display: flex;
-    flex-direction: column; /* Başlıq və form bölümü üçün */
-    max-height: calc(100vh - 170px); /* Ekrandan çıxmaması üçün */
-    transform-style: preserve-3d;
-    animation: formEntrance 0.8s forwards;
+    flex-direction: column;
+    min-height: 600px;
+    max-width: 1000px;
 }
 
-@keyframes formEntrance {
-    0% {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+/* Başlıq hissəsi */
+.auth-header {
+    text-align: center;
+    padding: 35px 30px 20px !important;
+    background: linear-gradient(to bottom, rgba(15, 25, 40, 0.8), rgba(10, 15, 25, 0.6));
+    border-radius: 16px 16px 0 0;
+    border-bottom: 2px solid rgba(77, 240, 255, 0.3);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Kitabın səhifələri xüsusi təyin */
+.auth-header h2 {
+    color: white;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(77, 240, 255, 0.6);
+}
+
+.auth-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(77, 240, 255, 0.8), transparent);
+}
+
+.auth-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(77, 240, 255, 0.5), transparent);
+    width: 50%;
+    margin: 0 auto 10px;
+    position: relative;
+}
+
+/* Formun içi */
 .register-form {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-
-.register-form .auth-header {
-    text-align: center;
-    margin-bottom: 25px;
-    width: 100%;
-    padding: 25px 30px 0;
 }
 
 .register-form .auth-form {
@@ -114,341 +140,84 @@ html, body {
 /* Bölmələrin görünümü */
 .registration-section,
 .verification-section {
-    display: none; /* Default olaraq gizli */
+    display: none;
     width: 100%;
 }
 
 .registration-section.active {
     display: flex;
-    animation: fadeIn 0.5s ease;
+    width: 100%;
 }
 
 .verification-section.active {
     display: block;
-    animation: fadeIn 0.5s ease;
     padding: 20px 30px;
 }
 
-/* Kitab səhifələri */
+/* İki sütunlu form layout */
 #registration-section {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
 
-/* Sol səhifə - user informasiyası */
+/* Sol səhifə */
 .left-page {
     flex: 1;
-    padding: 0 30px 30px;
+    padding: 40px 30px 30px; /* Yuxarıdan daha çox padding */
     box-sizing: border-box;
     overflow-y: auto;
-    max-height: calc(100vh - 240px);
-    border-right: 1px solid rgba(77, 240, 255, 0.2);
     background: linear-gradient(135deg, 
-        rgba(20, 30, 48, 0.7) 0%, 
-        rgba(12, 20, 35, 0.7) 100%);
+        rgba(20, 30, 50, 0.7) 0%, 
+        rgba(15, 25, 40, 0.7) 100%);
     position: relative;
-    transition: all 0.4s ease;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     box-shadow: inset -10px 0 10px -10px rgba(0, 0, 0, 0.5);
+    border-right: 1px solid rgba(77, 240, 255, 0.2);
 }
 
-/* Sağ səhifə - doğrulama və əlavə məlumat */
+/* Sağ səhifə */
 .right-page {
     flex: 1;
-    padding: 0 30px 30px;
+    padding: 40px 30px 30px; /* Yuxarıdan daha çox padding */
     box-sizing: border-box;
     overflow-y: auto;
-    max-height: calc(100vh - 240px);
     background: linear-gradient(225deg, 
-        rgba(20, 30, 48, 0.7) 0%, 
-        rgba(12, 20, 35, 0.7) 100%);
+        rgba(20, 30, 50, 0.7) 0%, 
+        rgba(15, 25, 40, 0.7) 100%);
     position: relative;
-    transition: all 0.4s ease;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     box-shadow: inset 10px 0 10px -10px rgba(0, 0, 0, 0.5);
 }
 
-/* Səhifələr üçün hover effekti */
-.left-page:hover, .right-page:hover {
-    background: linear-gradient(135deg, 
-        rgba(25, 35, 55, 0.75) 0%, 
-        rgba(15, 25, 40, 0.75) 100%);
-}
-
-/* Kitab kənarı effekti */
-.auth-form-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 2px;
-    background: linear-gradient(to bottom, 
-        rgba(77, 240, 255, 0.05) 0%, 
-        rgba(77, 240, 255, 0.4) 50%, 
-        rgba(77, 240, 255, 0.05) 100%);
-    z-index: 5;
-    pointer-events: none;
-    box-shadow: 0 0 10px rgba(77, 240, 255, 0.3);
-}
-
-/* Sürüşdürmə paneli dizaynı */
-.auth-form-container > div::-webkit-scrollbar,
-.left-page::-webkit-scrollbar,
-.right-page::-webkit-scrollbar {
-    width: 5px;
-    background-color: rgba(10, 16, 25, 0.2);
-}
-
-.auth-form-container > div::-webkit-scrollbar-thumb,
-.left-page::-webkit-scrollbar-thumb,
-.right-page::-webkit-scrollbar-thumb {
-    background: rgba(77, 240, 255, 0.4);
-    border-radius: 10px;
-}
-
-.auth-form-container > div::-webkit-scrollbar-thumb:hover,
-.left-page::-webkit-scrollbar-thumb:hover,
-.right-page::-webkit-scrollbar-thumb:hover {
-    background: rgba(77, 240, 255, 0.6);
-}
-
-/* SON FIX: Bütün header scrolling problemlərinin birbaşa həlli */
-@media screen and (max-width: 1200px) {
-    .auth-page {
-        padding: 85px 0;
-    }
-    .left-page, .right-page {
-        max-height: calc(100vh - 240px);
-    }
-    .auth-container {
-        margin: 90px auto 40px;
-    }
-}
-
-@media screen and (max-width: 992px) {
-    .auth-page {
-        padding: 80px 0;
-    }
-    .left-page, .right-page {
-        max-height: calc(100vh - 230px);
-    }
-    .auth-container {
-        margin: 85px auto 35px;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .auth-page {
-        padding: 75px 0;
-    }
-    .auth-form-container {
-        border-radius: 12px;
-        max-height: none;
-    }
-    #registration-section {
-        flex-direction: column;
-    }
-    .left-page, .right-page {
-        max-height: none;
-        border-radius: 0;
-        padding: 20px;
-        overflow: visible;
-    }
-    .left-page {
-        border-right: none;
-        border-bottom: 1px solid rgba(77, 240, 255, 0.2);
-    }
-    .auth-container {
-        margin: 80px auto 30px;
-    }
-    .auth-form-container::after {
-        display: none;
-    }
-}
-
-@media screen and (max-width: 576px) {
-    .auth-page {
-        padding: 70px 0;
-    }
-    .left-page, .right-page {
-        padding: 15px;
-    }
-    .register-form .auth-header {
-        padding: 20px 15px 0;
-    }
-    .verification-section.active {
-        padding: 15px;
-    }
-    .auth-container {
-        margin: 75px auto 25px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .auth-page {
-        padding: 65px 0;
-    }
-    .auth-container {
-        width: 95%;
-        margin: 70px auto 20px;
-    }
-    .left-page, .right-page {
-        padding: 15px;
-    }
-}
-
-/* Çox alçaq ekranlar */
-@media screen and (max-height: 650px) {
-    .auth-page {
-        padding: 72px 0;
-    }
-    .left-page, .right-page {
-        max-height: calc(100vh - 220px);
-    }
-    .auth-container {
-        margin: 75px auto 25px;
-    }
-}
-
-/* Çox alçaq və kiçik ekranlar */
-@media screen and (max-height: 550px) {
-    .auth-page {
-        padding: 70px 0;
-    }
-    .left-page, .right-page {
-        max-height: calc(100vh - 200px);
-    }
-    .auth-container {
-        margin: 70px auto 20px;
-    }
-}
-
-/* Form başlığı */
-.auth-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.auth-header h2 {
-    color: white;
-    font-size: 24px;
-    margin-bottom: 15px;
-    position: relative;
-    display: inline-block;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    animation: glowText 3s infinite alternate;
-}
-
-@keyframes glowText {
-    0%, 100% {
-        text-shadow: 0 0 5px rgba(77, 240, 255, 0.5);
-    }
-    50% {
-        text-shadow: 0 0 15px rgba(77, 240, 255, 0.8);
-    }
-}
-
-.auth-header h2::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -8px;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary-color) 0%, transparent 100%);
-    border-radius: 3px;
-    animation: slideGradient 3s infinite alternate;
-}
-
-@keyframes slideGradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    100% {
-        background-position: 100% 50%;
-    }
-}
-
-.auth-divider {
-    height: 1px;
-    background: linear-gradient(90deg, rgba(77, 240, 255, 0.5) 0%, transparent 100%);
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-}
-
-.auth-divider::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(77, 240, 255, 0.8), transparent);
-    animation: slideDivider 3s infinite;
-}
-
-@keyframes slideDivider {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
-    }
-}
-
-/* Form elementləri */
+/* Form qrupları */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 35px; /* Məsafəni artırdım */
     position: relative;
 }
 
-/* Mobil responsive */
-@media screen and (max-width: 767px) {
-    .user-type-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .user-type-option {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-    
-    .gender-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .gender-option {
-        width: 100%;
-    }
-    
-    .user-type-label {
-        min-height: auto;
-        padding: 12px 15px;
-        flex-direction: row;
-        text-align: left;
-    }
-    
-    .user-type-icon {
-        margin-right: 15px;
-        margin-bottom: 0;
-    }
+/* Tam ad və telefon nömrəsi inputlarını aralı etdim */
+.form-group.name-field {
+    margin-bottom: 45px !important; /* Daha çox məsafə */
 }
 
-/* User type selection styles */
+.form-group.phone-field {
+    margin-bottom: 40px !important; /* Daha çox məsafə */
+}
+
+/* "Siz kimsiniz?" bölümü */
+.user-type-section {
+    margin-bottom: 40px;
+    padding: 0;
+    position: relative;
+}
+
 .user-type-container {
     display: flex;
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
 }
 
@@ -474,84 +243,224 @@ html, body {
     border-radius: 12px;
     border: 2px solid rgba(77, 240, 255, 0.25);
     background: rgba(12, 18, 30, 0.8);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     text-align: center;
-    height: 100%;
-    min-height: 120px;
+    min-height: 130px;
+    justify-content: center;
 }
 
 .user-type-icon {
     font-size: 28px;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    color: var(--primary-color, #4DF0FF);
 }
 
 .user-type-name {
     font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 6px;
+    font-size: 14px;
+    margin-bottom: 8px;
     color: white;
-    word-break: break-word;
+    white-space: nowrap; /* Sözlərin ayırılmaması üçün */
+    display: inline-block; /* Blok elementini düzəltmək üçün */
+    max-width: 100%; /* Maksimum genişlik */
+    padding: 0 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user-type-desc {
     font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.3;
-    word-break: break-word;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+    max-width: 100%;
+    white-space: normal; /* Təsvir sətirləri arasında normal keçid əldə etmək üçün */
 }
 
 .user-type-option input:checked + .user-type-label {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 20px rgba(77, 240, 255, 0.5);
+    border-color: var(--primary-color, #4DF0FF);
+    box-shadow: 0 0 20px rgba(77, 240, 255, 0.4);
     background: rgba(77, 240, 255, 0.15);
-    transform: translateY(-5px);
 }
 
-.user-type-option input:checked + .user-type-label .user-type-icon {
-    transform: scale(1.2);
+/* Label stilleri */
+label {
+    color: rgba(255, 255, 255, 0.95); /* Daha açıq rəng */
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: block;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(77, 240, 255, 0.4);
+}
+
+/* Input stilleri */
+.form-control {
+    width: 100%;
+    background: rgba(20, 30, 50, 0.4) !important;
+    border: 2px solid rgba(77, 240, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    padding: 14px 15px 14px 45px !important;
+    transition: all 0.2s ease !important;
+    backdrop-filter: blur(5px);
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    background: rgba(25, 35, 55, 0.5) !important;
+    border-color: var(--primary-color, #4DF0FF) !important;
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.3) !important;
+    outline: none;
+}
+
+/* İkon stilleri */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color, #4DF0FF);
+    font-size: 16px;
+    z-index: 5;
+    transition: all 0.2s ease;
+}
+
+/* Şifrə görünürlük button */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--primary-color, #4DF0FF);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    z-index: 10;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:hover {
     color: white;
-    text-shadow: 0 0 10px rgba(77, 240, 255, 0.8);
 }
 
-/* Mobil görünüş */
-@media screen and (max-width: 767px) {
-    .user-type-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .user-type-option {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-    
-    .user-type-label {
-        min-height: auto;
-        padding: 12px 15px;
-        flex-direction: row;
-        text-align: left;
-        justify-content: flex-start;
-    }
-    
-    .user-type-icon {
-        margin-right: 15px;
-        margin-bottom: 0;
-    }
+.toggle-password:focus {
+    outline: none;
 }
 
-/* SMS düyməsini mərkəzləşdirmək - tam sadə versiyon */
-.right-page .auth-button {
-    border-radius: 30px !important;
-    background: linear-gradient(135deg, rgba(77, 240, 255, 0.9) 0%, rgba(77, 180, 255, 0.9) 100%) !important;
-    margin-top: 20px !important;
-    position: relative !important;
-    left: -10% !important; /* Sol tərəfə doğru sürüşdürmə */
-    width: 120% !important; /* Genişləndirmə */
+.input-with-icon.password-field input {
+    padding-right: 45px !important;
 }
 
-/* YAŞ ARALIĞI DİZAYNI */
+/* Şifrə gücü indikatoru */
+.password-strength {
+    height: 5px;
+    border-radius: 5px;
+    margin-top: 8px;
+    background: rgba(30, 40, 60, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.password-strength-meter {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-weak {
+    background-color: #ff4d4d;
+    width: 33%;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.5);
+}
+
+.strength-medium {
+    background-color: #ffa64d;
+    width: 66%;
+    box-shadow: 0 0 8px rgba(255, 166, 77, 0.5);
+}
+
+.strength-strong {
+    background-color: #4dff4d;
+    width: 100%;
+    box-shadow: 0 0 8px rgba(77, 255, 77, 0.5);
+}
+
+.password-hint {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    padding-left: 2px;
+}
+
+.password-hint.show {
+    opacity: 1;
+}
+
+/* Cins seçimi */
+.gender-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.gender-option {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.gender-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.gender-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid rgba(77, 240, 255, 0.3);
+    background: rgba(12, 18, 30, 0.8);
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.gender-option input:checked + .gender-label {
+    border-color: var(--primary-color, #4DF0FF);
+    background: rgba(77, 240, 255, 0.15);
+    color: white;
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.3);
+}
+
+.gender-icon {
+    margin-right: 10px;
+    color: var(--primary-color, #4DF0FF);
+    font-size: 16px;
+}
+
+.gender-option input:checked + .gender-label .gender-icon {
+    color: white;
+}
+
+/* Yaş aralığı */
 .age-range-container {
     display: flex;
     gap: 10px;
@@ -583,7 +492,7 @@ html, body {
     border-radius: 10px;
     border: 2px solid rgba(77, 240, 255, 0.3);
     background: rgba(12, 18, 30, 0.8);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     font-size: 15px;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.95);
@@ -593,369 +502,115 @@ html, body {
 }
 
 .age-range-option input:checked + .age-range-label {
-    border-color: var(--primary-color);
-    background: rgba(77, 240, 255, 0.2);
+    border-color: var(--primary-color, #4DF0FF);
+    background: rgba(77, 240, 255, 0.15);
     color: white;
     font-weight: 600;
-    box-shadow: 0 0 15px rgba(77, 240, 255, 0.4);
-    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.3);
 }
 
-/* Hover effect */
-.age-range-option:hover .age-range-label {
-    border-color: rgba(77, 240, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(77, 240, 255, 0.2);
-}
-
-/* Gender styles */
-.gender-container {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.gender-option {
-    flex: 1;
-    position: relative;
-    cursor: pointer;
-}
-
-.gender-option input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.gender-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    border-radius: 10px;
-    border: 2px solid rgba(77, 240, 255, 0.3);
-    background: rgba(12, 18, 30, 0.8);
-    transition: all 0.3s ease;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.gender-option input:checked + .gender-label {
-    border-color: var(--primary-color);
-    background: rgba(77, 240, 255, 0.2);
-    color: white;
-    box-shadow: 0 0 15px rgba(77, 240, 255, 0.4);
-    transform: translateY(-3px) scale(1.05);
-}
-
-.gender-option:hover .gender-label {
-    border-color: rgba(77, 240, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(77, 240, 255, 0.2);
-}
-
-.gender-icon {
-    margin-right: 10px;
-    color: var(--primary-color);
-    font-size: 18px;
-    transition: all 0.3s ease;
-}
-
-.gender-option input:checked + .gender-label .gender-icon {
-    color: white;
-    animation: pulseIcon 2s infinite;
-}
-
-/* Input stilləri */
-.form-control {
-    background: rgba(12, 18, 30, 0.6) !important;
-    border: 2px solid rgba(77, 240, 255, 0.2) !important;
-    color: white !important;
-    border-radius: 8px !important;
-    padding: 12px 12px 12px 40px !important;
-    transition: all 0.3s ease !important;
-    backdrop-filter: blur(5px);
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.form-control:focus {
-    background: rgba(12, 18, 30, 0.8) !important;
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 15px rgba(77, 240, 255, 0.3) !important;
-    animation: inputGlow 1.5s infinite alternate;
-}
-
-@keyframes inputGlow {
-    from {
-        box-shadow: 0 0 5px rgba(77, 240, 255, 0.3);
-    }
-    to {
-        box-shadow: 0 0 20px rgba(77, 240, 255, 0.6);
-    }
-}
-
-/* Glowing border animation */
-.glowing-border-animation {
-    animation: glowBorder 1.5s infinite alternate;
-}
-
-@keyframes glowBorder {
-    0% {
-        border-color: rgba(77, 240, 255, 0.4);
-        box-shadow: 0 0 5px rgba(77, 240, 255, 0.3);
-    }
-    100% {
-        border-color: rgba(77, 240, 255, 0.8);
-        box-shadow: 0 0 15px rgba(77, 240, 255, 0.6);
-    }
-}
-
-/* Icon stilləri */
-.input-with-icon {
-    position: relative;
-}
-
-.input-with-icon i {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--primary-color);
-    font-size: 16px;
-    z-index: 5;
-    transition: all 0.3s ease;
-}
-
-/* Focus zamanı icon stilinin dəyişməsi */
-.form-control:focus + i, 
-.input-with-icon:focus-within i {
-    color: white;
-    text-shadow: 0 0 10px rgba(77, 240, 255, 0.8);
-    transform: translateY(-50%) scale(1.2);
-    animation: iconPulse 1.5s infinite alternate;
-}
-
-@keyframes iconPulse {
-    from {
-        opacity: 0.8;
-        text-shadow: 0 0 5px rgba(77, 240, 255, 0.5);
-    }
-    to {
-        opacity: 1;
-        text-shadow: 0 0 15px rgba(77, 240, 255, 0.9);
-    }
-}
-
-/* Password field */
-.password-field {
-    position: relative;
-}
-
-.password-strength {
-    height: 5px;
-    border-radius: 5px;
-    margin-top: 5px;
-    background: #333;
-    position: relative;
-    overflow: hidden;
-}
-
-.password-strength-meter {
-    height: 100%;
-    width: 0%;
-    transition: width 0.5s ease, background-color 0.5s ease;
-}
-
-.strength-weak {
-    background-color: #ff4d4d;
-    width: 33%;
-    box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
-}
-
-.strength-medium {
-    background-color: #ffa64d;
-    width: 66%;
-    box-shadow: 0 0 10px rgba(255, 166, 77, 0.5);
-}
-
-.strength-strong {
-    background-color: #4dff4d;
-    width: 100%;
-    box-shadow: 0 0 10px rgba(77, 255, 77, 0.5);
-}
-
-.password-hint {
-    color: var(--text-secondary);
-    font-size: 12px;
-    margin-top: 5px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    padding-left: 2px;
-}
-
-.password-hint.show {
-    opacity: 1;
-}
-
-/* Password visibility toggle */
-.toggle-password {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    cursor: pointer;
-    font-size: 16px;
-    padding: 0;
-    z-index: 10;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.toggle-password:hover {
-    color: white;
-    text-shadow: 0 0 8px rgba(77, 240, 255, 0.8);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.toggle-password:focus {
-    outline: none;
-}
-
-/* Şifrə xanası düzəlişi */
-.input-with-icon.password-field input {
-    padding-right: 45px !important;
-}
-
-/* Telefon input stilləri */
+/* Telefon kodu seçimi - Düzəldilmiş */
 .iti {
     width: 100%;
     display: block;
-    z-index: 5;
+    z-index: 50;
+    position: relative;
 }
 
 .iti__flag-container {
-    z-index: 100;
+    z-index: 60;
     position: absolute;
 }
 
+.iti__selected-flag {
+    background-color: rgba(20, 30, 50, 0.6) !important;
+    border-right: 1px solid rgba(77, 240, 255, 0.3);
+    border-radius: 8px 0 0 8px;
+    padding: 0 15px 0 12px !important;
+}
+
+.iti__arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid rgba(77, 240, 255, 0.8);
+    margin-left: 6px;
+}
+
 .iti__country-list {
-    background-color: rgba(15, 25, 40, 0.95);
-    border: 1px solid rgba(77, 240, 255, 0.3);
+    background-color: rgba(15, 25, 40, 0.95) !important;
+    border: 1px solid rgba(77, 240, 255, 0.3) !important;
     max-height: 200px;
     overflow-y: auto;
-    min-width: 250px;
-    margin-top: 5px;
+    min-width: 300px;
+    margin-top: 8px;
     left: 0;
     position: absolute;
-    z-index: 9999;
+    z-index: 70;
     backdrop-filter: blur(10px);
-    border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(77, 240, 255, 0.15);
 }
 
 .iti__country {
     transition: all 0.2s ease;
+    color: white !important;
+    padding: 10px 12px;
 }
 
 .iti__country:hover {
-    background-color: rgba(77, 240, 255, 0.15);
+    background-color: rgba(77, 240, 255, 0.15) !important;
 }
 
 .iti__country.iti__highlight {
-    background-color: rgba(77, 240, 255, 0.25);
+    background-color: rgba(77, 240, 255, 0.25) !important;
+}
+
+.iti__country-name, .iti__dial-code {
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 input[type="tel"].form-control {
-    padding-left: 100px !important; 
+    padding-left: 90px !important;
 }
 
 #id_phone_number {
-    padding-left: 100px !important;
+    padding-left: 90px !important;
 }
 
-/* Button stilləri */
+/* SMS Göndərmə buttonu */
 .auth-button {
-    background: linear-gradient(135deg, rgba(77, 240, 255, 0.8) 0%, rgba(77, 180, 255, 0.8) 100%) !important;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(77, 240, 255, 0.9) 0%, rgba(77, 180, 255, 0.9) 100%) !important;
     border: none !important;
     color: #060914 !important;
     font-weight: 600 !important;
-    padding: 12px 20px !important;
-    border-radius: 8px !important;
+    padding: 14px 24px !important;
+    border-radius: 10px !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.2s ease !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
     position: relative !important;
-    overflow: hidden !important;
     box-shadow: 0 5px 15px rgba(77, 240, 255, 0.3) !important;
-    width: 100%;
+    outline: none !important;
+    margin-top: 15px;
 }
 
 .auth-button:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 8px 25px rgba(77, 240, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(77, 240, 255, 0.4) !important;
 }
 
-.auth-button:active {
-    transform: translateY(-1px) !important;
-    box-shadow: 0 5px 15px rgba(77, 240, 255, 0.4) !important;
+.right-page .auth-button {
+    max-width: 300px;
+    margin: 20px auto 10px;
 }
 
-.auth-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-    transition: all 0.5s ease;
-}
-
-.auth-button:hover::before {
-    left: 100%;
-}
-
-.secondary-btn {
-    background: rgba(77, 240, 255, 0.1) !important;
-    border: 1px solid rgba(77, 240, 255, 0.3) !important;
-    color: var(--primary-color) !important;
-}
-
-.secondary-btn:hover {
-    background: rgba(77, 240, 255, 0.2) !important;
-}
-
-/* Label stilləri */
-label {
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 500;
-    margin-bottom: 8px;
-    display: block;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: linear-gradient(90deg, rgba(77, 240, 255, 0.7), rgba(77, 240, 255, 0.3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 600 !important;
-    letter-spacing: 0.8px;
-}
-
-/* Login link stylings */
+/* Giriş linki */
 .login-link {
     text-align: center;
-    margin-top: 20px;
-    color: rgba(255, 255, 255, 0.7);
+    margin-top: 30px;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 14px;
     position: relative;
 }
@@ -963,18 +618,18 @@ label {
 .login-link::before {
     content: "";
     position: absolute;
-    top: -10px;
-    left: 15%;
-    right: 15%;
+    top: -15px;
+    left: 25%;
+    right: 25%;
     height: 1px;
     background: linear-gradient(90deg, transparent 0%, rgba(77, 240, 255, 0.3) 50%, transparent 100%);
 }
 
 .login-link a {
-    color: var(--primary-color);
+    color: var(--primary-color, #4DF0FF);
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     position: relative;
 }
 
@@ -985,119 +640,18 @@ label {
     bottom: -2px;
     width: 0;
     height: 1px;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease;
-}
-
-.login-link a:hover {
-    text-shadow: 0 0 8px rgba(77, 240, 255, 0.5);
+    background-color: var(--primary-color, #4DF0FF);
+    transition: width 0.2s ease;
 }
 
 .login-link a:hover::after {
     width: 100%;
 }
 
-/* Verification section visibility */
-.verification-section {
-    display: none;
-}
-
-/* Verification code section */
-.verification-code-input {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin: 25px 0;
-}
-
-.code-input {
-    width: 50px;
-    height: 60px;
-    border-radius: 8px;
-    border: 2px solid rgba(77, 240, 255, 0.3);
-    background: rgba(12, 18, 30, 0.8);
-    font-size: 24px;
-    text-align: center;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-.code-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(77, 240, 255, 0.4);
-    outline: none;
-    animation: pulseInput 1.5s infinite alternate;
-}
-
-@keyframes pulseInput {
-    0% {
-        border-color: rgba(77, 240, 255, 0.4);
-        box-shadow: 0 0 5px rgba(77, 240, 255, 0.3);
-    }
-    100% {
-        border-color: rgba(77, 240, 255, 0.8);
-        box-shadow: 0 0 15px rgba(77, 240, 255, 0.6);
-    }
-}
-
-.verification-timer {
-    text-align: center;
-    margin: 20px 0;
-    color: var(--text-secondary);
-}
-
-#timer {
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
-#resend-code-btn {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-#resend-code-btn:hover:not(:disabled) {
-    color: white;
-    text-shadow: 0 0 10px var(--primary-glow);
-}
-
-#resend-code-btn:disabled {
-    color: var(--text-secondary);
-    text-decoration: none;
-    cursor: default;
-}
-
-/* Verification section title */
-.verification-header {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.verification-header h3 {
-    color: white;
-    margin-bottom: 10px;
-    font-size: 22px;
-    text-shadow: 0 0 10px rgba(77, 240, 255, 0.3);
-}
-
-.verification-info {
-    margin-bottom: 20px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(77, 240, 255, 0.05);
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(77, 240, 255, 0.2);
-}
-
-/* Notification styles */
+/* Notification */
 .notification {
     position: fixed;
-    top: -100px;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(12, 20, 35, 0.95);
@@ -1105,18 +659,16 @@ label {
     color: white;
     padding: 15px 25px;
     border-radius: 10px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow);
-    border: 1px solid var(--primary-color);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 240, 255, 0.3);
+    border: 1px solid var(--primary-color, #4DF0FF);
     z-index: 9999;
     display: flex;
     align-items: center;
     gap: 15px;
-    opacity: 0;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .notification.show {
-    top: 100px;
     opacity: 1;
 }
 
@@ -1124,7 +676,7 @@ label {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: var(--primary-color, #4DF0FF);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1142,24 +694,12 @@ label {
     bottom: 0;
     left: 0;
     height: 3px;
-    background: var(--primary-color);
+    background: var(--primary-color, #4DF0FF);
     width: 100%;
     transform-origin: left;
-    animation: progress 5s linear forwards;
 }
 
-/* Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes progress {
-    from { transform: scaleX(1); }
-    to { transform: scaleX(0); }
-}
-
-/* Futuristik arxa fon effekti */
+/* Arxa fon */
 .auth-bg {
     position: fixed;
     top: 0;
@@ -1169,104 +709,69 @@ label {
     background: radial-gradient(ellipse at center, rgba(15, 30, 60, 0.5) 0%, rgba(5, 10, 20, 0.9) 100%);
     z-index: 1;
     pointer-events: none;
-    animation: pulseBg 10s infinite alternate;
 }
 
-@keyframes pulseBg {
-    0%, 100% {
-        background: radial-gradient(ellipse at center, rgba(15, 30, 60, 0.5) 0%, rgba(5, 10, 20, 0.9) 100%);
-    }
-    50% {
-        background: radial-gradient(ellipse at center, rgba(20, 40, 70, 0.5) 0%, rgba(5, 10, 25, 0.9) 100%);
+/* Responsive düzəlişlər */
+@media screen and (max-width: 1200px) {
+    .auth-container {
+        margin: 60px auto;
     }
 }
 
-/* User type section styling - düzəliş */
-.user-type-section {
-    margin-bottom: 25px;
-    padding: 15px;
-    border-radius: 10px;
-    position: relative;
+@media screen and (max-width: 992px) {
+    .auth-container {
+        margin: 50px auto;
+    }
+    
+    .auth-header h2 {
+        font-size: 24px;
+    }
 }
 
-/* User type container */
-.user-type-container {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-}
-
-.user-type-option {
-    flex: 1;
-    position: relative;
-    cursor: pointer;
-    min-width: 100px;
-}
-
-/* User type labels */
-.user-type-label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 10px;
-    border-radius: 12px;
-    border: 2px solid rgba(77, 240, 255, 0.25);
-    background: rgba(12, 18, 30, 0.8);
-    transition: all 0.3s ease;
-    text-align: center;
-    min-height: 120px;
-}
-
-/* User type icon */
-.user-type-icon {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-}
-
-/* User type name */
-.user-type-name {
-    font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 6px;
-    color: white;
-}
-
-/* User type description */
-.user-type-desc {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.3;
-}
-
-/* SMS düyməsini düzəlt - daha mərkəzdə */
-.right-page .auth-button {
-    max-width: 300px;
-    margin-left: -25%; /* Daha az sola doğru genişlənmə */
-    margin-top: 20px;
-    transform: translateX(12.5%); /* Daha az düzəliş */
-    border-radius: 30px !important;
-    background: linear-gradient(135deg, rgba(77, 240, 255, 0.9) 0%, rgba(77, 180, 255, 0.9) 100%) !important;
-    box-shadow: 0 8px 25px rgba(77, 240, 255, 0.4) !important;
-    padding: 15px 30px !important;
-    font-size: 16px !important;
-}
-
-.right-page .auth-button:hover {
-    transform: translateX(12.5%) translateY(-5px) !important;
-    box-shadow: 0 12px 30px rgba(77, 240, 255, 0.6) !important;
-}
-
-/* Mobil düzəliş */
 @media screen and (max-width: 768px) {
-    .user-type-label {
+    .auth-page {
+        padding: 85px 0;
+    }
+    
+    .auth-container {
+        margin: 40px auto;
+    }
+    
+    .auth-form-container {
         min-height: auto;
+    }
+    
+    #registration-section {
+        flex-direction: column;
+    }
+    
+    .left-page, .right-page {
+        padding: 30px 20px;
+    }
+    
+    .left-page {
+        border-right: none;
+        border-bottom: 1px solid rgba(77, 240, 255, 0.2);
+    }
+    
+    .auth-header {
+        padding: 25px 20px 15px !important;
+    }
+    
+    .auth-header h2 {
+        font-size: 22px;
+    }
+    
+    .right-page .auth-button {
+        max-width: 100%;
+    }
+    
+    .user-type-label {
         flex-direction: row;
-        text-align: left;
-        align-items: center;
         justify-content: flex-start;
+        text-align: left;
         padding: 12px 15px;
+        min-height: auto;
     }
     
     .user-type-icon {
@@ -1277,185 +782,40 @@ label {
     .user-type-name, .user-type-desc {
         text-align: left;
     }
-    
-    .right-page .auth-button {
-        margin-left: 0;
-        transform: none;
-        max-width: 100%;
-        font-size: 15px !important;
+}
+
+@media screen and (max-width: 576px) {
+    .auth-page {
+        padding: 75px 0;
     }
     
-    .right-page .auth-button:hover {
-        transform: translateY(-5px) !important;
+    .auth-container {
+        margin: 30px auto;
     }
-}
-
-/* =========== LAYOUT ADJUSTMENT FIXES =========== */
-
-/* Column layout adjustments */
-.left-page, .right-page {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Right page spacing for button at bottom */
-.right-page {
-    justify-content: space-between;
-}
-
-/* Make sure auth button has space at the bottom */
-.right-page .auth-button {
-    margin-top: auto;
-}
-
-/* Make form look more balanced */
-@media screen and (min-width: 769px) {
+    
+    .auth-header {
+        padding: 20px 15px 10px !important;
+    }
+    
+    .auth-header h2 {
+        font-size: 20px;
+    }
+    
     .left-page, .right-page {
-        min-height: 500px; /* Minimum height for consistent book effect */
+        padding: 25px 15px;
     }
     
-    /* Spacing between elements in left column */
-    .left-page .form-group {
-        margin-bottom: 25px;
+    .gender-container {
+        flex-direction: column;
+        gap: 10px;
     }
     
-    /* Spacing for right column elements */
-    .right-page .form-group {
-        margin-bottom: 20px;
+    .iti__country-list {
+        min-width: 250px;
     }
 }
 
-/* Adjust margins for mobile */
-@media screen and (max-width: 768px) {
-    .user-type-section {
-        padding: 15px;
-    }
+/* Form içindəki loading indicator - aradan qaldırılmalıdır */
+.loading-indicator {
+    display: none !important; /* Tamamilə gizlədilir */
 }
-
-/* SMS button positioned in the center of both pages */
-.auth-button.sms-button {
-    position: absolute !important;
-    left: 50% !important;
-    bottom: 30px !important;
-    transform: translateX(-50%) !important;
-    width: 300px !important;
-    max-width: 80% !important;
-    margin: 0 auto !important;
-    z-index: 10 !important;
-    border-radius: 30px !important;
-    background: linear-gradient(135deg, rgba(77, 240, 255, 0.9) 0%, rgba(77, 180, 255, 0.9) 100%) !important;
-    box-shadow: 0 8px 25px rgba(77, 240, 255, 0.4), 0 0 20px rgba(77, 240, 255, 0.2) !important;
-    padding: 15px 30px !important;
-    font-size: 16px !important;
-    text-align: center !important;
-    transition: all 0.4s ease !important;
-}
-
-.auth-button.sms-button:hover {
-    transform: translateX(-50%) translateY(-5px) !important;
-    box-shadow: 0 12px 30px rgba(77, 240, 255, 0.6), 0 0 30px rgba(77, 240, 255, 0.3) !important;
-}
-
-/* Mobile adjustments for SMS button */
-@media screen and (max-width: 768px) {
-    .auth-button.sms-button {
-        width: 90% !important;
-        bottom: 20px !important;
-    }
-}
-
-/* Prevent scrolling in form on smaller screens */
-@media screen and (max-width: 768px) {
-    .left-page, .right-page {
-        overflow: visible !important;
-        max-height: none !important;
-    }
-    
-    .auth-form-container {
-        overflow: visible !important;
-        max-height: none !important;
-    }
-    
-    #registration-section {
-        overflow: visible !important;
-    }
-}
-
-/* Column layout adjustments */
-.left-page, .right-page {
-    display: flex;
-    flex-direction: column;
-    padding: 30px 30px 80px !important; /* Increased padding for better spacing */
-}
-
-/* Right page spacing for button at bottom */
-.right-page {
-    justify-content: flex-start;
-    position: relative; /* For absolute positioning of the SMS button */
-}
-
-/* Left page adjustments */
-.left-page {
-    justify-content: flex-start;
-    position: relative;
-}
-
-/* Move name and phone fields higher */
-.name-field, .phone-field {
-    order: -1 !important;
-}
-
-/* Form groups wrapper for ordering */
-.form-groups-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-/* Enhanced form aesthetics */
-.form-control:focus {
-    transform: translateY(-2px);
-}
-
-/* Put Siz kimsiniz section at the top */
-.user-type-section {
-    order: -2 !important; /* Move to the very top */
-    margin-bottom: 25px !important;
-}
-
-/* Mobile view improvements */
-@media screen and (max-width: 768px) {
-    /* Make sure the form has enough space at the bottom for the SMS button */
-    #registration-section {
-        padding-bottom: 70px;
-        position: relative;
-    }
-    
-    /* Adjust spacing for better readability */
-    .form-group {
-        margin-bottom: 15px;
-    }
-    
-    /* Make sure "Siz kimsiniz?" section is visible first */
-    .user-type-section {
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding: 15px 10px;
-    }
-    
-    /* Better spacing for centered button */
-    .auth-button.sms-button {
-        position: absolute;
-        bottom: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        margin: 0 auto;
-    }
-    
-    /* More compact option boxes for mobile */
-    .user-type-label {
-        min-height: auto;
-        padding: 12px 10px;
-    }
-} 
