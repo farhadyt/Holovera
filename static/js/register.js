@@ -73,93 +73,144 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Telefon input dropdown-u təkmilləşdirmək üçün
-    function enhanceCountryDropdown() {
-        // Dropdown elementləri
-        const countryList = document.querySelector('.iti__country-list');
+// static/js/register.js hissəsi
+
+// Telefon dropdown təkmilləşdirmələri
+function enhanceCountryDropdown() {
+    // Dropdown elementləri
+    const countryList = document.querySelector('.iti__country-list');
+    
+    if (countryList) {
+        // Stil təkmilləşdirmələri
+        countryList.style.maxHeight = '250px';
+        countryList.style.overflowY = 'auto';
+        countryList.style.overflowX = 'hidden';
+        countryList.style.width = '350px';
+        countryList.style.maxWidth = '90vw';
+        countryList.style.position = 'fixed';
+        countryList.style.top = 'auto';
+        countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+        countryList.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
+        countryList.style.backdropFilter = 'blur(10px)';
+        countryList.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 240, 255, 0.15)';
+        countryList.style.zIndex = '2000';
         
-        if (countryList) {
-            // Stil təkmilləşdirmələri
-            countryList.style.maxHeight = '250px'; // Dropdown hündürlüyünü məhdudlaşdır
-            countryList.style.overflowY = 'auto'; // Scroll-u aktivləşdir
-            countryList.style.overflowX = 'hidden'; // Horizontal scroll-u söndür
-            countryList.style.width = '350px'; // Genişliyi artır ki axtarış və ölkə adları tam görünsün
-            countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
-            countryList.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
-            countryList.style.backdropFilter = 'blur(10px)';
-            countryList.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 240, 255, 0.15)';
+        // Axtarış kutusu əlavə et və təkmilləşdir
+        if (!document.getElementById('country-search')) {
+            const searchContainer = document.createElement('div');
+            searchContainer.className = 'country-search-container';
+            searchContainer.style.padding = '10px';
+            searchContainer.style.borderBottom = '1px solid rgba(77, 240, 255, 0.3)';
+            searchContainer.style.position = 'sticky';
+            searchContainer.style.top = '0';
+            searchContainer.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
+            searchContainer.style.zIndex = '10';
             
-            // Axtarış kutusu əlavə et
-            if (!document.getElementById('country-search')) {
-                const searchContainer = document.createElement('div');
-                searchContainer.className = 'country-search-container';
-                searchContainer.style.padding = '8px';
-                searchContainer.style.borderBottom = '1px solid rgba(77, 240, 255, 0.3)';
-                searchContainer.style.position = 'sticky';
-                searchContainer.style.top = '0';
-                searchContainer.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
-                searchContainer.style.zIndex = '10';
+            const searchInput = document.createElement('input');
+            searchInput.id = 'country-search';
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Ölkə adı və ya kodu axtar...';
+            searchInput.style.width = '100%';
+            searchInput.style.padding = '8px 12px';
+            searchInput.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+            searchInput.style.borderRadius = '6px';
+            searchInput.style.backgroundColor = 'rgba(20, 30, 50, 0.5)';
+            searchInput.style.color = 'white';
+            searchInput.style.outline = 'none';
+            searchInput.style.fontSize = '14px';
+            
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const countries = countryList.querySelectorAll('.iti__country');
                 
-                const searchInput = document.createElement('input');
-                searchInput.id = 'country-search';
-                searchInput.type = 'text';
-                searchInput.placeholder = 'Ölkə adı və ya kodu axtar...';
-                searchInput.style.width = '100%';
-                searchInput.style.padding = '8px 12px';
-                searchInput.style.border = '1px solid rgba(77, 240, 255, 0.3)';
-                searchInput.style.borderRadius = '6px';
-                searchInput.style.backgroundColor = 'rgba(20, 30, 50, 0.5)';
-                searchInput.style.color = 'white';
-                searchInput.style.outline = 'none';
-                searchInput.style.fontSize = '14px';
-                
-                searchInput.addEventListener('input', function() {
-                    const filter = this.value.toLowerCase();
-                    const countries = countryList.querySelectorAll('.iti__country');
+                countries.forEach(country => {
+                    const countryName = country.querySelector('.iti__country-name').textContent.toLowerCase();
+                    const dialCode = country.querySelector('.iti__dial-code').textContent.toLowerCase();
                     
-                    countries.forEach(country => {
-                        const countryName = country.querySelector('.iti__country-name').textContent.toLowerCase();
-                        const dialCode = country.querySelector('.iti__dial-code').textContent.toLowerCase();
-                        
-                        if (countryName.includes(filter) || dialCode.includes(filter)) {
-                            country.style.display = '';
-                        } else {
-                            country.style.display = 'none';
-                        }
-                    });
-                });
-                
-                searchContainer.appendChild(searchInput);
-                countryList.insertBefore(searchContainer, countryList.firstChild);
-                
-                // Axtarış kutusuna focus et
-                setTimeout(() => {
-                    searchInput.focus();
-                }, 100);
-            }
-            
-            // Ölkə elementlərini təkmilləşdirmək
-            const countries = countryList.querySelectorAll('.iti__country');
-            countries.forEach(country => {
-                country.style.padding = '10px 15px';
-                country.style.transition = 'all 0.2s ease';
-                
-                const countryName = country.querySelector('.iti__country-name');
-                const dialCode = country.querySelector('.iti__dial-code');
-                
-                if (countryName) countryName.style.color = 'rgba(255, 255, 255, 0.9)';
-                if (dialCode) dialCode.style.color = 'rgba(77, 240, 255, 0.9)';
-                
-                // Hover effekti
-                country.addEventListener('mouseenter', function() {
-                    this.style.backgroundColor = 'rgba(77, 240, 255, 0.15)';
-                });
-                
-                country.addEventListener('mouseleave', function() {
-                    this.style.backgroundColor = '';
+                    if (countryName.includes(filter) || dialCode.includes(filter)) {
+                        country.style.display = '';
+                    } else {
+                        country.style.display = 'none';
+                    }
                 });
             });
+            
+            searchContainer.appendChild(searchInput);
+            countryList.insertBefore(searchContainer, countryList.firstChild);
+            
+            // Axtarış kutusuna focus et və dropdown qonumunu düzəlt
+            setTimeout(() => {
+                searchInput.focus();
+                
+                // Dropdown pozisiyasını hesabla
+                const phoneInput = document.querySelector('.iti__flag-container');
+                if (phoneInput) {
+                    const phoneInputRect = phoneInput.getBoundingClientRect();
+                    countryList.style.left = phoneInputRect.left + 'px';
+                    countryList.style.top = (phoneInputRect.bottom + 5) + 'px';
+                }
+            }, 100);
+        }
+        
+        // Ölkə elementlərini təkmilləşdir
+        const countries = countryList.querySelectorAll('.iti__country');
+        countries.forEach(country => {
+            country.style.padding = '10px 15px';
+            country.style.transition = 'all 0.2s ease';
+            country.style.display = 'flex';
+            country.style.alignItems = 'center';
+            
+            const countryName = country.querySelector('.iti__country-name');
+            const dialCode = country.querySelector('.iti__dial-code');
+            
+            if (countryName) {
+                countryName.style.color = 'rgba(255, 255, 255, 0.9)';
+                countryName.style.flex = '1';
+            }
+            
+            if (dialCode) {
+                dialCode.style.color = 'rgba(77, 240, 255, 0.9)';
+                dialCode.style.marginLeft = 'auto';
+            }
+            
+            // Hover effekti
+            country.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgba(77, 240, 255, 0.15)';
+            });
+            
+            country.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('iti__active')) {
+                    this.style.backgroundColor = '';
+                }
+            });
+            
+            // Klik hadisəsi üçün təkmilləşdirmə
+            country.addEventListener('click', function() {
+                // Əvvəlki aktiv elementdən aktiv sinifi çıxar
+                const previousActive = countryList.querySelector('.iti__active');
+                if (previousActive) {
+                    previousActive.classList.remove('iti__active');
+                    previousActive.style.backgroundColor = '';
+                }
+                
+                // Yeni seçilmiş ölkəni işarələ
+                this.classList.add('iti__active');
+                this.style.backgroundColor = 'rgba(77, 240, 255, 0.25)';
+                
+                // Dropdown-u gizlət
+                setTimeout(() => {
+                    countryList.style.display = 'none';
+                }, 150);
+            });
+        });
+        
+        // Aktiv ölkəni vurğula
+        const activeCountry = countryList.querySelector('.iti__active');
+        if (activeCountry) {
+            activeCountry.style.backgroundColor = 'rgba(77, 240, 255, 0.25)';
         }
     }
+}
 
     // Telefon input-a kliklənəndə dropdown təkmilləşdirməsini çağır
     if (phoneInputField) {
