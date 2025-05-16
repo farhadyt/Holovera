@@ -23,13 +23,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Toggle password buttonları
     const togglePasswordBtns = document.querySelectorAll('.toggle-password');
     
-    // Telefon input inisiallizasiyası
+    // Telefon input inisiallizasiyası dəyişikliyi
     const phoneInputField = document.querySelector("#id_phone_number");
     const phoneInput = window.intlTelInput(phoneInputField, {
         preferredCountries: ["az", "tr", "ru", "gb", "us"],
         separateDialCode: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
-        customContainer: "phone-input-container"
+        customContainer: "phone-input-container",
+        // Axtarış imkanını aktivləşdir
+        allowDropdown: true,
+        autoHideDialCode: false,
+        autoPlaceholder: "aggressive",
+        dropdownContainer: document.body,
+        formatOnDisplay: true,
+        // Ölkə adı axtarışını aktiv et
+        localizedCountries: null,
+        nationalMode: false,
+        // Ölkələrin standart sıralanması
+        customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+            return ""+selectedCountryPlaceholder;
+        },
+        // Focus olduğunda yerli kodun göstərilməsi
+        showFlags: true
     });
 
     // Loading indicatoru gizlət (əgər varsa)
@@ -56,6 +71,144 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleButton.innerHTML = '<i class="fas fa-eye"></i>';
         }
     }
+
+    // Telefon input dropdown-u təkmilləşdirmək üçün
+    function enhanceCountryDropdown() {
+        // Dropdown elementləri
+        const countryList = document.querySelector('.iti__country-list');
+        
+        if (countryList) {
+            // Stil təkmilləşdirmələri
+            countryList.style.maxHeight = '250px'; // Dropdown hündürlüyünü məhdudlaşdır
+            countryList.style.overflowY = 'auto'; // Scroll-u aktivləşdir
+            countryList.style.overflowX = 'hidden'; // Horizontal scroll-u söndür
+            countryList.style.width = '350px'; // Genişliyi artır ki axtarış və ölkə adları tam görünsün
+            countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+            countryList.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
+            countryList.style.backdropFilter = 'blur(10px)';
+            countryList.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 240, 255, 0.15)';
+            
+            // Axtarış kutusu əlavə et
+            if (!document.getElementById('country-search')) {
+                const searchContainer = document.createElement('div');
+                searchContainer.className = 'country-search-container';
+                searchContainer.style.padding = '8px';
+                searchContainer.style.borderBottom = '1px solid rgba(77, 240, 255, 0.3)';
+                searchContainer.style.position = 'sticky';
+                searchContainer.style.top = '0';
+                searchContainer.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
+                searchContainer.style.zIndex = '10';
+                
+                const searchInput = document.createElement('input');
+                searchInput.id = 'country-search';
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Ölkə adı və ya kodu axtar...';
+                searchInput.style.width = '100%';
+                searchInput.style.padding = '8px 12px';
+                searchInput.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+                searchInput.style.borderRadius = '6px';
+                searchInput.style.backgroundColor = 'rgba(20, 30, 50, 0.5)';
+                searchInput.style.color = 'white';
+                searchInput.style.outline = 'none';
+                searchInput.style.fontSize = '14px';
+                
+                searchInput.addEventListener('input', function() {
+                    const filter = this.value.toLowerCase();
+                    const countries = countryList.querySelectorAll('.iti__country');
+                    
+                    countries.forEach(country => {
+                        const countryName = country.querySelector('.iti__country-name').textContent.toLowerCase();
+                        const dialCode = country.querySelector('.iti__dial-code').textContent.toLowerCase();
+                        
+                        if (countryName.includes(filter) || dialCode.includes(filter)) {
+                            country.style.display = '';
+                        } else {
+                            country.style.display = 'none';
+                        }
+                    });
+                });
+                
+                searchContainer.appendChild(searchInput);
+                countryList.insertBefore(searchContainer, countryList.firstChild);
+                
+                // Axtarış kutusuna focus et
+                setTimeout(() => {
+                    searchInput.focus();
+                }, 100);
+            }
+            
+            // Ölkə elementlərini təkmilləşdirmək
+            const countries = countryList.querySelectorAll('.iti__country');
+            countries.forEach(country => {
+                country.style.padding = '10px 15px';
+                country.style.transition = 'all 0.2s ease';
+                
+                const countryName = country.querySelector('.iti__country-name');
+                const dialCode = country.querySelector('.iti__dial-code');
+                
+                if (countryName) countryName.style.color = 'rgba(255, 255, 255, 0.9)';
+                if (dialCode) dialCode.style.color = 'rgba(77, 240, 255, 0.9)';
+                
+                // Hover effekti
+                country.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'rgba(77, 240, 255, 0.15)';
+                });
+                
+                country.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+        }
+    }
+
+    // Telefon input-a kliklənəndə dropdown təkmilləşdirməsini çağır
+    if (phoneInputField) {
+        // Dropdown açıldığında təkmilləşdirmə funksiyasını çağır
+        phoneInputField.addEventListener('focus', function() {
+            // Dropdown açıldığında kiçik gecikmə ilə təkmilləşdirmə funksiyasını çağır
+            setTimeout(enhanceCountryDropdown, 100);
+        });
+        
+        // Əlavə hadisə üçün təkmilləşdirmə
+        document.addEventListener('click', function(e) {
+            // Əgər klikləmə ölkə seçicisinin içində olarsa
+            if (e.target.closest('.iti__flag-container')) {
+                setTimeout(enhanceCountryDropdown, 100);
+            }
+        });
+    }
+
+    // Şifrə inputlarını təkmilləşdirmək
+    function enhancePasswordInputs() {
+        const passwordInput = document.getElementById('id_password');
+        const confirmPasswordInput = document.getElementById('id_confirm_password');
+        
+        if (passwordInput && confirmPasswordInput) {
+            // Eyni stil və davranış təmin et
+            [passwordInput, confirmPasswordInput].forEach(input => {
+                input.style.backgroundColor = 'rgba(20, 30, 50, 0.4)';
+                input.style.color = 'white';
+                input.style.border = '2px solid rgba(77, 240, 255, 0.2)';
+                input.style.borderRadius = '10px';
+                input.style.height = '44px';
+                input.style.fontSize = '14px';
+                
+                // Focus hadisəsi
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'rgba(77, 240, 255, 0.6)';
+                    this.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = 'rgba(77, 240, 255, 0.2)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        }
+    }
+
+    // Şifrə inputlarını təkmilləşdir
+    enhancePasswordInputs();
     
     // Password strength checker
     passwordInput.addEventListener('input', function() {

@@ -34,7 +34,7 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Changed to flex-start to control top positioning */
+    justify-content: center; /* Changed to center to vertically center the form */
     min-height: 100vh;
     width: 100%;
     box-sizing: border-box;
@@ -44,14 +44,17 @@ html, body {
 /* Main content area */
 .auth-scene {
     display: flex;
-    align-items: flex-start; /* Changed to flex-start to control top positioning */
+    align-items: center; /* Changed to center to vertically center the form */
     justify-content: center;
     width: 100%;
     flex-grow: 1;
     position: relative;
     margin: 0;
     padding: 0 10px;
-    margin-top: 90px; /* Fixed distance from header (header is 70px + 20px space) */
+    min-height: 100vh; /* Added min-height to take full viewport height */
+    box-sizing: border-box;
+    padding-top: 80px; /* Add padding to account for header height */
+    padding-bottom: 20px; /* Add bottom padding for spacing */
 }
 
 /* Form container - Header-dən məsafəsi */
@@ -96,7 +99,7 @@ html, body {
     color: white;
     font-size: 24px;
     font-weight: 600;
-    margin-bottom: 20px; /* Increased margin to move the line down */
+    margin-bottom: 10px; /* Increased margin to move the line down */
     position: relative;
     display: inline-block;
     text-transform: uppercase;
@@ -196,12 +199,20 @@ html, body {
     display: flex;
     flex-direction: column;
     box-shadow: inset 10px 0 10px -10px rgba(0, 0, 0, 0.5);
+    justify-content: space-between;
+    min-height: 320px;
 }
 
 /* Form qrupları */
 .form-group {
     margin-bottom: 20px; /* Reduced spacing */
     position: relative;
+}
+
+/* Düzgün simmetriya üçün sol və sağ sütun eyni margin-bottom dəyərlərinə sahib olmalıdır */
+.left-page .form-group, 
+.right-page .form-group {
+    margin-bottom: 20px;
 }
 
 /* Tam ad və telefon nömrəsi inputlarını daha çox aralı etdim */
@@ -283,15 +294,25 @@ html, body {
 }
 
 /* Specific styles for product owner option */
-.user-type-option input[value="1"] + .user-type-label .user-type-name, /* Assuming product_owner has value="1" */
+.user-type-option input[value="1"] + .user-type-label .user-type-name,
 .user-type-option input[value="product_owner"] + .user-type-label .user-type-name {
-    display: block;
-    text-align: center;
-    margin-bottom: 2px;
-    white-space: normal;
-    font-size: 14px;
+    white-space: normal !important;
+    text-align: center !important;
+    overflow: visible !important;
+    text-overflow: initial !important;
+    display: block !important;
+    width: 100% !important;
+    font-size: 14px !important;
+    margin-bottom: 5px !important;
+    line-height: 1.2 !important;
+}
+
+.user-type-desc {
+    font-size: 11px; /* Reduced from 12px */
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.3;
     max-width: 100%;
-    overflow: visible;
+    white-space: normal;
 }
 
 .user-type-option input[value="1"] + .user-type-label .user-type-desc, /* Assuming product_owner has value="1" */
@@ -302,14 +323,6 @@ html, body {
     font-size: 13px;
     color: white;
     margin-top: 2px;
-}
-
-.user-type-desc {
-    font-size: 11px; /* Reduced from 12px */
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.3;
-    max-width: 100%;
-    white-space: normal;
 }
 
 .user-type-option input:checked + .user-type-label {
@@ -342,12 +355,31 @@ label {
     backdrop-filter: blur(5px);
     box-sizing: border-box;
     font-size: 13px; /* Reduced from 14px */
+    display: flex !important;
+    align-items: center !important;
+    height: 45px !important;
+    line-height: 45px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* İnputların hündürlüyünü eyniləşdirmək */
+#id_name,
+#id_phone_number,
+#id_password,
+#id_confirm_password {
+    height: 45px !important;
+    line-height: 45px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .form-control:focus {
     background: rgba(25, 35, 55, 0.5) !important;
-    border-color: var(--primary-color, #4DF0FF) !important;
-    box-shadow: 0 0 15px rgba(77, 240, 255, 0.3) !important;
+    border-color: rgba(77, 240, 255, 0.7) !important;
+    box-shadow: 0 0 15px rgba(77, 240, 255, 0.4) !important;
     outline: none;
 }
 
@@ -401,11 +433,10 @@ label {
 
 /* Şifrə gücü indikatoru */
 .password-strength {
-    height: 4px; /* Reduced from 5px */
-    border-radius: 4px;
-    margin-top: 6px; /* Reduced from 8px */
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 8px;
     background: rgba(30, 40, 60, 0.5);
-    position: relative;
     overflow: hidden;
 }
 
@@ -555,53 +586,72 @@ label {
 
 .iti__flag-container {
     z-index: 60;
-    position: absolute;
-    width: auto !important; /* Ensure the width is based on content */
-    max-width: 100px !important; /* Limit maximum width */
+    position: absolute !important;
+    width: auto !important;
+    height: 100% !important;
+    max-width: 80px !important;
+    left: 0 !important;
+    top: 0 !important;
 }
 
 /* Ölkə kodu seçimini telefon nömrəsindən aralı etmək */
 .iti__selected-flag {
     background-color: rgba(20, 30, 50, 0.6) !important;
-    border-right: 1px solid rgba(77, 240, 255, 0.3);
-    border-radius: 8px 0 0 8px;
-    padding: 0 15px 0 12px !important;
-    margin-right: 20px !important; /* Increased from 10px to create more space */
-}
-
-.iti__arrow {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 6px solid rgba(77, 240, 255, 0.8);
-    margin-left: 6px;
+    border-right: 1px solid rgba(77, 240, 255, 0.3) !important;
+    border-radius: 8px 0 0 8px !important;
+    padding: 0 6px 0 12px !important;
+    margin-right: 0 !important; /* Remove margin to prevent double display */
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 /* Ölkə seçim siyahısının ölçüsünü kiçiltmək */
 .iti__country-list {
-    background-color: rgba(15, 25, 40, 0.95) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    max-height: 300px !important;
+    width: 350px !important;
+    max-width: 85vw !important;
+    background-color: rgba(12, 20, 30, 0.95) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(77, 240, 255, 0.2) !important;
     border: 1px solid rgba(77, 240, 255, 0.3) !important;
-    max-height: 180px !important;
-    overflow-y: auto;
-    min-width: 250px !important;
-    max-width: 280px !important;
-    margin-top: 8px;
-    left: 0;
-    position: absolute;
-    z-index: 70;
-    backdrop-filter: blur(10px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(77, 240, 255, 0.5) rgba(15, 25, 40, 0.7);
+    position: absolute !important;
+    z-index: 99 !important;
+    top: 100% !important; /* Position directly below the input */
+    left: 0 !important;
+    margin-top: 5px !important;
+}
+
+/* Scroll stilləri */
+.iti__country-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.iti__country-list::-webkit-scrollbar-track {
+    background: rgba(15, 25, 40, 0.7);
     border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(77, 240, 255, 0.15);
+}
+
+.iti__country-list::-webkit-scrollbar-thumb {
+    background-color: rgba(77, 240, 255, 0.5);
+    border-radius: 10px;
+    border: 2px solid rgba(15, 25, 40, 0.7);
 }
 
 .iti__country {
     transition: all 0.2s ease;
     color: white !important;
-    padding: 8px 10px !important;
+    padding: 10px 15px !important;
     font-size: 13px !important;
 }
 
 .iti__country:hover {
     background-color: rgba(77, 240, 255, 0.15) !important;
+    color: white !important;
 }
 
 .iti__country.iti__highlight {
@@ -613,12 +663,10 @@ label {
 }
 
 /* Telefon inputu stilini nizamlamaq */
-input[type="tel"].form-control {
-    padding-left: 110px !important; /* Increased from 90px to accommodate wider country code area */
-}
-
+input[type="tel"].form-control,
 #id_phone_number {
-    padding-left: 110px !important; /* Increased from 90px to accommodate wider country code area */
+    padding-left: 95px !important; /* Increased spacing from country code */
+    text-indent: 15px !important; /* Add text indent to move text right */
 }
 
 /* SMS Göndərmə buttonu */
@@ -651,14 +699,21 @@ input[type="tel"].form-control {
     margin: 30px auto 20px; /* Increased top and bottom margins for better spacing */
 }
 
+/* SMS göndər düyməsi yerləşdirmə */
+.right-page #send-code-btn {
+    margin-top: auto;
+    max-width: 250px;
+    align-self: center;
+    margin-bottom: 20px;
+}
+
 /* Giriş linki */
 .login-link {
     text-align: center;
-    margin-top: 20px; /* Reduced from 30px */
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px; /* Reduced from 14px */
-    position: relative;
-    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(77, 240, 255, 0.1);
 }
 
 .login-link::before {
@@ -677,6 +732,7 @@ input[type="tel"].form-control {
     font-weight: 600;
     transition: all 0.2s ease;
     position: relative;
+    margin-left: 5px;
 }
 
 .login-link a::after {
@@ -798,6 +854,7 @@ input[type="tel"].form-control {
     
     .left-page, .right-page {
         padding: 20px 15px;
+        width: 100%;
     }
     
     .left-page {
@@ -814,8 +871,22 @@ input[type="tel"].form-control {
         margin-bottom: 18px;
     }
     
+    .right-page {
+        min-height: auto;
+        padding-bottom: 20px;
+    }
+    
     .right-page .auth-button {
         max-width: 100%;
+    }
+    
+    .right-page #send-code-btn {
+        max-width: 100%;
+        margin-top: 20px;
+    }
+    
+    .iti__country-list {
+        width: 300px !important;
     }
     
     /* Change user type layout to horizontal for better space usage */
@@ -895,6 +966,10 @@ input[type="tel"].form-control {
         width: 90%;
         max-width: 400px;
     }
+    
+    .login-link {
+        margin-top: 0;
+    }
 }
 
 @media screen and (max-width: 576px) {
@@ -924,10 +999,50 @@ input[type="tel"].form-control {
         padding: 15px 12px;
     }
     
+    .user-type-container {
+        gap: 8px;
+    }
+    
+    .user-type-option {
+        flex: 1 0 100%;
+    }
+    
+    .user-type-label {
+        flex-direction: row;
+        min-height: auto;
+        padding: 12px;
+        justify-content: flex-start;
+        text-align: left;
+    }
+    
+    .user-type-icon {
+        font-size: 20px;
+        margin-right: 15px;
+        margin-bottom: 0;
+    }
+    
+    .user-type-text-container {
+        text-align: left;
+        align-items: flex-start;
+    }
+    
+    .user-type-name {
+        font-size: 12px;
+        text-align: left;
+    }
+    
+    .user-type-desc {
+        font-size: 10px;
+    }
+    
     /* Switch to vertical layout for gender to save space */
     .gender-container {
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
+    }
+    
+    .gender-option {
+        width: 100%;
     }
     
     .gender-label {
@@ -957,8 +1072,7 @@ input[type="tel"].form-control {
     }
     
     .iti__country-list {
-        min-width: 180px !important;
-        max-width: 220px !important;
+        width: 250px !important;
     }
     
     /* Compact buttons */
@@ -971,24 +1085,6 @@ input[type="tel"].form-control {
     .auth-form-container {
         height: auto;
         min-height: auto;
-    }
-    
-    /* Even more compact user type for very small screens */
-    .user-type-label {
-        padding: 8px 10px;
-    }
-    
-    .user-type-icon {
-        font-size: 20px;
-        margin-right: 10px;
-    }
-    
-    .user-type-name {
-        font-size: 12px;
-    }
-    
-    .user-type-desc {
-        font-size: 10px;
     }
 }
 
@@ -1125,4 +1221,3 @@ input[type="tel"].form-control {
         padding: 12px 10px;
     }
 }
-

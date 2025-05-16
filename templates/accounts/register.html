@@ -7,6 +7,172 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 <link rel="stylesheet" href="{% static 'css/register.css' %}">
+<style>
+    /* Şifrə inputları üçün əlavə stillər */
+    #id_password, #id_confirm_password {
+        background: rgba(20, 30, 50, 0.4) !important;
+        border: 2px solid rgba(77, 240, 255, 0.2) !important;
+        color: white !important;
+    }
+    
+    /* SMS göndər düyməsinin yerinin dəyişdirilməsi */
+    .right-page {
+        display: flex;
+        flex-direction: column;
+    position: relative;
+        min-height: 320px;
+    }
+    
+    .right-page #send-code-btn {
+        margin-top: auto;
+        max-width: 250px;
+        align-self: center;
+        margin-bottom: 20px;
+    }
+    
+    /* Login linki üçün stil düzəlişi */
+    .login-link {
+        text-align: center;
+        padding-top: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid rgba(77, 240, 255, 0.1);
+    }
+    
+    /* Bütün inputların mərkəzləşdirilmiş görünüşü */
+    .form-control {
+        height: 45px;
+        font-size: 14px;
+    }
+    
+    /* Telefon inputu seçicisi ilə input arasındakı boşluq */
+.iti__selected-flag {
+        margin-right: 10px !important;
+}
+
+input[type="tel"].form-control {
+        padding-left: 90px !important;
+    }
+    
+    /* Sağdakı inputların solda olanlar ilə eyni səviyyədə görünməsi */
+    .left-page .form-group, .right-page .form-group {
+        margin-bottom: 20px;
+    }
+    
+    /* Product Owner yazısını tam göstər */
+    .user-type-option input[value="1"] + .user-type-label .user-type-name,
+    .user-type-option input[value="product_owner"] + .user-type-label .user-type-name {
+        line-height: 1.2;
+        display: block;
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+    
+    /* "Product Owner" görünüşü üçün xüsusi düzəliş */
+    .user-type-option input[value="1"] + .user-type-label .user-type-name,
+    .user-type-option input[value="product_owner"] + .user-type-label .user-type-name {
+        white-space: normal !important;
+        text-align: center !important;
+        overflow: visible !important;
+        text-overflow: initial !important;
+        display: block !important;
+        width: 100% !important;
+        font-size: 14px !important;
+        margin-bottom: 5px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Düzgün simmetriya üçün sol və sağ sütun eyni margin-bottom dəyərlərinə sahib olmalıdır */
+    .left-page .form-group, 
+    .right-page .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* İnputların hündürlüyünü eyniləşdirmək */
+    .form-control,
+    #id_name,
+    #id_phone_number,
+    #id_password,
+    #id_confirm_password {
+        height: 45px !important;
+        line-height: 45px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Input içindəki mətni mərkəzləşdirmək */
+    .form-control {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* İnputlar aktiv olduqda daha güclü işıqlandırma */
+    .form-control:focus {
+        box-shadow: 0 0 15px rgba(77, 240, 255, 0.4) !important;
+        border-color: rgba(77, 240, 255, 0.7) !important;
+    }
+
+    /* Ölkə seçiminin təkmilləşdirilməsi */
+.iti__country-list {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        max-height: 300px !important;
+        width: 350px !important;
+        max-width: 85vw !important;
+        background-color: rgba(12, 20, 30, 0.95) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(77, 240, 255, 0.2) !important;
+        border: 1px solid rgba(77, 240, 255, 0.3) !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(77, 240, 255, 0.5) rgba(15, 25, 40, 0.7);
+    }
+
+    /* Scroll stilləri */
+    .iti__country-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .iti__country-list::-webkit-scrollbar-track {
+        background: rgba(15, 25, 40, 0.7);
+        border-radius: 10px;
+    }
+
+    .iti__country-list::-webkit-scrollbar-thumb {
+        background-color: rgba(77, 240, 255, 0.5);
+        border-radius: 10px;
+        border: 2px solid rgba(15, 25, 40, 0.7);
+    }
+
+    /* Ölkə elementləri */
+.iti__country {
+        padding: 10px 15px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .iti__country:hover {
+        background-color: rgba(77, 240, 255, 0.15) !important;
+        color: white !important;
+    }
+
+    .iti__country.iti__highlight {
+        background-color: rgba(77, 240, 255, 0.25) !important;
+    }
+
+    .iti__country-name, .iti__dial-code {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    /* Seçilmiş ölkə kodu stil düzəlişi */
+    .iti__selected-flag {
+        background-color: rgba(20, 30, 50, 0.6) !important;
+        border-right: 1px solid rgba(77, 240, 255, 0.3) !important;
+        border-radius: 8px 0 0 8px !important;
+        padding: 0 6px 0 12px !important;
+        margin-right: 10px !important;
+        height: 100% !important;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -45,24 +211,21 @@
                                                     {% else %}fa-shopping-bag{% endif %} 
                                                     user-type-icon"></i>
                                                 <div class="user-type-text-container">
-                                                    <span class="user-type-name">
-                                                        {% if 'product_owner' in choice.choice_value %}
-                                                            Product
-                                                        {% else %}
-                                                            {{ choice.choice_label }}
+                                                    <!-- Product Owner düzəlişi -->
+                                                <span class="user-type-name">
+                                                    {% if 'product_owner' in choice.choice_value %}
+                                                            Product Owner
+                                                    {% else %}
+                                                        {{ choice.choice_label }}
+                                                    {% endif %}
+                                                </span>
+                                                <span class="user-type-desc">
+                                                    {% for user_type in form.fields.user_type.queryset %}
+                                                        {% if user_type.id|stringformat:"s" == choice.choice_value %}
+                                                                {{ user_type.description }}
                                                         {% endif %}
-                                                    </span>
-                                                    <span class="user-type-desc">
-                                                        {% for user_type in form.fields.user_type.queryset %}
-                                                            {% if user_type.id|stringformat:"s" == choice.choice_value %}
-                                                                {% if 'product_owner' in choice.choice_value %}
-                                                                    Owner
-                                                                {% else %}
-                                                                    {{ user_type.description }}
-                                                                {% endif %}
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </span>
+                                                    {% endfor %}
+                                                </span>
                                                 </div>
                                             </div>
                                         </label>
@@ -152,7 +315,7 @@
                             {{ form.firebase_uid }}
                             {{ form.is_verified }}
                             
-                            <!-- SMS kodu göndərmə düyməsi -->
+                            <!-- SMS kodu göndərmə düyməsi - şifrə sahəsindən sonra yerləşdirildi -->
                             <button type="button" id="send-code-btn" class="auth-button">{% trans "SMS kodu göndər" %}</button>
                         </div>
                     </div>
@@ -187,10 +350,11 @@
                         <button type="button" id="back-btn" class="auth-button secondary-btn">{% trans "Geri qayıt" %}</button>
                     </div>
                 </form>
+            </div>
                 
+            <!-- "Artıq hesabınız var?" linkini ana formanın xaricinə, amma auth-form-container-in içinə keçirdik -->
                 <div class="login-link">
                     <p>{% trans "Artıq hesabınız var?" %} <a href="{% url 'login' %}">{% trans "Daxil olun" %}</a></p>
-                </div>
             </div>
         </div>
     </div>
@@ -210,4 +374,169 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js"></script>
 <script src="{% static 'js/register.js' %}"></script>
+<script>
+// Telefon input inisiallizasiyası - register.js əlavələri
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneInputField = document.querySelector("#id_phone_number");
+    if (phoneInputField) {
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            preferredCountries: ["az", "tr", "ru", "gb", "us"],
+            separateDialCode: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js",
+            customContainer: "phone-input-container",
+            // Axtarış imkanını aktivləşdir
+            allowDropdown: true,
+            autoHideDialCode: false,
+            autoPlaceholder: "aggressive",
+            dropdownContainer: document.body,
+            formatOnDisplay: true,
+            // Ölkə adı axtarışını aktiv et
+            localizedCountries: null,
+            nationalMode: false,
+            // Ölkələrin standart sıralanması
+            customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+                return ""+selectedCountryPlaceholder;
+            },
+            // Focus olduğunda yerli kodun göstərilməsi
+            showFlags: true
+        });
+
+        // Telefon input dropdown-u təkmilləşdirmək üçün
+        function enhanceCountryDropdown() {
+            // Dropdown elementləri
+            const countryList = document.querySelector('.iti__country-list');
+            
+            if (countryList) {
+                // Stil təkmilləşdirmələri
+                countryList.style.maxHeight = '250px'; // Dropdown hündürlüyünü məhdudlaşdır
+                countryList.style.overflowY = 'auto'; // Scroll-u aktivləşdir
+                countryList.style.overflowX = 'hidden'; // Horizontal scroll-u söndür
+                countryList.style.width = '350px'; // Genişliyi artır ki axtarış və ölkə adları tam görünsün
+                countryList.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+                countryList.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
+                countryList.style.backdropFilter = 'blur(10px)';
+                countryList.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 240, 255, 0.15)';
+                
+                // Axtarış kutusu əlavə et
+                if (!document.getElementById('country-search')) {
+                    const searchContainer = document.createElement('div');
+                    searchContainer.className = 'country-search-container';
+                    searchContainer.style.padding = '8px';
+                    searchContainer.style.borderBottom = '1px solid rgba(77, 240, 255, 0.3)';
+                    searchContainer.style.position = 'sticky';
+                    searchContainer.style.top = '0';
+                    searchContainer.style.backgroundColor = 'rgba(10, 20, 35, 0.95)';
+                    searchContainer.style.zIndex = '10';
+                    
+                    const searchInput = document.createElement('input');
+                    searchInput.id = 'country-search';
+                    searchInput.type = 'text';
+                    searchInput.placeholder = 'Ölkə adı və ya kodu axtar...';
+                    searchInput.style.width = '100%';
+                    searchInput.style.padding = '8px 12px';
+                    searchInput.style.border = '1px solid rgba(77, 240, 255, 0.3)';
+                    searchInput.style.borderRadius = '6px';
+                    searchInput.style.backgroundColor = 'rgba(20, 30, 50, 0.5)';
+                    searchInput.style.color = 'white';
+                    searchInput.style.outline = 'none';
+                    searchInput.style.fontSize = '14px';
+                    
+                    searchInput.addEventListener('input', function() {
+                        const filter = this.value.toLowerCase();
+                        const countries = countryList.querySelectorAll('.iti__country');
+                        
+                        countries.forEach(country => {
+                            const countryName = country.querySelector('.iti__country-name').textContent.toLowerCase();
+                            const dialCode = country.querySelector('.iti__dial-code').textContent.toLowerCase();
+                            
+                            if (countryName.includes(filter) || dialCode.includes(filter)) {
+                                country.style.display = '';
+                            } else {
+                                country.style.display = 'none';
+                            }
+                        });
+                    });
+                    
+                    searchContainer.appendChild(searchInput);
+                    countryList.insertBefore(searchContainer, countryList.firstChild);
+                    
+                    // Axtarış kutusuna focus et
+                    setTimeout(() => {
+                        searchInput.focus();
+                    }, 100);
+                }
+                
+                // Ölkə elementlərini təkmilləşdirmək
+                const countries = countryList.querySelectorAll('.iti__country');
+                countries.forEach(country => {
+                    country.style.padding = '10px 15px';
+                    country.style.transition = 'all 0.2s ease';
+                    
+                    const countryName = country.querySelector('.iti__country-name');
+                    const dialCode = country.querySelector('.iti__dial-code');
+                    
+                    if (countryName) countryName.style.color = 'rgba(255, 255, 255, 0.9)';
+                    if (dialCode) dialCode.style.color = 'rgba(77, 240, 255, 0.9)';
+                    
+                    // Hover effekti
+                    country.addEventListener('mouseenter', function() {
+                        this.style.backgroundColor = 'rgba(77, 240, 255, 0.15)';
+                    });
+                    
+                    country.addEventListener('mouseleave', function() {
+                        this.style.backgroundColor = '';
+                    });
+                });
+            }
+        }
+
+        // Telefon input-a kliklənəndə dropdown təkmilləşdirməsini çağır
+        // Dropdown açıldığında təkmilləşdirmə funksiyasını çağır
+        phoneInputField.addEventListener('focus', function() {
+            // Dropdown açıldığında kiçik gecikmə ilə təkmilləşdirmə funksiyasını çağır
+            setTimeout(enhanceCountryDropdown, 100);
+        });
+        
+        // Əlavə hadisə üçün təkmilləşdirmə
+        document.addEventListener('click', function(e) {
+            // Əgər klikləmə ölkə seçicisinin içində olarsa
+            if (e.target.closest('.iti__flag-container')) {
+                setTimeout(enhanceCountryDropdown, 100);
+            }
+        });
+    }
+
+    // Şifrə inputlarını təkmilləşdirmək
+    function enhancePasswordInputs() {
+        const passwordInput = document.getElementById('id_password');
+        const confirmPasswordInput = document.getElementById('id_confirm_password');
+        
+        if (passwordInput && confirmPasswordInput) {
+            // Eyni stil və davranış təmin et
+            [passwordInput, confirmPasswordInput].forEach(input => {
+                input.style.backgroundColor = 'rgba(20, 30, 50, 0.4)';
+                input.style.color = 'white';
+                input.style.border = '2px solid rgba(77, 240, 255, 0.2)';
+                input.style.borderRadius = '10px';
+                input.style.height = '44px';
+                input.style.fontSize = '14px';
+                
+                // Focus hadisəsi
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'rgba(77, 240, 255, 0.6)';
+                    this.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = 'rgba(77, 240, 255, 0.2)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        }
+    }
+
+    // Şifrə inputlarını təkmilləşdir
+    enhancePasswordInputs();
+});
+</script>
 {% endblock %}
