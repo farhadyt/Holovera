@@ -55,6 +55,8 @@ html, body {
     box-sizing: border-box;
     padding-top: 80px;
     padding-bottom: 20px;
+    /* FIX: Added overflow to prevent scrolling */
+    overflow: visible; 
 }
 
 /* Form container - Header-dən məsafəsi */
@@ -69,6 +71,8 @@ html, body {
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 100px);
+    /* FIX: Added overflow to prevent scrolling */
+    overflow: visible;
 }
 
 /* Form dizaynı */
@@ -78,12 +82,14 @@ html, body {
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(77, 240, 255, 0.15);
     border: 1px solid rgba(77, 240, 255, 0.2);
-    overflow: visible;
+    overflow: visible !important; /* FIX: Force visible overflow */
     display: flex;
     flex-direction: column;
     min-height: auto;
     max-width: 1000px;
     width: 100%;
+    /* FIX: Added to prevent unexpected scrolling */
+    max-height: none !important;
 }
 
 /* Başlıq hissəsi - mərkəzləşdirilmiş */
@@ -143,12 +149,17 @@ html, body {
     display: flex;
     flex-direction: column;
     width: 100%;
+    /* FIX: Added to prevent unexpected scrolling */
+    overflow: visible !important;
+    max-height: none !important;
 }
 
 .register-form #register-form {
     display: flex;
     flex-direction: column;
     width: 100%;
+    /* FIX: Added to prevent unexpected scrolling */
+    overflow: visible !important;
 }
 
 /* Bölmələrin görünümü */
@@ -173,6 +184,8 @@ html, body {
     display: flex;
     flex-direction: row;
     width: 100%;
+    /* FIX: Added to prevent unexpected scrolling */
+    overflow: visible !important;
 }
 
 /* Sol səhifə */
@@ -180,7 +193,7 @@ html, body {
     flex: 1;
     padding: 25px 20px 20px; /* Reduced padding */
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: visible; /* FIX: Changed from auto to visible */
     background: linear-gradient(135deg, 
         rgba(20, 30, 50, 0.7) 0%, 
         rgba(15, 25, 40, 0.7) 100%);
@@ -196,7 +209,7 @@ html, body {
     flex: 1;
     padding: 25px 20px 20px; /* Reduced padding */
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: visible; /* FIX: Changed from auto to visible */
     background: linear-gradient(225deg, 
         rgba(20, 30, 50, 0.7) 0%, 
         rgba(15, 25, 40, 0.7) 100%);
@@ -359,7 +372,7 @@ label {
     transition: all 0.2s ease !important;
     backdrop-filter: blur(5px);
     box-sizing: border-box;
-    font-size: 13px; /* Reduced from 14px */
+    font-size: 14px !important; /* FIX: Standardized font size */
     display: flex !important;
     align-items: center !important;
     height: 45px !important;
@@ -413,7 +426,7 @@ label {
     top: 50%;
     transform: translateY(-50%);
     color: var(--primary-color, #4DF0FF);
-    font-size: 15px; /* Reduced from 16px */
+    font-size: 15px !important; /* FIX: Standardized icon size */
     z-index: 5;
     transition: all 0.2s ease;
 }
@@ -1200,6 +1213,12 @@ input[type="tel"].form-control {
         padding: 20px 0;
         min-height: auto;
     }
+    
+    /* FIX: Ensure overflow is always visible */
+    .auth-form, .auth-form-container, .left-page, .right-page, #registration-section {
+        overflow: visible !important;
+        max-height: none !important;
+    }
 }
 
 @media (max-height: 650px) {
@@ -1211,6 +1230,12 @@ input[type="tel"].form-control {
     .auth-container {
         margin: 0 auto 20px;
         transform: scale(0.95);
+    }
+    
+    /* FIX: Ensure overflow is always visible */
+    .auth-form, .auth-form-container, .left-page, .right-page, #registration-section {
+        overflow: visible !important;
+        max-height: none !important;
     }
 }
 
@@ -1236,19 +1261,31 @@ input[type="tel"].form-control {
     .user-type-label {
         min-height: 80px;
     }
+    
+    /* FIX: Ensure overflow is always visible */
+    .auth-form, .auth-form-container, .left-page, .right-page, #registration-section {
+        overflow: visible !important;
+        max-height: none !important;
+    }
 }
 
 @media (max-height: 450px) {
     .auth-scene {
         padding-top: 70px;
         display: block;
-        overflow-y: auto;
+        overflow-y: visible; /* FIX: Changed from auto to visible */
     }
     
     .auth-container {
         margin: 0 auto 10px;
         min-height: auto;
         transform: scale(0.95);
+    }
+    
+    /* FIX: Ensure overflow is always visible */
+    .auth-form, .auth-form-container, .left-page, .right-page, #registration-section {
+        overflow: visible !important;
+        max-height: none !important;
     }
 }
 
@@ -1286,6 +1323,12 @@ input[type="tel"].form-control {
         margin-right: 10px;
         margin-bottom: 0;
     }
+    
+    /* FIX: Ensure overflow is always visible */
+    .auth-form, .auth-form-container, .left-page, .right-page, #registration-section {
+        overflow: visible !important;
+        max-height: none !important;
+    }
 }
 
 @media (max-height: 500px) {
@@ -1314,4 +1357,29 @@ input[type="tel"].form-control {
     .left-page, .right-page {
         padding: 12px 10px;
     }
+    
+    /* FIX: Ensure overflow is always visible */
+    .auth-form, .auth-form-container, .left-page, .right-page, #registration-section {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+}
+
+/* FIX: Ensure all form elements have consistent appearance */
+.form-control, 
+#id_name, 
+#id_phone_number, 
+#id_password, 
+#id_confirm_password {
+    font-size: 14px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+}
+
+/* FIX: Ensure all icons have consistent size */
+.input-with-icon i,
+.user-type-icon,
+.gender-icon,
+.toggle-password i {
+    font-size: 15px !important;
 }

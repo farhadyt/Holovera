@@ -124,9 +124,16 @@ function enhanceCountryDropdown() {
                 const countries = countryList.querySelectorAll('.iti__country');
                 
                 countries.forEach(country => {
-                    const countryName = country.querySelector('.iti__country-name').textContent.toLowerCase();
-                    const dialCode = country.querySelector('.iti__dial-code').textContent.toLowerCase();
+                    // Axtarış üçün mətin alınması - ölkə adı və ölkə kodu
+                    const countryNameElement = country.querySelector('.iti__country-name');
+                    const dialCodeElement = country.querySelector('.iti__dial-code');
                     
+                    // Qorunan yanaşma - əgər elementlər mövcuddursa
+                    const countryName = countryNameElement ? countryNameElement.textContent.toLowerCase() : '';
+                    const dialCode = dialCodeElement ? dialCodeElement.textContent.toLowerCase() : '';
+                    
+                    // FIX: Daha geniş axtarış məntiqi
+                    // Həm ölkə adında, həm də ölkə kodunda filter mətni axtarılır
                     if (countryName.includes(filter) || dialCode.includes(filter)) {
                         country.style.display = '';
                     } else {
@@ -244,7 +251,7 @@ function enhanceCountryDropdown() {
                 input.style.height = '44px';
                 input.style.fontSize = '14px';
                 
-                // Focus hadisəsi
+                // Focus hadisəsi - yalnız border və shadow dəyişikliyi
                 input.addEventListener('focus', function() {
                     this.style.borderColor = 'rgba(77, 240, 255, 0.6)';
                     this.style.boxShadow = '0 0 15px rgba(77, 240, 255, 0.3)';
@@ -827,6 +834,12 @@ function enhanceCountryDropdown() {
         const container = document.querySelector('.auth-container');
         
         if (container) {
+            // FIX: Scroll problemini aradan qaldırmaq üçün overflow-in idarə edilməsi
+            document.querySelectorAll('.auth-form-container, .auth-scene, .auth-container, .auth-form, #register-form, .left-page, .right-page').forEach(el => {
+                el.style.overflow = 'visible';
+                el.style.maxHeight = 'none';
+            });
+            
             // HEADER-DƏN SABİT MƏSAFƏ SAXLAYIRIQ - BU ƏN ÖNƏMLİ DƏRBƏN
             const fixedTopMargin = 100; // Sabit header məsafəsi
             
@@ -839,8 +852,8 @@ function enhanceCountryDropdown() {
                 // Çox kiçik ekranlarda əlavə scroll elavə etmək
                 const authForm = document.querySelector('.auth-form');
                 if (authForm) {
-                    authForm.style.maxHeight = '400px';
-                    authForm.style.overflowY = 'auto';
+                    authForm.style.maxHeight = 'none'; // FIX: max-height dəyişdi
+                    authForm.style.overflowY = 'visible'; // FIX: overflow dəyişdi
                 }
             } 
             else if (viewport < 600) {
@@ -856,22 +869,26 @@ function enhanceCountryDropdown() {
                 container.style.transform = 'scale(1)';
             }
             
-            // Təmin et ki, form elementləri stabil qalır
+            // FIX: Təmin et ki, form elementləri stabil qalır, ölçülər dəyişməyəcək
             const icons = document.querySelectorAll('.input-with-icon i');
             icons.forEach(function(icon) {
                 icon.style.position = 'absolute';
                 icon.style.left = '15px';
                 icon.style.top = '50%';
                 icon.style.transform = 'translateY(-50%)';
+                icon.style.fontSize = '15px'; // Sabit font size
             });
             
-            // Form container-in visible məsələsini həll et
+            // FIX: Form container-in visible məsələsini həll et
             container.style.overflowY = 'visible';
             document.querySelector('.auth-form-container').style.overflowY = 'visible';
             
-            // İnputların doğru göstərilməsini təmin et
-            document.querySelectorAll('.form-control').forEach(input => {
+            // FIX: İnputların doğru göstərilməsini təmin et və sabit ölçülər
+            document.querySelectorAll('.form-control, #id_name, #id_phone_number, #id_password, #id_confirm_password').forEach(input => {
                 input.style.width = '100%';
+                input.style.height = '44px';
+                input.style.fontSize = '14px';
+                input.style.lineHeight = '44px';
             });
         }
     }

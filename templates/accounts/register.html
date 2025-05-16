@@ -209,6 +209,143 @@
         box-shadow: 0 0 15px rgba(77, 240, 255, 0.4) !important;
         border-color: rgba(77, 240, 255, 0.7) !important;
     }
+    
+    /* Responsivliklə bağlı düzəlişlər - form hissəsinin düzgün görünməsi üçün */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .auth-scene {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        padding: 80px 0 40px; /* Increased top padding for header space */
+        box-sizing: border-box;
+    }
+    
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 15px;
+        margin: 0 auto;
+        z-index: 2;
+    }
+    
+    .auth-form-container {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+    }
+    
+    /* Header-dən formaya qədər məsafəni təmin etmək üçün */
+    .auth-header {
+        margin-bottom: 30px;
+    }
+    
+    /* Mobile üçün xüsusi düzəlişlər */
+    @media (max-width: 768px) {
+        .auth-scene {
+            padding: 70px 0 30px; /* Increased top padding for header on mobile */
+            align-items: flex-start;
+            min-height: unset; /* Remove fixed height constraint on mobile */
+            height: auto;
+        }
+        
+        .auth-form-container {
+            max-width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .registration-section {
+            padding: 15px;
+        }
+        
+        .left-page .form-group, .right-page .form-group {
+            margin-bottom: 15px;
+        }
+        
+        /* Ensure there's enough space at the top on very small devices */
+        .auth-header {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+    }
+    
+    /* Daha kiçik ekranlar üçün xüsusi düzəlişlər */
+    @media (max-width: 480px) {
+        .auth-scene {
+            padding: 60px 0 20px; /* Further adjusted for smaller screens */
+        }
+        
+        .auth-container {
+            padding: 0 10px;
+        }
+        
+        .auth-header h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .auth-form-container {
+            margin-top: 30px; /* Extra margin for very small screens */
+        }
+    }
+    
+    /* iPhone 5/SE kimi çox kiçik ekranlar üçün xüsusi düzəlişlər */
+    @media (max-width: 320px) {
+        .auth-scene {
+            padding: 50px 0 10px;
+        }
+        
+        .auth-form-container {
+            margin-top: 40px;
+        }
+    }
+    
+    /* Dropdown üçün stil düzəlişləri */
+    .custom-country-dropdown {
+        max-height: 300px !important;
+        width: 350px !important;
+        max-width: 85vw !important;
+        background-color: rgba(12, 20, 30, 0.95) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(77, 240, 255, 0.2) !important;
+        border: 1px solid rgba(77, 240, 255, 0.3) !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(77, 240, 255, 0.5) rgba(15, 25, 40, 0.7);
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        position: absolute !important;
+        z-index: 9999 !important;
+        left: 0 !important;
+        top: 44px !important;
+        margin-top: 0 !important;
+    }
+    
+    .custom-country {
+        padding: 10px 15px !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .custom-country:hover {
+        background-color: rgba(77, 240, 255, 0.15) !important;
+        color: white !important;
+    }
 </style>
 {% endblock %}
 
@@ -451,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let dropdown = container.querySelector('.custom-country-dropdown');
             if (!dropdown) {
                 dropdown = document.createElement('div');
-                dropdown.className = 'custom-country-dropdown iti__country-list';
+                dropdown.className = 'custom-country-dropdown';
                 dropdown.style.display = 'none';
                 dropdown.style.position = 'absolute';
                 dropdown.style.zIndex = '9999';
@@ -498,9 +635,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 countriesContainer.className = 'countries-container';
                 dropdown.appendChild(countriesContainer);
                 
-                // Add search functionality
+                // Add search functionality with toLowerCase for case-insensitive search
                 searchInput.addEventListener('input', function() {
-                    const filter = this.value.toLowerCase();
+                    const filter = this.value.toLowerCase().trim();
                     const countries = countriesContainer.querySelectorAll('.custom-country');
                     
                     countries.forEach(country => {
@@ -508,11 +645,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         const dialCode = country.getAttribute('data-dial-code').toLowerCase();
                         
                         if (countryName.includes(filter) || dialCode.includes(filter)) {
-                            country.style.display = '';
+                            country.style.display = 'flex';
                         } else {
                             country.style.display = 'none';
                         }
                     });
+                });
+                
+                // Prevent dropdown from closing when clicking on search
+                searchInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                searchContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    searchInput.focus();
                 });
                 
                 // Populate countries
@@ -564,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add each country
             countries.forEach(country => {
                 const countryElement = document.createElement('div');
-                countryElement.className = 'custom-country iti__country';
+                countryElement.className = 'custom-country';
                 countryElement.setAttribute('data-country-code', country.iso2);
                 countryElement.setAttribute('data-dial-code', '+' + country.dialCode);
                 countryElement.setAttribute('data-country-name', country.name);
@@ -628,6 +775,47 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+    
+    // Enhanced mobile viewport handling
+    function adjustViewportForMobile() {
+        // Force proper spacing on load
+        setTimeout(() => {
+            // Check if header exists and get its height
+            const header = document.querySelector('header') || document.querySelector('.auth-header');
+            const formContainer = document.querySelector('.auth-form-container');
+            
+            if (header && formContainer) {
+                const headerHeight = header.offsetHeight;
+                const windowHeight = window.innerHeight;
+                
+                // Make sure form has enough spacing from header
+                if (window.innerWidth <= 768) {
+                    // Ensure we're at the top of the page
+                    window.scrollTo(0, 0);
+                    
+                    // Calculate and set top margin if needed
+                    const formRect = formContainer.getBoundingClientRect();
+                    const headerRect = header.getBoundingClientRect();
+                    
+                    if (formRect.top < headerRect.bottom + 20) {
+                        // If form is too close to header, add margin
+                        const neededMargin = headerRect.bottom - formRect.top + 20;
+                        formContainer.style.marginTop = `${neededMargin}px`;
+                    }
+                } else {
+                    // Reset margins on larger screens
+                    formContainer.style.marginTop = '';
+                }
+            }
+        }, 300);
+    }
+    
+    // Call on page load
+    adjustViewportForMobile();
+    
+    // Call on resize and orientation change
+    window.addEventListener('resize', adjustViewportForMobile);
+    window.addEventListener('orientationchange', adjustViewportForMobile);
     
     // Şifrə inputlarını təkmilləşdirmək
     function enhancePasswordInputs() {
